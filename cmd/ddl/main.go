@@ -1,7 +1,7 @@
 package main
 
 import (
-	ddlcmd "github.com/fantasky/ddl_guard/cmd/ddlcmd"
+	ddlcmd "github.com/fntsky/ddl_guard/cmd"
 )
 
 func main() {
