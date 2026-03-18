@@ -1,0 +1,6 @@
+package ddlcmd
+
+
+func Main(){
+
+}
