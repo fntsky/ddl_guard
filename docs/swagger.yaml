@@ -1,0 +1,67 @@
+basePath: /api/v1
+definitions:
+  github_com_fntsky_ddl_guard_internal_base_handler.resp:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq:
+    properties:
+      data_type:
+        type: string
+      raw:
+        items:
+          type: integer
+        type: array
+    type: object
+  github_com_fntsky_ddl_guard_internal_schema.GetDraftReq:
+    properties:
+      deadline:
+        type: string
+      description:
+        type: string
+      early_remind:
+        type: boolean
+      title:
+        type: string
+      uuid:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is a DDL Guard server API.
+  termsOfService: http://swagger.io/terms/
+  title: DDL Guard API
+  version: "1.0"
+paths:
+  /ddl/draft:
+    post:
+      consumes:
+      - application/json
+      description: 创建DDL草稿
+      parameters:
+      - description: Create Draft Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.GetDraftReq'
+              type: object
+      summary: 创建DDL草稿
+      tags:
+      - DDL
+swagger: "2.0"
