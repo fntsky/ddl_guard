@@ -1,18 +1,21 @@
 package path
 
-import "sync"
+import (
+	"path/filepath"
+	"sync"
+)
 
 const (
 	DefaultConfigFileName = "config.yaml"
 )
 
 var (
-	ConfigFileDir     = "/conf/"
+	ConfigFileDir     = "conf"
 	formatAllPathOnce sync.Once
 )
 
 func FormatAllPath(dataDirPath string) {
 	formatAllPathOnce.Do(func() {
-		ConfigFileDir = dataDirPath + ConfigFileDir
+		ConfigFileDir = filepath.Join(dataDirPath, ConfigFileDir)
 	})
 }

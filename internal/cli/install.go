@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/fntsky/ddl_guard/configs"
 	"github.com/fntsky/ddl_guard/internal/base/path"
@@ -19,7 +20,7 @@ func Install(dataDirPath string) {
 
 func InstallConfig(configFilePath string) error {
 	if len(configFilePath) == 0 {
-		configFilePath = path.ConfigFileDir + path.DefaultConfigFileName
+		configFilePath = filepath.Join(path.ConfigFileDir, path.DefaultConfigFileName)
 	}
 	if CheckConfig(configFilePath) {
 		fmt.Printf("[InstallConfig] config file already exists at %s\n", configFilePath)

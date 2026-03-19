@@ -3,6 +3,7 @@ package conf
 import (
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/fntsky/ddl_guard/internal/base/path"
 	"gopkg.in/yaml.v3"
@@ -32,6 +33,12 @@ type DatabaseConfig struct {
 	Connection string `yaml:"connection"`
 }
 
+var (
+	globalConfig     *Config
+	globalConfigErr  error
+	globalConfigOnce sync.Once
+)
+
 func ReadConfig(configPath string) (*Config, error) {
 	if len(configPath) == 0 {
 		configPath = filepath.Join(path.ConfigFileDir, path.DefaultConfigFileName)
@@ -45,4 +52,15 @@ func ReadConfig(configPath string) (*Config, error) {
 		return nil, err
 	}
 	return c, nil
+}
+
+func LoadGlobal(configPath string) (*Config, error) {
+	globalConfigOnce.Do(func() {
+		globalConfig, globalConfigErr = ReadConfig(configPath)
+	})
+	return globalConfig, globalConfigErr
+}
+
+func Global() *Config {
+	return globalConfig
 }
