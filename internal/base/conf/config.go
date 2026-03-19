@@ -1,5 +1,13 @@
 package conf
 
+import (
+	"os"
+	"path/filepath"
+
+	"github.com/fntsky/ddl_guard/internal/base/path"
+	"gopkg.in/yaml.v3"
+)
+
 const DefaultConfigPath = "configs/config.yaml"
 
 type Config struct {
@@ -22,4 +30,19 @@ type DataConfig struct {
 type DatabaseConfig struct {
 	Driver     string `yaml:"driver"`
 	Connection string `yaml:"connection"`
+}
+
+func ReadConfig(configPath string) (*Config, error) {
+	if len(configPath) == 0 {
+		configPath = filepath.Join(path.ConfigFileDir, path.DefaultConfigFileName)
+	}
+	c := &Config{}
+	content, err := os.ReadFile(configPath)
+	if err != nil {
+		return nil, err
+	}
+	if err = yaml.Unmarshal(content, c); err != nil {
+		return nil, err
+	}
+	return c, nil
 }
