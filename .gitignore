@@ -23,10 +23,13 @@ profile.cov
 # Go workspace file
 go.work
 go.work.sum
-ddl
 # env file
 .env
 
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Project Build
+ddl
+data/
