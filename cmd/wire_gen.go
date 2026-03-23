@@ -7,9 +7,12 @@
 package ddlcmd
 
 import (
+	"github.com/fntsky/ddl_guard/internal/base/data"
 	"github.com/fntsky/ddl_guard/internal/base/server"
 	"github.com/fntsky/ddl_guard/internal/controller"
+	"github.com/fntsky/ddl_guard/internal/repo/ddl"
 	"github.com/fntsky/ddl_guard/internal/router"
+	ddl2 "github.com/fntsky/ddl_guard/internal/service/ddl"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,10 +20,20 @@ import (
 
 func initApplication(debug bool) (*app, func(), error) {
 	swaggerRouter := router.NewSwaggerRouter()
-	ddlController := controller.NewDDLController()
+	engine, err := data.NewDB(debug)
+	if err != nil {
+		return nil, nil, err
+	}
+	dataData, err := data.NewData(engine)
+	if err != nil {
+		return nil, nil, err
+	}
+	ddlRepo := ddl.NewDDLRepo(dataData)
+	ddlService := ddl2.NewDDLService(ddlRepo)
+	ddlController := controller.NewDDLController(ddlService)
 	ddlApiRouter := router.NewDDLApiRouter(ddlController)
-	engine := server.NewHttpServer(debug, swaggerRouter, ddlApiRouter)
-	ddlcmdApp := newApp(debug, engine)
+	ginEngine := server.NewHttpServer(debug, swaggerRouter, ddlApiRouter)
+	ddlcmdApp := newApp(debug, ginEngine)
 	return ddlcmdApp, func() {
 	}, nil
 }

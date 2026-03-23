@@ -7,8 +7,7 @@ import (
 )
 
 var ProviderSetRepo = wire.NewSet(
-	ddl.NewDDLRepo,
 	data.NewDB,
 	data.NewData,
+	ddl.NewDDLRepo,
 )
-
