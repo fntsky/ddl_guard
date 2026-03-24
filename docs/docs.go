@@ -76,14 +76,38 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.CreateDraftInput": {
+            "type": "object",
+            "properties": {
+                "deadline": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T14:30:00+08:00"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "from swagger"
+                },
+                "early_remind": {
+                    "type": "integer",
+                    "example": 30
+                },
+                "title": {
+                    "type": "string",
+                    "example": "test ddl"
+                }
+            }
+        },
         "schema.CreateDraftReq": {
             "type": "object",
             "properties": {
                 "data_type": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "default",
+                    "example": "default"
                 },
                 "draft": {
-                    "$ref": "#/definitions/schema.CreateDraftResp"
+                    "$ref": "#/definitions/schema.CreateDraftInput"
                 },
                 "raw": {
                     "type": "array",
@@ -97,19 +121,25 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "deadline": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T14:30:00+08:00"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "from swagger"
                 },
                 "early_remind": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 30
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "test ddl"
                 },
                 "uuid": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
                 }
             }
         }
