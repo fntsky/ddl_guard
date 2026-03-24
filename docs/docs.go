@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq"
+                            "$ref": "#/definitions/schema.CreateDraftReq"
                         }
                     }
                 ],
@@ -46,13 +46,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                    "$ref": "#/definitions/handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp"
+                                            "$ref": "#/definitions/schema.CreateDraftResp"
                                         }
                                     }
                                 }
@@ -89,7 +89,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq"
+                            "$ref": "#/definitions/schema.UpdateDraftStatusReq"
                         }
                     }
                 ],
@@ -99,13 +99,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                    "$ref": "#/definitions/handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp"
+                                            "$ref": "#/definitions/schema.UpdateDraftStatusResp"
                                         }
                                     }
                                 }
@@ -117,7 +117,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_fntsky_ddl_guard_internal_base_handler.resp": {
+        "handler.resp": {
             "type": "object",
             "properties": {
                 "code": {
@@ -129,7 +129,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput": {
+        "schema.CreateDraftInput": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -151,7 +151,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq": {
+        "schema.CreateDraftReq": {
             "type": "object",
             "properties": {
                 "data_type": {
@@ -160,17 +160,15 @@ const docTemplate = `{
                     "example": "default"
                 },
                 "draft": {
-                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput"
+                    "$ref": "#/definitions/schema.CreateDraftInput"
                 },
-                "raw": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                "raw_base64": {
+                    "type": "string",
+                    "example": "iVBORw0KGgoAAAANSUhEUgAA..."
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp": {
+        "schema.CreateDraftResp": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -196,7 +194,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq": {
+        "schema.UpdateDraftStatusReq": {
             "type": "object",
             "required": [
                 "status"
@@ -208,7 +206,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp": {
+        "schema.UpdateDraftStatusResp": {
             "type": "object",
             "properties": {
                 "status": {

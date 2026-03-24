@@ -9,9 +9,9 @@ const (
 )
 
 type CreateDraftReq struct {
-	Raw   []byte           `json:"raw,omitempty"`
-	Type  string           `json:"data_type" default:"default" example:"default"`
-	Draft CreateDraftInput `json:"draft"`
+	RawBase64 string           `json:"raw_base64,omitempty" example:"iVBORw0KGgoAAAANSUhEUgAA..."`
+	Type      string           `json:"data_type" default:"default" example:"default"`
+	Draft     CreateDraftInput `json:"draft"`
 }
 
 type CreateDraftInput struct {

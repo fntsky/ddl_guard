@@ -29,7 +29,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq"
+                            "$ref": "#/definitions/schema.CreateDraftReq"
                         }
                     }
                 ],
@@ -39,13 +39,13 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                    "$ref": "#/definitions/handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp"
+                                            "$ref": "#/definitions/schema.CreateDraftResp"
                                         }
                                     }
                                 }
@@ -82,7 +82,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq"
+                            "$ref": "#/definitions/schema.UpdateDraftStatusReq"
                         }
                     }
                 ],
@@ -92,13 +92,13 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                    "$ref": "#/definitions/handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp"
+                                            "$ref": "#/definitions/schema.UpdateDraftStatusResp"
                                         }
                                     }
                                 }
@@ -110,7 +110,7 @@
         }
     },
     "definitions": {
-        "github_com_fntsky_ddl_guard_internal_base_handler.resp": {
+        "handler.resp": {
             "type": "object",
             "properties": {
                 "code": {
@@ -122,7 +122,7 @@
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput": {
+        "schema.CreateDraftInput": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -144,7 +144,7 @@
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq": {
+        "schema.CreateDraftReq": {
             "type": "object",
             "properties": {
                 "data_type": {
@@ -153,17 +153,15 @@
                     "example": "default"
                 },
                 "draft": {
-                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput"
+                    "$ref": "#/definitions/schema.CreateDraftInput"
                 },
-                "raw": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                "raw_base64": {
+                    "type": "string",
+                    "example": "iVBORw0KGgoAAAANSUhEUgAA..."
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp": {
+        "schema.CreateDraftResp": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -189,7 +187,7 @@
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq": {
+        "schema.UpdateDraftStatusReq": {
             "type": "object",
             "required": [
                 "status"
@@ -201,7 +199,7 @@
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp": {
+        "schema.UpdateDraftStatusResp": {
             "type": "object",
             "properties": {
                 "status": {

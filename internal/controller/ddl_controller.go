@@ -24,7 +24,7 @@ func NewDDLController(ddl_service *ddl.DDLService) *DDLController {
 // @Tags DDL
 // @Accept json
 // @Produce json
-// @Param req body schema.CreateDraftReq true "Create Draft Request" SchemaExample({"data_type":"default","draft":{"title":"test ddl","description":"from swagger","deadline":"2026-03-24T14:30:00+08:00","early_remind":30}})
+// @Param req body schema.CreateDraftReq true "Create Draft Request" SchemaExample({"data_type":"picture","raw_base64":"iVBORw0KGgoAAAANSUhEUgAA...","draft":{"title":"test ddl","description":"from swagger","deadline":"2026-03-24T14:30:00+08:00","early_remind":30}})
 // @success 200 {object} handler.resp{data=schema.CreateDraftResp} "success"
 // @Router /ddl/draft [post]
 func (dc *DDLController) CreateDraft(ctx *gin.Context) {

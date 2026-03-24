@@ -98,7 +98,9 @@ func NormalizeError(err error) *AppError {
 	case errors.Is(err, serviceddl.ErrInvalidDraftStatus):
 		return BadRequest("invalid draft status", err)
 	case errors.Is(err, serviceddl.ErrPictureDataMissing):
-		return BadRequest("picture raw data is required", err)
+		return BadRequest("picture base64 data is required", err)
+	case errors.Is(err, serviceddl.ErrPictureDataInvalid):
+		return BadRequest("invalid picture base64 data", err)
 	case errors.Is(err, serviceddl.ErrDraftNotFound):
 		return NotFound("draft not found", err)
 	case errors.Is(err, serviceddl.ErrDraftStateConflict):

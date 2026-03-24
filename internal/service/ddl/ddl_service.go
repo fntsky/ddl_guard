@@ -2,6 +2,7 @@ package ddl
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"strings"
@@ -28,7 +29,8 @@ var (
 	ErrInvalidDraftStatus = errors.New("invalid draft status")
 	ErrDraftNotFound      = errors.New("draft not found")
 	ErrDraftStateConflict = errors.New("draft state conflict")
-	ErrPictureDataMissing = errors.New("picture raw data is required")
+	ErrPictureDataMissing = errors.New("picture base64 data is required")
+	ErrPictureDataInvalid = errors.New("invalid picture base64 data")
 	ErrAIProviderDisabled = errors.New("ai provider is not configured")
 )
 
@@ -49,14 +51,20 @@ func (s *DDLService) CreateDraft(ctx context.Context, draft *schema.CreateDraftR
 	switch draftType {
 	case schema.DDLTYPEDEFAULT:
 	case schema.DDLTYPEPICTURE:
-		if len(draft.Raw) == 0 {
+		rawBase64 := strings.TrimSpace(draft.RawBase64)
+		if rawBase64 == "" {
 			return nil, ErrPictureDataMissing
 		}
 		if s.aiProvider == nil {
 			return nil, ErrAIProviderDisabled
 		}
 
-		imageDraft, err := s.aiProvider.AnalyzeImage(draft.Raw)
+		imageData, err := base64.StdEncoding.DecodeString(rawBase64)
+		if err != nil {
+			return nil, ErrPictureDataInvalid
+		}
+
+		imageDraft, err := s.aiProvider.AnalyzeImage(imageData)
 		if err != nil {
 			return nil, err
 		}
