@@ -12,8 +12,9 @@ import (
 const DefaultConfigPath = "configs/config.yaml"
 
 type Config struct {
-	Server ServerConfig `yaml:"server"`
-	Data   DataConfig   `yaml:"data"`
+	Server    ServerConfig   `yaml:"server"`
+	Data      DataConfig     `yaml:"data"`
+	VISUAL_AI VisualAIConfig `yaml:"VISUAL_AI"`
 }
 
 type ServerConfig struct {
@@ -31,6 +32,13 @@ type DataConfig struct {
 type DatabaseConfig struct {
 	Driver     string `yaml:"driver"`
 	Connection string `yaml:"connection"`
+}
+
+type VisualAIConfig struct {
+	APIKey   string `yaml:"api_key"`
+	Endpoint string `yaml:"endpoint"`
+	Model    string `yaml:"model"`
+	Provider string `yaml:"provider"`
 }
 
 var (

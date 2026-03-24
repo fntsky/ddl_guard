@@ -97,10 +97,14 @@ func NormalizeError(err error) *AppError {
 	switch {
 	case errors.Is(err, serviceddl.ErrInvalidDraftStatus):
 		return BadRequest("invalid draft status", err)
+	case errors.Is(err, serviceddl.ErrPictureDataMissing):
+		return BadRequest("picture raw data is required", err)
 	case errors.Is(err, serviceddl.ErrDraftNotFound):
 		return NotFound("draft not found", err)
 	case errors.Is(err, serviceddl.ErrDraftStateConflict):
 		return Conflict("draft state conflict", err)
+	case errors.Is(err, serviceddl.ErrAIProviderDisabled):
+		return Internal("ai provider is not configured", err)
 	default:
 		return Internal("internal server error", err)
 	}

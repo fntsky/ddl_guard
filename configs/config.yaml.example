@@ -1,0 +1,13 @@
+server:
+  http:
+    addr: 0.0.0.0:8080
+data:
+  database:
+    driver: "postgres"
+    connection: "host=localhost port=5432 user=myuser password=postgre dbname=mydb sslmode=disable"
+VISUAL_AI:
+  api_key: "your_api_key_here"
+  endpoint: "https://api.visualai.com/v1/analyze"
+  model: "default"
+  provider: "visual_ai"
+    

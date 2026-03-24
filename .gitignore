@@ -31,5 +31,6 @@ go.work.sum
 # .vscode/
 
 # Project Build
-ddl
+/ddl
 /data/
+/configs/config.yaml

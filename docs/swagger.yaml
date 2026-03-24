@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  handler.resp:
+  github_com_fntsky_ddl_guard_internal_base_handler.resp:
     properties:
       code:
         type: integer
@@ -8,7 +8,7 @@ definitions:
       message:
         type: string
     type: object
-  schema.CreateDraftInput:
+  github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput:
     properties:
       deadline:
         example: "2026-03-24T14:30:00+08:00"
@@ -24,20 +24,20 @@ definitions:
         example: test ddl
         type: string
     type: object
-  schema.CreateDraftReq:
+  github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq:
     properties:
       data_type:
         default: default
         example: default
         type: string
       draft:
-        $ref: '#/definitions/schema.CreateDraftInput'
+        $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput'
       raw:
         items:
           type: integer
         type: array
     type: object
-  schema.CreateDraftResp:
+  github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp:
     properties:
       deadline:
         example: "2026-03-24T14:30:00+08:00"
@@ -56,7 +56,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.UpdateDraftStatusReq:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq:
     properties:
       status:
         example: active
@@ -64,7 +64,7 @@ definitions:
     required:
     - status
     type: object
-  schema.UpdateDraftStatusResp:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp:
     properties:
       status:
         example: 1
@@ -91,7 +91,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.CreateDraftReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq'
       produces:
       - application/json
       responses:
@@ -99,10 +99,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.CreateDraftResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp'
               type: object
       summary: 创建DDL草稿
       tags:
@@ -123,7 +123,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.UpdateDraftStatusReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq'
       produces:
       - application/json
       responses:
@@ -131,10 +131,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.UpdateDraftStatusResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp'
               type: object
       summary: 同意DDL草稿
       tags:

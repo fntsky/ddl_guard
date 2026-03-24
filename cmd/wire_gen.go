@@ -12,6 +12,7 @@ import (
 	"github.com/fntsky/ddl_guard/internal/controller"
 	"github.com/fntsky/ddl_guard/internal/repo/ddl"
 	"github.com/fntsky/ddl_guard/internal/router"
+	"github.com/fntsky/ddl_guard/internal/service/ai"
 	ddl2 "github.com/fntsky/ddl_guard/internal/service/ddl"
 	"github.com/gin-gonic/gin"
 )
@@ -29,7 +30,8 @@ func initApplication(debug bool) (*app, func(), error) {
 		return nil, nil, err
 	}
 	ddlRepo := ddl.NewDDLRepo(dataData)
-	ddlService := ddl2.NewDDLService(ddlRepo)
+	aiProvider := ai.NewAIProvider()
+	ddlService := ddl2.NewDDLService(ddlRepo, aiProvider)
 	ddlController := controller.NewDDLController(ddlService)
 	ddlApiRouter := router.NewDDLApiRouter(ddlController)
 	ginEngine := server.NewHttpServer(debug, swaggerRouter, ddlApiRouter)
