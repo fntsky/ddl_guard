@@ -14,7 +14,10 @@ type Mentor struct {
 }
 
 func NewMentor(engine *xorm.Engine) *Mentor {
-	return &Mentor{engine: engine}
+	return &Mentor{
+		ctx:    context.Background(),
+		engine: engine,
+	}
 }
 
 func (m *Mentor) InitDB() error {
@@ -33,6 +36,10 @@ func (m *Mentor) do(desc string, fn func()) {
 }
 
 func (m *Mentor) syncTables() {
-	m.err = m.engine.Context(m.ctx).Sync2(tables...)
+	ctx := m.ctx
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	m.err = m.engine.Context(ctx).Sync2(tables...)
 
 }

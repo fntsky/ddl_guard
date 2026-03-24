@@ -36,23 +36,23 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq"
+                            "$ref": "#/definitions/schema.CreateDraftReq"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "success",
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                    "$ref": "#/definitions/handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.GetDraftReq"
+                                            "$ref": "#/definitions/schema.CreateDraftResp"
                                         }
                                     }
                                 }
@@ -64,7 +64,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_fntsky_ddl_guard_internal_base_handler.resp": {
+        "handler.resp": {
             "type": "object",
             "properties": {
                 "code": {
@@ -76,11 +76,14 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq": {
+        "schema.CreateDraftReq": {
             "type": "object",
             "properties": {
                 "data_type": {
                     "type": "string"
+                },
+                "draft": {
+                    "$ref": "#/definitions/schema.CreateDraftResp"
                 },
                 "raw": {
                     "type": "array",
@@ -90,7 +93,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.GetDraftReq": {
+        "schema.CreateDraftResp": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -100,7 +103,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "early_remind": {
-                    "type": "boolean"
+                    "type": "integer"
                 },
                 "title": {
                     "type": "string"

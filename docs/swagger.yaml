@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  github_com_fntsky_ddl_guard_internal_base_handler.resp:
+  handler.resp:
     properties:
       code:
         type: integer
@@ -8,23 +8,25 @@ definitions:
       message:
         type: string
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq:
+  schema.CreateDraftReq:
     properties:
       data_type:
         type: string
+      draft:
+        $ref: '#/definitions/schema.CreateDraftResp'
       raw:
         items:
           type: integer
         type: array
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.GetDraftReq:
+  schema.CreateDraftResp:
     properties:
       deadline:
         type: string
       description:
         type: string
       early_remind:
-        type: boolean
+        type: integer
       title:
         type: string
       uuid:
@@ -48,18 +50,18 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq'
+          $ref: '#/definitions/schema.CreateDraftReq'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: success
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp'
+            - $ref: '#/definitions/handler.resp'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.GetDraftReq'
+                  $ref: '#/definitions/schema.CreateDraftResp'
               type: object
       summary: 创建DDL草稿
       tags:

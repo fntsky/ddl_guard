@@ -30,5 +30,7 @@ func (dc *DDLController) CreateDraft(ctx *gin.Context) {
 	if handler.BindAndCheck(ctx, req) {
 		return
 	}
+	resp, err := dc.ddl_service.CreateDraft(ctx, req)
+	handler.HanderResponse(ctx, err, resp)
 
 }
