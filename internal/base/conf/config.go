@@ -15,6 +15,7 @@ type Config struct {
 	Server    ServerConfig   `yaml:"server"`
 	Data      DataConfig     `yaml:"data"`
 	VISUAL_AI VisualAIConfig `yaml:"VISUAL_AI"`
+	EMAIL_OTP EmailOTPConfig `yaml:"EMAIL_OTP"`
 }
 
 type ServerConfig struct {
@@ -39,6 +40,17 @@ type VisualAIConfig struct {
 	Endpoint string `yaml:"endpoint"`
 	Model    string `yaml:"model"`
 	Provider string `yaml:"provider"`
+}
+
+type EmailOTPConfig struct {
+	SMTP SMTPConfig `yaml:"smtp"`
+}
+
+type SMTPConfig struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
 }
 
 var (

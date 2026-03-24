@@ -11,3 +11,9 @@ VISUAL_AI:
   model: "default"
   provider: "visual_ai"
     
+EMAIL_OTP:
+  smtp:
+    host: "example.smtp.com"
+    port: 465
+    username: "example@smtp.com"
+    password: "your_smtp_password"
