@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"path/filepath"
 
@@ -26,7 +27,7 @@ func UpgradeDB(configFilePath string) error {
 		_ = db.Close()
 	}()
 
-	if err := migrations.Migrate(db); err != nil {
+	if err := migrations.Migrate(context.Background(), db); err != nil {
 		return fmt.Errorf("migrate database failed: %w", err)
 	}
 	return nil
