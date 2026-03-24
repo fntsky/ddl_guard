@@ -3,8 +3,9 @@ package schema
 import "time"
 
 const (
-	DDLTYPEDEFAULT = "default"
-	DDLTYPEPICTURE = "picture"
+	DDLTYPEDEFAULT  = "default"
+	DDLTYPEPICTURE  = "picture"
+	DDLSTATUSACTIVE = "active"
 )
 
 type CreateDraftReq struct {
@@ -33,4 +34,13 @@ type CreateDraftResp struct {
 	Description string    `json:"description" example:"from swagger"`
 	Deadline    time.Time `json:"deadline" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
 	EealyRemind int       `json:"early_remind" example:"30"`
+}
+
+type UpdateDraftStatusReq struct {
+	Status string `json:"status" binding:"required" example:"active"`
+}
+
+type UpdateDraftStatusResp struct {
+	UUID   string `json:"uuid" example:"7a178766-4b8e-4e99-ab4c-843f7dbd95fd"`
+	Status int    `json:"status" example:"1"`
 }

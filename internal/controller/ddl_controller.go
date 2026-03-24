@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strings"
+
 	"github.com/fntsky/ddl_guard/internal/base/handler"
 	"github.com/fntsky/ddl_guard/internal/schema"
 	"github.com/fntsky/ddl_guard/internal/service/ddl"
@@ -31,6 +33,31 @@ func (dc *DDLController) CreateDraft(ctx *gin.Context) {
 		return
 	}
 	resp, err := dc.ddl_service.CreateDraft(ctx, req)
-	handler.HanderResponse(ctx, err, resp)
+	handler.HandleResponse(ctx, err, resp)
 
+}
+
+// @Summary 同意DDL草稿
+// @Description 将草稿状态从draft变更为active
+// @Tags DDL
+// @Accept json
+// @Produce json
+// @Param uuid path string true "Draft UUID"
+// @Param req body schema.UpdateDraftStatusReq true "Update Draft Status Request" SchemaExample({"status":"active"})
+// @success 200 {object} handler.resp{data=schema.UpdateDraftStatusResp} "success"
+// @Router /ddl/drafts/{uuid} [patch]
+func (dc *DDLController) ApproveDraft(ctx *gin.Context) {
+	uuid := strings.TrimSpace(ctx.Param("uuid"))
+	if uuid == "" {
+		handler.HandleResponse(ctx, handler.BadRequest("uuid is required", nil), nil)
+		return
+	}
+
+	req := &schema.UpdateDraftStatusReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+
+	resp, err := dc.ddl_service.ApproveDraft(ctx, uuid, req)
+	handler.HandleResponse(ctx, err, resp)
 }

@@ -16,4 +16,5 @@ func NewDDLApiRouter(ddlController *controller.DDLController) *DDLApiRouter {
 func (a *DDLApiRouter) Register(r *gin.RouterGroup) {
 	ddlGroup := r.Group("/ddl")
 	ddlGroup.POST("/draft", a.ddlController.CreateDraft)
+	ddlGroup.PATCH("/drafts/:uuid", a.ddlController.ApproveDraft)
 }

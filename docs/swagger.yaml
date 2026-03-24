@@ -56,6 +56,23 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
+  schema.UpdateDraftStatusReq:
+    properties:
+      status:
+        example: active
+        type: string
+    required:
+    - status
+    type: object
+  schema.UpdateDraftStatusResp:
+    properties:
+      status:
+        example: 1
+        type: integer
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
 info:
   contact: {}
   description: This is a DDL Guard server API.
@@ -88,6 +105,38 @@ paths:
                   $ref: '#/definitions/schema.CreateDraftResp'
               type: object
       summary: 创建DDL草稿
+      tags:
+      - DDL
+  /ddl/drafts/{uuid}:
+    patch:
+      consumes:
+      - application/json
+      description: 将草稿状态从draft变更为active
+      parameters:
+      - description: Draft UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update Draft Status Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UpdateDraftStatusReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.UpdateDraftStatusResp'
+              type: object
+      summary: 同意DDL草稿
       tags:
       - DDL
 swagger: "2.0"

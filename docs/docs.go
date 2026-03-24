@@ -61,6 +61,59 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/ddl/drafts/{uuid}": {
+            "patch": {
+                "description": "将草稿状态从draft变更为active",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DDL"
+                ],
+                "summary": "同意DDL草稿",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Draft UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Draft Status Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.UpdateDraftStatusReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.UpdateDraftStatusResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -136,6 +189,31 @@ const docTemplate = `{
                 "title": {
                     "type": "string",
                     "example": "test ddl"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.UpdateDraftStatusReq": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "active"
+                }
+            }
+        },
+        "schema.UpdateDraftStatusResp": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "integer",
+                    "example": 1
                 },
                 "uuid": {
                     "type": "string",
