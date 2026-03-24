@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/fntsky/ddl_guard/internal/entity"
 	"xorm.io/xorm"
 )
 
@@ -22,6 +23,7 @@ func NewMentor(engine *xorm.Engine) *Mentor {
 
 func (m *Mentor) InitDB() error {
 	m.do("sync tables", m.syncTables)
+	m.do("insert version", m.insertVersion)
 	return m.err
 }
 
@@ -41,5 +43,10 @@ func (m *Mentor) syncTables() {
 		ctx = context.Background()
 	}
 	m.err = m.engine.Context(ctx).Sync2(tables...)
+}
 
+func (m *Mentor) insertVersion() {
+	_, m.err = m.engine.Context(m.ctx).Insert(&entity.Version{
+		VersionNumber: ExpectVersion(),
+	})
 }

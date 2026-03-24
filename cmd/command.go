@@ -23,6 +23,17 @@ var (
 			runApp(configPath)
 		},
 	}
+	upgradeCmd = &cobra.Command{
+		Use:   "upgrade",
+		Short: "upgrade database",
+		Long:  "upgrade database",
+		Run: func(_ *cobra.Command, _ []string) {
+			path.FormatAllPath(dataDir)
+			if err := cli.UpgradeDB(configPath); err != nil {
+				panic(err)
+			}
+		},
+	}
 	initCmd = &cobra.Command{
 		Use:   "init",
 		Short: "init config",
@@ -36,7 +47,8 @@ var (
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&dataDir, "dir", "d", "./data", "data directory path")
 	runCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
-	rootCmd.AddCommand(runCmd, initCmd)
+	upgradeCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
+	rootCmd.AddCommand(runCmd, initCmd, upgradeCmd)
 }
 
 func Execute() {

@@ -11,14 +11,22 @@ const (
 )
 
 type DDL struct {
-	UUID            string    `xorm:"varchar(36) not null pk 'uuid'"`
-	CreatedAt       time.Time `xorm:"created 'created_at'"`
-	UpdatedAt       time.Time `xorm:"updated 'updated_at'"`
-	DeadLine        time.Time `xorm:"'deadline' not null"`
-	Status          int       `xorm:"not null default 0 index 'status'"`
-	EealyRemindTime time.Time `xorm:"'early_remind_time'"`
-	Title           string    `xorm:"varchar(255) not null 'title'"`
-	Description     string    `xorm:"text 'description'"`
+	ID int64 `xorm:"pk autoincr 'id'"`
+	
+	UUID string `xorm:"uuid not null unique index 'uuid'"`
+
+	CreatedAt time.Time `xorm:"created index 'created_at'"`
+	UpdatedAt time.Time `xorm:"updated 'updated_at'"`
+
+	DeadLine time.Time `xorm:"not null index 'idx_status_deadline' 'deadline'"`
+
+	Status int `xorm:"not null default 0 index 'idx_status_deadline' 'status'"`
+
+	EealyRemindTime time.Time `xorm:"index 'early_remind_time'"`
+
+	Title string `xorm:"text not null 'title'"`
+
+	Description string `xorm:"text 'description'"`
 }
 
 func (DDL) TableName() string {
