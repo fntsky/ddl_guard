@@ -23,7 +23,7 @@ func NewDDLController(ddl_service *ddl.DDLService) *DDLController {
 // @Accept json
 // @Produce json
 // @Param req body schema.CreateDraftReq true "Create Draft Request"
-// @success 200 {object} handler.resp{data=schema.DraftInfo}
+// @success 200 {object} handler.resp{data=schema.CreateDraftResp} "success"
 // @Router /ddl/draft [post]
 func (dc *DDLController) CreateDraft(ctx *gin.Context) {
 	req := &schema.CreateDraftReq{}

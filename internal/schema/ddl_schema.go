@@ -2,16 +2,28 @@ package schema
 
 import "time"
 
+const (
+	DDLTYPEDEFAULT = "default"
+	DDLTYPEPICTURE = "picture"
+)
+
 type CreateDraftReq struct {
-	Raw   []byte    `json:"raw"`
-	Type  string    `json:"data_type"`
-	Draft DraftInfo `json:"draft"`
+	Raw   []byte          `json:"raw"`
+	Type  string          `json:"data_type"`
+	Draft CreateDraftResp `json:"draft"`
 }
 
-type DraftInfo struct {
+/*
+uuid
+标题
+描述
+截止时间
+截止时间前多少分钟提醒
+*/
+type CreateDraftResp struct {
 	UUID        string    `json:"uuid"`
 	Title       string    `json:"title"`
-	Deadline    time.Time `json:"deadline"`
-	EealyRemind bool      `json:"early_remind"`
 	Description string    `json:"description"`
+	Deadline    time.Time `json:"deadline"`
+	EealyRemind int       `json:"early_remind"`
 }
