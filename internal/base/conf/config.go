@@ -16,6 +16,7 @@ type Config struct {
 	Data      DataConfig     `yaml:"data"`
 	VISUAL_AI VisualAIConfig `yaml:"VISUAL_AI"`
 	EMAIL_OTP EmailOTPConfig `yaml:"EMAIL_OTP"`
+	JWT       JWTConfig      `yaml:"jwt"`
 }
 
 type ServerConfig struct {
@@ -51,6 +52,12 @@ type SMTPConfig struct {
 	Port     int    `yaml:"port"`
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
+}
+
+type JWTConfig struct {
+	Secret           string `yaml:"secret"`
+	AccessTTLMinutes int    `yaml:"access_ttl_minutes"`
+	RefreshTTLHours  int    `yaml:"refresh_ttl_hours"`
 }
 
 var (

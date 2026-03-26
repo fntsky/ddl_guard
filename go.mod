@@ -16,6 +16,7 @@ require (
 )
 
 require (
+	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	xorm.io/builder v0.3.13 // indirect

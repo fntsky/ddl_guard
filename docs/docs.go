@@ -16,6 +16,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/refresh-tokens": {
+            "post": {
+                "description": "使用refresh token换取新的access token和refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "刷新Token",
+                "parameters": [
+                    {
+                        "description": "Refresh Token Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RefreshTokenReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.TokenPairResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/ddl/draft": {
             "post": {
                 "description": "创建DDL草稿",
@@ -36,7 +82,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.CreateDraftReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq"
                         }
                     }
                 ],
@@ -46,13 +92,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.CreateDraftResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp"
                                         }
                                     }
                                 }
@@ -89,7 +135,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.UpdateDraftStatusReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq"
                         }
                     }
                 ],
@@ -99,13 +145,93 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.UpdateDraftStatusResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/users/email/verification-codes": {
+            "post": {
+                "description": "发送邮箱验证码用于注册",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "发送邮箱验证码",
+                "parameters": [
+                    {
+                        "description": "Send Email Verification Code Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendEmailVerificationCodeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/registrations/email": {
+            "post": {
+                "description": "使用邮箱验证码注册用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "邮箱注册",
+                "parameters": [
+                    {
+                        "description": "Register User By Email Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailResp"
                                         }
                                     }
                                 }
@@ -117,7 +243,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.resp": {
+        "github_com_fntsky_ddl_guard_internal_base_handler.resp": {
             "type": "object",
             "properties": {
                 "code": {
@@ -129,7 +255,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateDraftInput": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -151,7 +277,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateDraftReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq": {
             "type": "object",
             "properties": {
                 "data_type": {
@@ -160,7 +286,7 @@ const docTemplate = `{
                     "example": "default"
                 },
                 "draft": {
-                    "$ref": "#/definitions/schema.CreateDraftInput"
+                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput"
                 },
                 "raw_base64": {
                     "type": "string",
@@ -168,7 +294,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateDraftResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -194,7 +320,88 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateDraftStatusReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.RefreshTokenReq": {
+            "type": "object",
+            "required": [
+                "refresh_token"
+            ],
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailReq": {
+            "type": "object",
+            "required": [
+                "code",
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "123456"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "testuser@example.com"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "password123"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "testuser"
+                }
+            }
+        },
+        "github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailResp": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "github_com_fntsky_ddl_guard_internal_schema.SendEmailVerificationCodeReq": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "testuser@example.com"
+                }
+            }
+        },
+        "github_com_fntsky_ddl_guard_internal_schema.TokenPairResp": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+            }
+        },
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq": {
             "type": "object",
             "required": [
                 "status"
@@ -206,7 +413,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateDraftStatusResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp": {
             "type": "object",
             "properties": {
                 "status": {

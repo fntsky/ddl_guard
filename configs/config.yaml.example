@@ -17,3 +17,8 @@ EMAIL_OTP:
     port: 465
     username: "example@smtp.com"
     password: "your_smtp_password"
+
+jwt:
+  secret: "change_me_to_a_strong_secret"
+  access_ttl_minutes: 15
+  refresh_ttl_hours: 168

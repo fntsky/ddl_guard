@@ -12,8 +12,10 @@ const (
 
 type DDL struct {
 	ID int64 `xorm:"pk autoincr 'id'"`
-	
+
 	UUID string `xorm:"uuid not null unique index 'uuid'"`
+
+	UserID int64 `xorm:"not null index 'user_id'"`
 
 	CreatedAt time.Time `xorm:"created index 'created_at'"`
 	UpdatedAt time.Time `xorm:"updated 'updated_at'"`

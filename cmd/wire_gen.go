@@ -7,13 +7,19 @@
 package ddlcmd
 
 import (
+	"github.com/fntsky/ddl_guard/internal/base/OTP"
+	"github.com/fntsky/ddl_guard/internal/base/auth"
 	"github.com/fntsky/ddl_guard/internal/base/data"
 	"github.com/fntsky/ddl_guard/internal/base/server"
 	"github.com/fntsky/ddl_guard/internal/controller"
 	"github.com/fntsky/ddl_guard/internal/repo/ddl"
+	"github.com/fntsky/ddl_guard/internal/repo/session"
+	"github.com/fntsky/ddl_guard/internal/repo/user"
 	"github.com/fntsky/ddl_guard/internal/router"
 	"github.com/fntsky/ddl_guard/internal/service/ai"
+	auth2 "github.com/fntsky/ddl_guard/internal/service/auth"
 	ddl2 "github.com/fntsky/ddl_guard/internal/service/ddl"
+	user2 "github.com/fntsky/ddl_guard/internal/service/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,11 +36,24 @@ func initApplication(debug bool) (*app, func(), error) {
 		return nil, nil, err
 	}
 	ddlRepo := ddl.NewDDLRepo(dataData)
+	sessionRepo := session.NewSessionRepo(dataData)
+	userRepo := user.NewUserRepo(dataData)
+	tokenService, err := auth.NewTokenService()
+	if err != nil {
+		return nil, nil, err
+	}
+	emailOTP := otp.NewSMTPEmailOTP()
+	authService := auth2.NewAuthService(tokenService, sessionRepo)
 	aiProvider := ai.NewAIProvider()
 	ddlService := ddl2.NewDDLService(ddlRepo, aiProvider)
+	userService := user2.NewUserService(userRepo, emailOTP, authService)
+	authController := controller.NewAuthController(authService)
 	ddlController := controller.NewDDLController(ddlService)
-	ddlApiRouter := router.NewDDLApiRouter(ddlController)
-	ginEngine := server.NewHttpServer(debug, swaggerRouter, ddlApiRouter)
+	userController := controller.NewUserController(userService)
+	authApiRouter := router.NewAuthApiRouter(authController)
+	ddlApiRouter := router.NewDDLApiRouter(ddlController, tokenService)
+	userApiRouter := router.NewUserApiRouter(userController)
+	ginEngine := server.NewHttpServer(debug, swaggerRouter, authApiRouter, ddlApiRouter, userApiRouter)
 	ddlcmdApp := newApp(debug, ginEngine)
 	return ddlcmdApp, func() {
 	}, nil

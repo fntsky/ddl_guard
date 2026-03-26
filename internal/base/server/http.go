@@ -7,7 +7,9 @@ import (
 
 func NewHttpServer(debug bool,
 	swaggerRouter *router.SwaggerRouter,
-	ddlApiRouter *router.DDLApiRouter) *gin.Engine {
+	authApiRouter *router.AuthApiRouter,
+	ddlApiRouter *router.DDLApiRouter,
+	userApiRouter *router.UserApiRouter) *gin.Engine {
 	if debug {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -17,6 +19,8 @@ func NewHttpServer(debug bool,
 	rootGroup := r.Group("")
 	apiGroup := r.Group("/api/v1")
 	swaggerRouter.Register(rootGroup)
+	authApiRouter.Register(apiGroup)
+	userApiRouter.Register(apiGroup)
 	ddlApiRouter.Register(apiGroup)
 	return r
 }

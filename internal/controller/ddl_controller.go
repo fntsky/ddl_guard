@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/fntsky/ddl_guard/internal/base/handler"
+	"github.com/fntsky/ddl_guard/internal/middleware"
 	"github.com/fntsky/ddl_guard/internal/schema"
 	"github.com/fntsky/ddl_guard/internal/service/ddl"
 	"github.com/gin-gonic/gin"
@@ -28,11 +29,17 @@ func NewDDLController(ddl_service *ddl.DDLService) *DDLController {
 // @success 200 {object} handler.resp{data=schema.CreateDraftResp} "success"
 // @Router /ddl/draft [post]
 func (dc *DDLController) CreateDraft(ctx *gin.Context) {
+	userClaims, ok := middleware.GetUserFromGin(ctx)
+	if !ok || userClaims.UserUUID == "" {
+		handler.HandleResponse(ctx, handler.NewError(401, "unauthorized", nil), nil)
+		return
+	}
+
 	req := &schema.CreateDraftReq{}
 	if handler.BindAndCheck(ctx, req) {
 		return
 	}
-	resp, err := dc.ddl_service.CreateDraft(ctx, req)
+	resp, err := dc.ddl_service.CreateDraft(ctx, req, userClaims.UserUUID)
 	handler.HandleResponse(ctx, err, resp)
 
 }

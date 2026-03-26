@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"strings"
 
+	serviceauth "github.com/fntsky/ddl_guard/internal/service/auth"
 	serviceddl "github.com/fntsky/ddl_guard/internal/service/ddl"
+	serviceuser "github.com/fntsky/ddl_guard/internal/service/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -107,6 +109,22 @@ func NormalizeError(err error) *AppError {
 		return Conflict("draft state conflict", err)
 	case errors.Is(err, serviceddl.ErrAIProviderDisabled):
 		return Internal("ai provider is not configured", err)
+	case errors.Is(err, serviceuser.ErrInvalidVerificationCode):
+		return BadRequest("invalid verification code", err)
+	case errors.Is(err, serviceuser.ErrEmailAlreadyExists):
+		return Conflict("email already exists", err)
+	case errors.Is(err, serviceuser.ErrEmailOTPDisabled):
+		return NewError(http.StatusServiceUnavailable, "email otp is disabled", err)
+	case errors.Is(err, serviceuser.ErrVerificationUnavailable):
+		return Internal("verification service is not available", err)
+	case errors.Is(err, serviceauth.ErrInvalidRefreshToken):
+		return NewError(http.StatusUnauthorized, "invalid refresh token", err)
+	case errors.Is(err, serviceauth.ErrRefreshTokenExpired):
+		return NewError(http.StatusUnauthorized, "refresh token expired", err)
+	case errors.Is(err, serviceauth.ErrRefreshTokenRevoked):
+		return NewError(http.StatusUnauthorized, "refresh token revoked", err)
+	case errors.Is(err, serviceauth.ErrSessionNotFound):
+		return NewError(http.StatusUnauthorized, "refresh session not found", err)
 	default:
 		return Internal("internal server error", err)
 	}

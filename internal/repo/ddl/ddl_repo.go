@@ -2,6 +2,7 @@ package ddl
 
 import (
 	"context"
+	"errors"
 
 	"github.com/fntsky/ddl_guard/internal/base/data"
 	"github.com/fntsky/ddl_guard/internal/entity"
@@ -23,6 +24,22 @@ func NewDDLRepo(data *data.Data) ddl.DDLRepo {
 func (r *ddlRepo) AddDraft(ctx context.Context, draft *entity.DDL) error {
 	_, err := r.data.DB.Context(ctx).Insert(draft)
 	return err
+}
+
+func (r *ddlRepo) GetUserIDByUserUUID(ctx context.Context, uuid string) (int64, error) {
+	user := &entity.User{UUID: uuid}
+	has, err := r.data.DB.Context(ctx).Get(user)
+	if err != nil {
+		return 0, err
+	}
+	if !has {
+		return 0, ddl.ErrUserNotFound
+	}
+	if user.ID <= 0 {
+		return 0, errors.New("invalid user id")
+	}
+
+	return user.ID, nil
 }
 
 func (r *ddlRepo) GetDraftByUUID(ctx context.Context, uuid string) (*entity.DDL, bool, error) {

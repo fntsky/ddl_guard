@@ -7,11 +7,15 @@ package schema
 密码
 验证码
 */
+type SendEmailVerificationCodeReq struct {
+	Email string `json:"email" binding:"required,email" example:"testuser@example.com"`
+}
+
 type RegisterUserByEmailReq struct {
-	Username string `json:"username" example:"testuser"`
-	Email    string `json:"email" example:"testuser@example.com"`
-	Password string `json:"password" example:"password123"`
-	Code     string `json:"code" example:"123456"`
+	Username string `json:"username" binding:"required" example:"testuser"`
+	Email    string `json:"email" binding:"required,email" example:"testuser@example.com"`
+	Password string `json:"password" binding:"required,min=6" example:"password123"`
+	Code     string `json:"code" binding:"required" example:"123456"`
 }
 
 /*

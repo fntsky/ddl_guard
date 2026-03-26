@@ -16,6 +16,7 @@ import (
 
 type DDLRepo interface {
 	AddDraft(ctx context.Context, draft *entity.DDL) error
+	GetUserIDByUserUUID(ctx context.Context, uuid string) (int64, error)
 	GetDraftByUUID(ctx context.Context, uuid string) (*entity.DDL, bool, error)
 	UpdateStatusByUUID(ctx context.Context, uuid string, fromStatus int, toStatus int) (int64, error)
 }
@@ -32,6 +33,7 @@ var (
 	ErrPictureDataMissing = errors.New("picture base64 data is required")
 	ErrPictureDataInvalid = errors.New("invalid picture base64 data")
 	ErrAIProviderDisabled = errors.New("ai provider is not configured")
+	ErrUserNotFound       = errors.New("user not found")
 )
 
 func NewDDLService(repo DDLRepo, aiProvider ai.AIProvider) *DDLService {
@@ -41,7 +43,12 @@ func NewDDLService(repo DDLRepo, aiProvider ai.AIProvider) *DDLService {
 	}
 }
 
-func (s *DDLService) CreateDraft(ctx context.Context, draft *schema.CreateDraftReq) (*schema.CreateDraftResp, error) {
+func (s *DDLService) CreateDraft(ctx context.Context, draft *schema.CreateDraftReq, userUUID string) (*schema.CreateDraftResp, error) {
+	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
+	if err != nil {
+		return nil, err
+	}
+
 	draftType := strings.TrimSpace(draft.Type)
 	if draftType == "" {
 		draftType = schema.DDLTYPEDEFAULT
@@ -80,6 +87,7 @@ func (s *DDLService) CreateDraft(ctx context.Context, draft *schema.CreateDraftR
 
 	d := &entity.DDL{
 		UUID:            uuid.GenerateUUID(),
+		UserID:          userID,
 		Title:           draft.Draft.Title,
 		Description:     draft.Draft.Description,
 		DeadLine:        draft.Draft.Deadline,

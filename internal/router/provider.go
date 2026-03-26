@@ -8,5 +8,7 @@ import (
 var ProviderSetRouter = wire.NewSet(
 	controller.ProviderSetController,
 	NewSwaggerRouter,
+	NewAuthApiRouter,
+	NewUserApiRouter,
 	NewDDLApiRouter,
 )
