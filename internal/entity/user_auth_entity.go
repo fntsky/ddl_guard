@@ -15,7 +15,7 @@ type UserAuth struct {
 
 	AuthIdentifier string `xorm:"not null unique(idx_auth_type_identifier)"`
 
-	CredentialHash string `xorm:"not null 'credential_hash'"`
+	AuthMeta string `xorm:"null 'auth_meta'"`
 
 	CreatedAt time.Time `xorm:"created index 'created_at'"`
 	UpdatedAt time.Time `xorm:"updated 'updated_at'"`

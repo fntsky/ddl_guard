@@ -9,7 +9,9 @@ type User struct {
 
 	Username string `xorm:"not null index 'username'"`
 
-	Email string `xorm:"null 'email'"`
+	Email string `xorm:"null unique 'email'"`
+
+	PasswordHash string `xorm:"not null 'password_hash'"`
 
 	CreatedAt time.Time `xorm:"created index 'created_at'"`
 	UpdatedAt time.Time `xorm:"updated 'updated_at'"`

@@ -16,9 +16,9 @@ import (
 )
 
 type UserRepo interface {
-	ExistsByAuthIdentifier(ctx context.Context, authType string, authIdentifier string) (bool, error)
-	CreateUserWithAuth(ctx context.Context, user *entity.User, auth *entity.UserAuth) error
-	GetUserWithAuthByIdentifier(ctx context.Context, authType string, authIdentifier string) (*entity.User, *entity.UserAuth, error)
+	ExistsByEmail(ctx context.Context, email string) (bool, error)
+	CreateUser(ctx context.Context, user *entity.User) error
+	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 }
 
 type UserService struct {
@@ -59,7 +59,7 @@ func (s *UserService) RegisterByEmail(ctx context.Context, req *schema.RegisterU
 		return nil, apperrors.ErrInvalidVerificationCode
 	}
 
-	exists, err := s.repo.ExistsByAuthIdentifier(ctx, entity.UserAuthTypeEmail, email)
+	exists, err := s.repo.ExistsByEmail(ctx, email)
 	if err != nil {
 		return nil, err
 	}
@@ -74,20 +74,14 @@ func (s *UserService) RegisterByEmail(ctx context.Context, req *schema.RegisterU
 
 	now := time.Now()
 	user := &entity.User{
-		UUID:      uuid.GenerateUUID(),
-		Username:  strings.TrimSpace(req.Username),
-		Email:     email,
-		CreatedAt: now,
-		UpdatedAt: now,
+		UUID:         uuid.GenerateUUID(),
+		Username:     strings.TrimSpace(req.Username),
+		Email:        email,
+		PasswordHash: string(pwdHash),
+		CreatedAt:    now,
+		UpdatedAt:    now,
 	}
-	authInfo := &entity.UserAuth{
-		AuthType:       entity.UserAuthTypeEmail,
-		AuthIdentifier: email,
-		CredentialHash: string(pwdHash),
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
-	if err = s.repo.CreateUserWithAuth(ctx, user, authInfo); err != nil {
+	if err = s.repo.CreateUser(ctx, user); err != nil {
 		return nil, err
 	}
 
@@ -110,7 +104,7 @@ func normalizeEmail(email string) string {
 func (s *UserService) LoginByEmail(ctx context.Context, req *schema.LoginByEmailReq) (*schema.LoginByEmailResp, error) {
 	email := normalizeEmail(req.Email)
 
-	user, auth, err := s.repo.GetUserWithAuthByIdentifier(ctx, entity.UserAuthTypeEmail, email)
+	user, err := s.repo.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +112,7 @@ func (s *UserService) LoginByEmail(ctx context.Context, req *schema.LoginByEmail
 		return nil, apperrors.ErrInvalidCredentials
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(auth.CredentialHash), []byte(req.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password))
 	if err != nil {
 		return nil, apperrors.ErrInvalidCredentials
 	}
