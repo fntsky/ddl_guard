@@ -15,25 +15,28 @@ func NewRedisOTPRepo(redis *data.RedisClient) otpRepo {
 	return &redisOTPRepo{redis: redis}
 }
 
-func (r *redisOTPRepo) StoreCode(target string, code string, expiresAt time.Time) error {
+func (r *redisOTPRepo) StoreCode(purpose string, target string, code string, expiresAt time.Time) error {
 	ctx := context.Background()
 	ttl := time.Until(expiresAt)
 	if ttl <= 0 {
 		ttl = defaultCodeTTL
 	}
-	return r.redis.Client.Set(ctx, "otp:"+target, code, ttl).Err()
+	key := "otp:" + purpose + ":" + target
+	return r.redis.Client.Set(ctx, key, code, ttl).Err()
 }
 
-func (r *redisOTPRepo) GetCode(target string) (code string, expiresAt time.Time, found bool, err error) {
+func (r *redisOTPRepo) GetCode(purpose string, target string) (code string, expiresAt time.Time, found bool, err error) {
 	ctx := context.Background()
-	val, err := r.redis.Client.Get(ctx, "otp:"+target).Result()
+	key := "otp:" + purpose + ":" + target
+	val, err := r.redis.Client.Get(ctx, key).Result()
 	if err != nil {
 		return "", time.Time{}, false, nil // Not found
 	}
-	ttl, _ := r.redis.Client.TTL(ctx, "otp:"+target).Result()
+	ttl, _ := r.redis.Client.TTL(ctx, key).Result()
 	return val, time.Now().Add(ttl), true, nil
 }
 
-func (r *redisOTPRepo) DeleteCode(target string) error {
-	return r.redis.Client.Del(context.Background(), "otp:"+target).Err()
+func (r *redisOTPRepo) DeleteCode(purpose string, target string) error {
+	key := "otp:" + purpose + ":" + target
+	return r.redis.Client.Del(context.Background(), key).Err()
 }

@@ -5,6 +5,11 @@ data:
   database:
     driver: "postgres"
     connection: "host=localhost port=5432 user=myuser password=postgre dbname=mydb sslmode=disable"
+redis:
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+
 VISUAL_AI:
   api_key: "your_api_key_here"
   endpoint: "https://api.visualai.com/v1/analyze"

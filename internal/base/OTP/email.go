@@ -18,9 +18,9 @@ const (
 )
 
 type otpRepo interface {
-	StoreCode(target string, code string, expiresAt time.Time) error
-	GetCode(target string) (code string, expiresAt time.Time, found bool, err error)
-	DeleteCode(target string) error
+	StoreCode(purpose string, target string, code string, expiresAt time.Time) error
+	GetCode(purpose string, target string) (code string, expiresAt time.Time, found bool, err error)
+	DeleteCode(purpose string, target string) error
 }
 
 var (
@@ -36,15 +36,15 @@ type EmailOTP struct {
 
 type disabledOTP struct{}
 
-func (d *disabledOTP) Send(ctx context.Context, target string) error {
+func (d *disabledOTP) Send(ctx context.Context, purpose string, target string) error {
 	return ErrEmailOTPDisabled
 }
 
-func (d *disabledOTP) Verify(ctx context.Context, target string, code string) (bool, error) {
+func (d *disabledOTP) Verify(ctx context.Context, purpose string, target string, code string) (bool, error) {
 	return false, ErrEmailOTPDisabled
 }
 
-func (s *EmailOTP) Send(ctx context.Context, target string) error {
+func (s *EmailOTP) Send(ctx context.Context, purpose string, target string) error {
 	target = strings.TrimSpace(target)
 	code, err := GenerateNumericCode(defaultCodeLength)
 	if err != nil {
@@ -56,13 +56,13 @@ func (s *EmailOTP) Send(ctx context.Context, target string) error {
 	if s.codeRepo == nil {
 		return nil
 	}
-	if err = s.codeRepo.StoreCode(target, code, time.Now().Add(s.codeTTL)); err != nil {
+	if err = s.codeRepo.StoreCode(purpose, target, code, time.Now().Add(s.codeTTL)); err != nil {
 		return fmt.Errorf("store otp code failed: %w", err)
 	}
 	return nil
 }
 
-func (s *EmailOTP) Verify(ctx context.Context, target string, code string) (bool, error) {
+func (s *EmailOTP) Verify(ctx context.Context, purpose string, target string, code string) (bool, error) {
 	select {
 	case <-ctx.Done():
 		return false, ctx.Err()
@@ -74,14 +74,14 @@ func (s *EmailOTP) Verify(ctx context.Context, target string, code string) (bool
 	}
 	target = strings.TrimSpace(target)
 	code = strings.TrimSpace(code)
-	storedCode, expiresAt, found, err := s.codeRepo.GetCode(target)
+	storedCode, expiresAt, found, err := s.codeRepo.GetCode(purpose, target)
 	if err != nil {
 		return false, fmt.Errorf("get stored code: %w", err)
 	}
 	if !found || time.Now().After(expiresAt) || code == "" || storedCode != code {
 		return false, nil
 	}
-	if err = s.codeRepo.DeleteCode(target); err != nil {
+	if err = s.codeRepo.DeleteCode(purpose, target); err != nil {
 		return false, fmt.Errorf("delete used code failed: %w", err)
 	}
 	return true, nil

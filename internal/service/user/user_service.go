@@ -41,7 +41,7 @@ func NewUserService(repo UserRepo, emailOTP otp.OTP, authService *authsvc.AuthSe
 }
 
 func (s *UserService) SendEmailVerificationCode(ctx context.Context, req *schema.SendEmailVerificationCodeReq) error {
-	err := s.emailOTP.Send(ctx, normalizeEmail(req.Email))
+	err := s.emailOTP.Send(ctx, otp.PurposeRegister, normalizeEmail(req.Email))
 	if errors.Is(err, otp.ErrEmailOTPDisabled) {
 		return ErrEmailOTPDisabled
 	}
@@ -50,7 +50,7 @@ func (s *UserService) SendEmailVerificationCode(ctx context.Context, req *schema
 
 func (s *UserService) RegisterByEmail(ctx context.Context, req *schema.RegisterUserByEmailReq) (*schema.RegisterUserByEmailResp, error) {
 	email := normalizeEmail(req.Email)
-	ok, err := s.emailOTP.Verify(ctx, email, strings.TrimSpace(req.Code))
+	ok, err := s.emailOTP.Verify(ctx, otp.PurposeRegister, email, strings.TrimSpace(req.Code))
 	if err != nil {
 		if errors.Is(err, otp.ErrEmailOTPDisabled) {
 			return nil, ErrEmailOTPDisabled
