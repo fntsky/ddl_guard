@@ -117,6 +117,8 @@ func NormalizeError(err error) *AppError {
 		return NewError(http.StatusServiceUnavailable, "email otp is disabled", err)
 	case errors.Is(err, serviceuser.ErrVerificationUnavailable):
 		return Internal("verification service is not available", err)
+	case errors.Is(err, serviceuser.ErrInvalidCredentials):
+		return NewError(http.StatusUnauthorized, "invalid email or password", err)
 	case errors.Is(err, serviceauth.ErrInvalidRefreshToken):
 		return NewError(http.StatusUnauthorized, "invalid refresh token", err)
 	case errors.Is(err, serviceauth.ErrRefreshTokenExpired):

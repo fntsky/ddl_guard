@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RefreshTokenReq"
+                            "$ref": "#/definitions/schema.RefreshTokenReq"
                         }
                     }
                 ],
@@ -46,13 +46,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                    "$ref": "#/definitions/handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.TokenPairResp"
+                                            "$ref": "#/definitions/schema.TokenPairResp"
                                         }
                                     }
                                 }
@@ -82,7 +82,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq"
+                            "$ref": "#/definitions/schema.CreateDraftReq"
                         }
                     }
                 ],
@@ -92,13 +92,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                    "$ref": "#/definitions/handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp"
+                                            "$ref": "#/definitions/schema.CreateDraftResp"
                                         }
                                     }
                                 }
@@ -135,7 +135,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq"
+                            "$ref": "#/definitions/schema.UpdateDraftStatusReq"
                         }
                     }
                 ],
@@ -145,13 +145,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                    "$ref": "#/definitions/handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp"
+                                            "$ref": "#/definitions/schema.UpdateDraftStatusResp"
                                         }
                                     }
                                 }
@@ -181,7 +181,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendEmailVerificationCodeReq"
+                            "$ref": "#/definitions/schema.SendEmailVerificationCodeReq"
                         }
                     }
                 ],
@@ -189,7 +189,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                            "$ref": "#/definitions/handler.resp"
                         }
                     }
                 }
@@ -215,7 +215,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailReq"
+                            "$ref": "#/definitions/schema.RegisterUserByEmailReq"
                         }
                     }
                 ],
@@ -225,13 +225,59 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp"
+                                    "$ref": "#/definitions/handler.resp"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailResp"
+                                            "$ref": "#/definitions/schema.RegisterUserByEmailResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/users/sessions/email": {
+            "post": {
+                "description": "使用邮箱和密码登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "邮箱登录",
+                "parameters": [
+                    {
+                        "description": "Login By Email Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.LoginByEmailReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.LoginByEmailResp"
                                         }
                                     }
                                 }
@@ -243,7 +289,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_fntsky_ddl_guard_internal_base_handler.resp": {
+        "handler.resp": {
             "type": "object",
             "properties": {
                 "code": {
@@ -255,7 +301,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput": {
+        "schema.CreateDraftInput": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -277,7 +323,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq": {
+        "schema.CreateDraftReq": {
             "type": "object",
             "properties": {
                 "data_type": {
@@ -286,7 +332,7 @@ const docTemplate = `{
                     "example": "default"
                 },
                 "draft": {
-                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput"
+                    "$ref": "#/definitions/schema.CreateDraftInput"
                 },
                 "raw_base64": {
                     "type": "string",
@@ -294,7 +340,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp": {
+        "schema.CreateDraftResp": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -320,7 +366,45 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.RefreshTokenReq": {
+        "schema.LoginByEmailReq": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "testuser@example.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password123"
+                }
+            }
+        },
+        "schema.LoginByEmailResp": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "username": {
+                    "type": "string",
+                    "example": "testuser"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.RefreshTokenReq": {
             "type": "object",
             "required": [
                 "refresh_token"
@@ -331,7 +415,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailReq": {
+        "schema.RegisterUserByEmailReq": {
             "type": "object",
             "required": [
                 "code",
@@ -359,7 +443,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailResp": {
+        "schema.RegisterUserByEmailResp": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -376,7 +460,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.SendEmailVerificationCodeReq": {
+        "schema.SendEmailVerificationCodeReq": {
             "type": "object",
             "required": [
                 "email"
@@ -388,7 +472,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.TokenPairResp": {
+        "schema.TokenPairResp": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -401,7 +485,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq": {
+        "schema.UpdateDraftStatusReq": {
             "type": "object",
             "required": [
                 "status"
@@ -413,7 +497,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp": {
+        "schema.UpdateDraftStatusResp": {
             "type": "object",
             "properties": {
                 "status": {

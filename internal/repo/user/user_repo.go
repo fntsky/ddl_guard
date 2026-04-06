@@ -46,3 +46,27 @@ func (r *userRepo) CreateUserWithAuth(ctx context.Context, user *entity.User, au
 	}
 	return nil
 }
+
+func (r *userRepo) GetUserWithAuthByIdentifier(ctx context.Context, authType string, authIdentifier string) (*entity.User, *entity.UserAuth, error) {
+	var auth entity.UserAuth
+	has, err := r.data.DB.Context(ctx).
+		Where("auth_type = ? AND auth_identifier = ?", authType, authIdentifier).
+		Get(&auth)
+	if err != nil {
+		return nil, nil, err
+	}
+	if !has {
+		return nil, nil, nil
+	}
+
+	var user entity.User
+	has, err = r.data.DB.Context(ctx).ID(auth.UserID).Get(&user)
+	if err != nil {
+		return nil, nil, err
+	}
+	if !has {
+		return nil, nil, nil
+	}
+
+	return &user, &auth, nil
+}

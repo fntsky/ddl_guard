@@ -19,11 +19,13 @@ var (
 	ErrInvalidVerificationCode = errors.New("invalid verification code")
 	ErrVerificationUnavailable = errors.New("verification service is not available")
 	ErrEmailOTPDisabled        = errors.New("email otp is disabled")
+	ErrInvalidCredentials      = errors.New("invalid email or password")
 )
 
 type UserRepo interface {
 	ExistsByAuthIdentifier(ctx context.Context, authType string, authIdentifier string) (bool, error)
 	CreateUserWithAuth(ctx context.Context, user *entity.User, auth *entity.UserAuth) error
+	GetUserWithAuthByIdentifier(ctx context.Context, authType string, authIdentifier string) (*entity.User, *entity.UserAuth, error)
 }
 
 type UserService struct {
@@ -110,4 +112,33 @@ func (s *UserService) RegisterByEmail(ctx context.Context, req *schema.RegisterU
 
 func normalizeEmail(email string) string {
 	return strings.ToLower(strings.TrimSpace(email))
+}
+
+func (s *UserService) LoginByEmail(ctx context.Context, req *schema.LoginByEmailReq) (*schema.LoginByEmailResp, error) {
+	email := normalizeEmail(req.Email)
+
+	user, auth, err := s.repo.GetUserWithAuthByIdentifier(ctx, entity.UserAuthTypeEmail, email)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, ErrInvalidCredentials
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(auth.CredentialHash), []byte(req.Password))
+	if err != nil {
+		return nil, ErrInvalidCredentials
+	}
+
+	tokenPair, err := s.authService.IssueTokensForUser(ctx, user.ID, user.UUID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &schema.LoginByEmailResp{
+		UUID:         user.UUID,
+		Username:     user.Username,
+		AccessToken:  tokenPair.AccessToken,
+		RefreshToken: tokenPair.RefreshToken,
+	}, nil
 }

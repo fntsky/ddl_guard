@@ -17,4 +17,5 @@ func (a *UserApiRouter) Register(r *gin.RouterGroup) {
 	userGroup := r.Group("/users")
 	userGroup.POST("/email/verification-codes", a.userController.SendEmailVerificationCode)
 	userGroup.POST("/registrations/email", a.userController.RegisterUserByEmail)
+	userGroup.POST("/sessions/email", a.userController.LoginByEmail)
 }

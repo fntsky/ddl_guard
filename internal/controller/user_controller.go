@@ -50,3 +50,20 @@ func (uc *UserController) RegisterUserByEmail(ctx *gin.Context) {
 	resp, err := uc.userService.RegisterByEmail(ctx, req)
 	handler.HandleResponse(ctx, err, resp)
 }
+
+// @Summary 邮箱登录
+// @Description 使用邮箱和密码登录
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param req body schema.LoginByEmailReq true "Login By Email Request"
+// @success 200 {object} handler.resp{data=schema.LoginByEmailResp} "success"
+// @Router /users/sessions/email [post]
+func (uc *UserController) LoginByEmail(ctx *gin.Context) {
+	req := &schema.LoginByEmailReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+	resp, err := uc.userService.LoginByEmail(ctx, req)
+	handler.HandleResponse(ctx, err, resp)
+}

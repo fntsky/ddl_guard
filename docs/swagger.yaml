@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  github_com_fntsky_ddl_guard_internal_base_handler.resp:
+  handler.resp:
     properties:
       code:
         type: integer
@@ -8,7 +8,7 @@ definitions:
       message:
         type: string
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput:
+  schema.CreateDraftInput:
     properties:
       deadline:
         example: "2026-03-24T14:30:00+08:00"
@@ -24,19 +24,19 @@ definitions:
         example: test ddl
         type: string
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq:
+  schema.CreateDraftReq:
     properties:
       data_type:
         default: default
         example: default
         type: string
       draft:
-        $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput'
+        $ref: '#/definitions/schema.CreateDraftInput'
       raw_base64:
         example: iVBORw0KGgoAAAANSUhEUgAA...
         type: string
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp:
+  schema.CreateDraftResp:
     properties:
       deadline:
         example: "2026-03-24T14:30:00+08:00"
@@ -55,14 +55,41 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.RefreshTokenReq:
+  schema.LoginByEmailReq:
+    properties:
+      email:
+        example: testuser@example.com
+        type: string
+      password:
+        example: password123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  schema.LoginByEmailResp:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      username:
+        example: testuser
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.RefreshTokenReq:
     properties:
       refresh_token:
         type: string
     required:
     - refresh_token
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailReq:
+  schema.RegisterUserByEmailReq:
     properties:
       code:
         example: "123456"
@@ -83,7 +110,7 @@ definitions:
     - password
     - username
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailResp:
+  schema.RegisterUserByEmailResp:
     properties:
       access_token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -95,7 +122,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.SendEmailVerificationCodeReq:
+  schema.SendEmailVerificationCodeReq:
     properties:
       email:
         example: testuser@example.com
@@ -103,7 +130,7 @@ definitions:
     required:
     - email
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.TokenPairResp:
+  schema.TokenPairResp:
     properties:
       access_token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -112,7 +139,7 @@ definitions:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq:
+  schema.UpdateDraftStatusReq:
     properties:
       status:
         example: active
@@ -120,7 +147,7 @@ definitions:
     required:
     - status
     type: object
-  github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp:
+  schema.UpdateDraftStatusResp:
     properties:
       status:
         example: 1
@@ -147,7 +174,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.RefreshTokenReq'
+          $ref: '#/definitions/schema.RefreshTokenReq'
       produces:
       - application/json
       responses:
@@ -155,10 +182,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp'
+            - $ref: '#/definitions/handler.resp'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.TokenPairResp'
+                  $ref: '#/definitions/schema.TokenPairResp'
               type: object
       summary: 刷新Token
       tags:
@@ -174,7 +201,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq'
+          $ref: '#/definitions/schema.CreateDraftReq'
       produces:
       - application/json
       responses:
@@ -182,10 +209,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp'
+            - $ref: '#/definitions/handler.resp'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp'
+                  $ref: '#/definitions/schema.CreateDraftResp'
               type: object
       summary: 创建DDL草稿
       tags:
@@ -206,7 +233,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq'
+          $ref: '#/definitions/schema.UpdateDraftStatusReq'
       produces:
       - application/json
       responses:
@@ -214,10 +241,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp'
+            - $ref: '#/definitions/handler.resp'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp'
+                  $ref: '#/definitions/schema.UpdateDraftStatusResp'
               type: object
       summary: 同意DDL草稿
       tags:
@@ -233,14 +260,14 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendEmailVerificationCodeReq'
+          $ref: '#/definitions/schema.SendEmailVerificationCodeReq'
       produces:
       - application/json
       responses:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp'
+            $ref: '#/definitions/handler.resp'
       summary: 发送邮箱验证码
       tags:
       - User
@@ -255,7 +282,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailReq'
+          $ref: '#/definitions/schema.RegisterUserByEmailReq'
       produces:
       - application/json
       responses:
@@ -263,12 +290,39 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.resp'
+            - $ref: '#/definitions/handler.resp'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailResp'
+                  $ref: '#/definitions/schema.RegisterUserByEmailResp'
               type: object
       summary: 邮箱注册
+      tags:
+      - User
+  /users/sessions/email:
+    post:
+      consumes:
+      - application/json
+      description: 使用邮箱和密码登录
+      parameters:
+      - description: Login By Email Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LoginByEmailReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.LoginByEmailResp'
+              type: object
+      summary: 邮箱登录
       tags:
       - User
 swagger: "2.0"
