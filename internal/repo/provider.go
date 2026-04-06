@@ -10,6 +10,7 @@ import (
 
 var ProviderSetRepo = wire.NewSet(
 	data.NewDB,
+	data.NewRedisClient,
 	data.NewData,
 	ddl.NewDDLRepo,
 	session.NewSessionRepo,

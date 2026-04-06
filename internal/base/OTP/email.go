@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/fntsky/ddl_guard/internal/base/conf"
+	"github.com/fntsky/ddl_guard/internal/base/data"
 	"github.com/fntsky/ddl_guard/internal/base/email"
 )
 
@@ -86,7 +87,7 @@ func (s *EmailOTP) Verify(ctx context.Context, target string, code string) (bool
 	return true, nil
 }
 
-func NewSMTPEmailOTP() OTP {
+func NewSMTPEmailOTP(redis *data.RedisClient) OTP {
 	cfg := conf.Global()
 	if cfg == nil {
 		return &disabledOTP{}
@@ -97,9 +98,15 @@ func NewSMTPEmailOTP() OTP {
 		return &disabledOTP{}
 	}
 	sender := email.NewSMTPSender(smtpCfg.Host, smtpCfg.Port, smtpCfg.Username, smtpCfg.Password)
+
+	var codeRepo otpRepo
+	if redis != nil {
+		codeRepo = NewRedisOTPRepo(redis)
+	}
+
 	return &EmailOTP{
 		sender:   sender,
 		codeTTL:  defaultCodeTTL,
-		codeRepo: nil,
+		codeRepo: codeRepo,
 	}
 }

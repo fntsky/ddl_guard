@@ -27,35 +27,41 @@ import (
 
 func initApplication(debug bool) (*app, func(), error) {
 	swaggerRouter := router.NewSwaggerRouter()
-	engine, err := data.NewDB(debug)
-	if err != nil {
-		return nil, nil, err
-	}
-	dataData, err := data.NewData(engine)
-	if err != nil {
-		return nil, nil, err
-	}
-	ddlRepo := ddl.NewDDLRepo(dataData)
-	sessionRepo := session.NewSessionRepo(dataData)
-	userRepo := user.NewUserRepo(dataData)
 	tokenService, err := auth.NewTokenService()
 	if err != nil {
 		return nil, nil, err
 	}
-	emailOTP := otp.NewSMTPEmailOTP()
+	engine, err := data.NewDB(debug)
+	if err != nil {
+		return nil, nil, err
+	}
+	redisClient, cleanup, err := data.NewRedisClient()
+	if err != nil {
+		return nil, nil, err
+	}
+	dataData, err := data.NewData(engine, redisClient)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	sessionRepo := session.NewSessionRepo(dataData)
 	authService := auth2.NewAuthService(tokenService, sessionRepo)
+	authController := controller.NewAuthController(authService)
+	authApiRouter := router.NewAuthApiRouter(authController)
+	ddlRepo := ddl.NewDDLRepo(dataData)
 	aiProvider := ai.NewAIProvider()
 	ddlService := ddl2.NewDDLService(ddlRepo, aiProvider)
-	userService := user2.NewUserService(userRepo, emailOTP, authService)
-	authController := controller.NewAuthController(authService)
 	ddlController := controller.NewDDLController(ddlService)
-	userController := controller.NewUserController(userService)
-	authApiRouter := router.NewAuthApiRouter(authController)
 	ddlApiRouter := router.NewDDLApiRouter(ddlController, tokenService)
+	userRepo := user.NewUserRepo(dataData)
+	otpOTP := otp.NewSMTPEmailOTP(redisClient)
+	userService := user2.NewUserService(userRepo, otpOTP, authService)
+	userController := controller.NewUserController(userService)
 	userApiRouter := router.NewUserApiRouter(userController)
 	ginEngine := server.NewHttpServer(debug, swaggerRouter, authApiRouter, ddlApiRouter, userApiRouter)
 	ddlcmdApp := newApp(debug, ginEngine)
 	return ddlcmdApp, func() {
+		cleanup()
 	}, nil
 }
 

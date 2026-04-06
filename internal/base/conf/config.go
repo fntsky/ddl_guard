@@ -14,6 +14,7 @@ const DefaultConfigPath = "configs/config.yaml"
 type Config struct {
 	Server    ServerConfig   `yaml:"server"`
 	Data      DataConfig     `yaml:"data"`
+	Redis     RedisConfig    `yaml:"redis"`
 	VISUAL_AI VisualAIConfig `yaml:"VISUAL_AI"`
 	EMAIL_OTP EmailOTPConfig `yaml:"EMAIL_OTP"`
 	JWT       JWTConfig      `yaml:"jwt"`
@@ -34,6 +35,12 @@ type DataConfig struct {
 type DatabaseConfig struct {
 	Driver     string `yaml:"driver"`
 	Connection string `yaml:"connection"`
+}
+
+type RedisConfig struct {
+	Addr     string `yaml:"addr"`
+	Password string `yaml:"password"`
+	DB       int    `yaml:"db"`
 }
 
 type VisualAIConfig struct {

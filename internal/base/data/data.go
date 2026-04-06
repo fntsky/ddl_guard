@@ -9,12 +9,14 @@ import (
 )
 
 type Data struct {
-	DB *xorm.Engine
+	DB    *xorm.Engine
+	Redis *RedisClient
 }
 
-func NewData(db *xorm.Engine) (*Data, error) {
+func NewData(db *xorm.Engine, redis *RedisClient) (*Data, error) {
 	return &Data{
-		DB: db,
+		DB:    db,
+		Redis: redis,
 	}, nil
 }
 
