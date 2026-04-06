@@ -3,10 +3,10 @@ package ddl
 import (
 	"context"
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"strings"
 
+	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	"github.com/fntsky/ddl_guard/internal/entity"
 	"github.com/fntsky/ddl_guard/internal/schema"
 	ai "github.com/fntsky/ddl_guard/internal/service/ai"
@@ -19,22 +19,13 @@ type DDLRepo interface {
 	GetUserIDByUserUUID(ctx context.Context, uuid string) (int64, error)
 	GetDraftByUUID(ctx context.Context, uuid string) (*entity.DDL, bool, error)
 	UpdateStatusByUUID(ctx context.Context, uuid string, fromStatus int, toStatus int) (int64, error)
+	UpdateStatusByUUIDAndUser(ctx context.Context, uuid string, userID int64, fromStatus int, toStatus int) (int64, error)
 }
 
 type DDLService struct {
 	repo       DDLRepo
 	aiProvider ai.AIProvider
 }
-
-var (
-	ErrInvalidDraftStatus = errors.New("invalid draft status")
-	ErrDraftNotFound      = errors.New("draft not found")
-	ErrDraftStateConflict = errors.New("draft state conflict")
-	ErrPictureDataMissing = errors.New("picture base64 data is required")
-	ErrPictureDataInvalid = errors.New("invalid picture base64 data")
-	ErrAIProviderDisabled = errors.New("ai provider is not configured")
-	ErrUserNotFound       = errors.New("user not found")
-)
 
 func NewDDLService(repo DDLRepo, aiProvider ai.AIProvider) *DDLService {
 	return &DDLService{
@@ -60,15 +51,15 @@ func (s *DDLService) CreateDraft(ctx context.Context, draft *schema.CreateDraftR
 	case schema.DDLTYPEPICTURE:
 		rawBase64 := strings.TrimSpace(draft.RawBase64)
 		if rawBase64 == "" {
-			return nil, ErrPictureDataMissing
+			return nil, apperrors.ErrPictureDataMissing
 		}
 		if s.aiProvider == nil {
-			return nil, ErrAIProviderDisabled
+			return nil, apperrors.ErrAIProviderDisabled
 		}
 
 		imageData, err := base64.StdEncoding.DecodeString(rawBase64)
 		if err != nil {
-			return nil, ErrPictureDataInvalid
+			return nil, apperrors.ErrPictureDataInvalid
 		}
 
 		imageDraft, err := s.aiProvider.AnalyzeImage(imageData)
@@ -108,13 +99,20 @@ func (s *DDLService) CreateDraft(ctx context.Context, draft *schema.CreateDraftR
 	}, nil
 }
 
-func (s *DDLService) ApproveDraft(ctx context.Context, uuid string, req *schema.UpdateDraftStatusReq) (*schema.UpdateDraftStatusResp, error) {
+func (s *DDLService) ApproveDraft(ctx context.Context, uuid string, req *schema.UpdateDraftStatusReq, userUUID string) (*schema.UpdateDraftStatusResp, error) {
 	targetStatus := strings.TrimSpace(req.Status)
 	if targetStatus != schema.DDLSTATUSACTIVE {
-		return nil, ErrInvalidDraftStatus
+		return nil, apperrors.ErrInvalidDraftStatus
 	}
 
-	affected, err := s.repo.UpdateStatusByUUID(ctx, uuid, entity.DDLStatusDraft, entity.DDLStatusActive)
+	// 获取用户ID
+	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
+	if err != nil {
+		return nil, err
+	}
+
+	// 只更新属于该用户的草稿
+	affected, err := s.repo.UpdateStatusByUUIDAndUser(ctx, uuid, userID, entity.DDLStatusDraft, entity.DDLStatusActive)
 	if err != nil {
 		return nil, err
 	}
@@ -124,9 +122,10 @@ func (s *DDLService) ApproveDraft(ctx context.Context, uuid string, req *schema.
 			return nil, err
 		}
 		if !exists {
-			return nil, ErrDraftNotFound
+			return nil, apperrors.ErrDraftNotFound
 		}
-		return nil, ErrDraftStateConflict
+		// 草稿存在但不属于该用户
+		return nil, apperrors.ErrDraftNotOwned
 	}
 
 	return &schema.UpdateDraftStatusResp{

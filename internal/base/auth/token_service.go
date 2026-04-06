@@ -1,21 +1,17 @@
 package auth
 
 import (
-	"errors"
 	"strings"
 	"time"
 
 	"github.com/fntsky/ddl_guard/internal/base/conf"
+	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	pkgjwt "github.com/fntsky/ddl_guard/pkg/jwt"
 )
 
 const (
 	TokenUseAccess  = "access"
 	TokenUseRefresh = "refresh"
-)
-
-var (
-	ErrTokenConfigInvalid = errors.New("jwt config is invalid")
 )
 
 type TokenService struct {
@@ -27,11 +23,11 @@ type TokenService struct {
 func NewTokenService() (*TokenService, error) {
 	cfg := conf.Global()
 	if cfg == nil {
-		return nil, ErrTokenConfigInvalid
+		return nil, apperrors.ErrTokenConfigInvalid
 	}
 	j := cfg.JWT
 	if strings.TrimSpace(j.Secret) == "" {
-		return nil, ErrTokenConfigInvalid
+		return nil, apperrors.ErrTokenConfigInvalid
 	}
 
 	accessTTL := time.Duration(j.AccessTTLMinutes) * time.Minute

@@ -54,6 +54,12 @@ func (dc *DDLController) CreateDraft(ctx *gin.Context) {
 // @success 200 {object} handler.resp{data=schema.UpdateDraftStatusResp} "success"
 // @Router /ddl/drafts/{uuid} [patch]
 func (dc *DDLController) ApproveDraft(ctx *gin.Context) {
+	userClaims, ok := middleware.GetUserFromGin(ctx)
+	if !ok || userClaims.UserUUID == "" {
+		handler.HandleResponse(ctx, handler.NewError(401, "unauthorized", nil), nil)
+		return
+	}
+
 	uuid := strings.TrimSpace(ctx.Param("uuid"))
 	if uuid == "" {
 		handler.HandleResponse(ctx, handler.BadRequest("uuid is required", nil), nil)
@@ -65,6 +71,6 @@ func (dc *DDLController) ApproveDraft(ctx *gin.Context) {
 		return
 	}
 
-	resp, err := dc.ddl_service.ApproveDraft(ctx, uuid, req)
+	resp, err := dc.ddl_service.ApproveDraft(ctx, uuid, req, userClaims.UserUUID)
 	handler.HandleResponse(ctx, err, resp)
 }

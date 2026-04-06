@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"strings"
 
+	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	gjwt "github.com/golang-jwt/jwt/v5"
 )
 
 var (
-	ErrInvalidToken     = errors.New("invalid token")
-	ErrTokenExpired     = errors.New("token expired")
-	ErrInvalidSignature = errors.New("invalid signature")
-	ErrInvalidClaims    = errors.New("invalid claims")
+	ErrInvalidToken     = apperrors.ErrInvalidToken
+	ErrTokenExpired     = apperrors.ErrTokenExpired
+	ErrInvalidSignature = apperrors.New(401, "invalid signature")
+	ErrInvalidClaims    = apperrors.New(401, "invalid claims")
 )
 
 type Claims struct {

@@ -2,13 +2,13 @@ package otp
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/fntsky/ddl_guard/internal/base/conf"
 	"github.com/fntsky/ddl_guard/internal/base/data"
+	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	"github.com/fntsky/ddl_guard/internal/base/email"
 )
 
@@ -23,11 +23,6 @@ type otpRepo interface {
 	DeleteCode(purpose string, target string) error
 }
 
-var (
-	ErrCodeStoreNotConfigured = errors.New("otp code store is not configured")
-	ErrEmailOTPDisabled       = errors.New("email otp is disabled")
-)
-
 type EmailOTP struct {
 	sender   email.Sender
 	codeTTL  time.Duration
@@ -37,11 +32,11 @@ type EmailOTP struct {
 type disabledOTP struct{}
 
 func (d *disabledOTP) Send(ctx context.Context, purpose string, target string) error {
-	return ErrEmailOTPDisabled
+	return apperrors.ErrEmailOTPDisabled
 }
 
 func (d *disabledOTP) Verify(ctx context.Context, purpose string, target string, code string) (bool, error) {
-	return false, ErrEmailOTPDisabled
+	return false, apperrors.ErrEmailOTPDisabled
 }
 
 func (s *EmailOTP) Send(ctx context.Context, purpose string, target string) error {
@@ -70,7 +65,7 @@ func (s *EmailOTP) Verify(ctx context.Context, purpose string, target string, co
 	}
 
 	if s.codeRepo == nil {
-		return false, ErrCodeStoreNotConfigured
+		return false, apperrors.ErrCodeStoreNotConfigured
 	}
 	target = strings.TrimSpace(target)
 	code = strings.TrimSpace(code)

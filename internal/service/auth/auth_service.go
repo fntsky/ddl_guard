@@ -10,17 +10,10 @@ import (
 	"time"
 
 	baseauth "github.com/fntsky/ddl_guard/internal/base/auth"
+	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	"github.com/fntsky/ddl_guard/internal/entity"
 	"github.com/fntsky/ddl_guard/internal/schema"
-	pkgjwt "github.com/fntsky/ddl_guard/pkg/jwt"
 	"github.com/fntsky/ddl_guard/pkg/uuid"
-)
-
-var (
-	ErrInvalidRefreshToken = errors.New("invalid refresh token")
-	ErrRefreshTokenExpired = errors.New("refresh token expired")
-	ErrRefreshTokenRevoked = errors.New("refresh token revoked")
-	ErrSessionNotFound     = errors.New("session not found")
 )
 
 type SessionRepo interface {
@@ -77,18 +70,18 @@ func (s *AuthService) IssueTokensForUser(ctx context.Context, userID int64, user
 func (s *AuthService) RefreshToken(ctx context.Context, req *schema.RefreshTokenReq) (*schema.TokenPairResp, error) {
 	rawToken := strings.TrimSpace(req.RefreshToken)
 	if rawToken == "" {
-		return nil, ErrInvalidRefreshToken
+		return nil, apperrors.ErrInvalidRefreshToken
 	}
 
 	claims, err := s.tokenService.ParseRefreshToken(rawToken)
 	if err != nil {
-		if errors.Is(err, pkgjwt.ErrTokenExpired) {
-			return nil, ErrRefreshTokenExpired
+		if errors.Is(err, apperrors.ErrTokenExpired) {
+			return nil, apperrors.ErrRefreshTokenExpired
 		}
-		return nil, ErrInvalidRefreshToken
+		return nil, apperrors.ErrInvalidRefreshToken
 	}
 	if strings.TrimSpace(claims.TokenID) == "" {
-		return nil, ErrInvalidRefreshToken
+		return nil, apperrors.ErrInvalidRefreshToken
 	}
 
 	session, has, err := s.sessionRepo.GetByTokenID(ctx, claims.TokenID)
@@ -96,17 +89,17 @@ func (s *AuthService) RefreshToken(ctx context.Context, req *schema.RefreshToken
 		return nil, err
 	}
 	if !has {
-		return nil, ErrSessionNotFound
+		return nil, apperrors.ErrSessionNotFound
 	}
 	if session.RevokedAt != nil {
-		return nil, ErrRefreshTokenRevoked
+		return nil, apperrors.ErrRefreshTokenRevoked
 	}
 	if time.Now().After(session.ExpiresAt) {
 		_ = s.sessionRepo.RevokeByTokenID(ctx, claims.TokenID)
-		return nil, ErrRefreshTokenExpired
+		return nil, apperrors.ErrRefreshTokenExpired
 	}
 	if session.RefreshTokenHash != hashRefreshToken(rawToken) {
-		return nil, ErrInvalidRefreshToken
+		return nil, apperrors.ErrInvalidRefreshToken
 	}
 
 	newTokenID := uuid.GenerateUUID()

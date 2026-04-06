@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/fntsky/ddl_guard/internal/base/data"
+	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	"github.com/fntsky/ddl_guard/internal/entity"
 	authsvc "github.com/fntsky/ddl_guard/internal/service/auth"
 	stime "github.com/fntsky/ddl_guard/pkg/time"
@@ -53,7 +54,7 @@ func (r *sessionRepo) RotateSession(ctx context.Context, currentTokenID string, 
 	}
 	if affected == 0 {
 		_ = sess.Rollback()
-		return authsvc.ErrRefreshTokenRevoked
+		return apperrors.ErrRefreshTokenRevoked
 	}
 
 	if _, err = sess.Context(ctx).Insert(newSession); err != nil {

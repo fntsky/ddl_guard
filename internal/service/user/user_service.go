@@ -7,19 +7,12 @@ import (
 	"time"
 
 	"github.com/fntsky/ddl_guard/internal/base/OTP"
+	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	"github.com/fntsky/ddl_guard/internal/entity"
 	"github.com/fntsky/ddl_guard/internal/schema"
 	authsvc "github.com/fntsky/ddl_guard/internal/service/auth"
 	"github.com/fntsky/ddl_guard/pkg/uuid"
 	"golang.org/x/crypto/bcrypt"
-)
-
-var (
-	ErrEmailAlreadyExists      = errors.New("email already exists")
-	ErrInvalidVerificationCode = errors.New("invalid verification code")
-	ErrVerificationUnavailable = errors.New("verification service is not available")
-	ErrEmailOTPDisabled        = errors.New("email otp is disabled")
-	ErrInvalidCredentials      = errors.New("invalid email or password")
 )
 
 type UserRepo interface {
@@ -44,8 +37,8 @@ func NewUserService(repo UserRepo, emailOTP otp.OTP, authService *authsvc.AuthSe
 
 func (s *UserService) SendEmailVerificationCode(ctx context.Context, req *schema.SendEmailVerificationCodeReq) error {
 	err := s.emailOTP.Send(ctx, otp.PurposeRegister, normalizeEmail(req.Email))
-	if errors.Is(err, otp.ErrEmailOTPDisabled) {
-		return ErrEmailOTPDisabled
+	if errors.Is(err, apperrors.ErrEmailOTPDisabled) {
+		return apperrors.ErrEmailOTPDisabled
 	}
 	return err
 }
@@ -54,16 +47,16 @@ func (s *UserService) RegisterByEmail(ctx context.Context, req *schema.RegisterU
 	email := normalizeEmail(req.Email)
 	ok, err := s.emailOTP.Verify(ctx, otp.PurposeRegister, email, strings.TrimSpace(req.Code))
 	if err != nil {
-		if errors.Is(err, otp.ErrEmailOTPDisabled) {
-			return nil, ErrEmailOTPDisabled
+		if errors.Is(err, apperrors.ErrEmailOTPDisabled) {
+			return nil, apperrors.ErrEmailOTPDisabled
 		}
-		if errors.Is(err, otp.ErrCodeStoreNotConfigured) {
-			return nil, ErrVerificationUnavailable
+		if errors.Is(err, apperrors.ErrCodeStoreNotConfigured) {
+			return nil, apperrors.ErrVerificationUnavailable
 		}
 		return nil, err
 	}
 	if !ok {
-		return nil, ErrInvalidVerificationCode
+		return nil, apperrors.ErrInvalidVerificationCode
 	}
 
 	exists, err := s.repo.ExistsByAuthIdentifier(ctx, entity.UserAuthTypeEmail, email)
@@ -71,7 +64,7 @@ func (s *UserService) RegisterByEmail(ctx context.Context, req *schema.RegisterU
 		return nil, err
 	}
 	if exists {
-		return nil, ErrEmailAlreadyExists
+		return nil, apperrors.ErrEmailAlreadyExists
 	}
 
 	pwdHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
@@ -122,12 +115,12 @@ func (s *UserService) LoginByEmail(ctx context.Context, req *schema.LoginByEmail
 		return nil, err
 	}
 	if user == nil {
-		return nil, ErrInvalidCredentials
+		return nil, apperrors.ErrInvalidCredentials
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(auth.CredentialHash), []byte(req.Password))
 	if err != nil {
-		return nil, ErrInvalidCredentials
+		return nil, apperrors.ErrInvalidCredentials
 	}
 
 	tokenPair, err := s.authService.IssueTokensForUser(ctx, user.ID, user.UUID)

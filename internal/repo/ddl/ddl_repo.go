@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/fntsky/ddl_guard/internal/base/data"
+	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	"github.com/fntsky/ddl_guard/internal/entity"
 	"github.com/fntsky/ddl_guard/internal/service/ddl"
 	stime "github.com/fntsky/ddl_guard/pkg/time"
@@ -33,7 +34,7 @@ func (r *ddlRepo) GetUserIDByUserUUID(ctx context.Context, uuid string) (int64, 
 		return 0, err
 	}
 	if !has {
-		return 0, ddl.ErrUserNotFound
+		return 0, apperrors.ErrUserNotFound
 	}
 	if user.ID <= 0 {
 		return 0, errors.New("invalid user id")
@@ -51,6 +52,16 @@ func (r *ddlRepo) GetDraftByUUID(ctx context.Context, uuid string) (*entity.DDL,
 func (r *ddlRepo) UpdateStatusByUUID(ctx context.Context, uuid string, fromStatus int, toStatus int) (int64, error) {
 	return r.data.DB.Context(ctx).
 		Where("uuid = ? AND status = ?", uuid, fromStatus).
+		Cols("status", "updated_at").
+		Update(&entity.DDL{
+			Status:    toStatus,
+			UpdatedAt: stime.GetCurrentTime(),
+		})
+}
+
+func (r *ddlRepo) UpdateStatusByUUIDAndUser(ctx context.Context, uuid string, userID int64, fromStatus int, toStatus int) (int64, error) {
+	return r.data.DB.Context(ctx).
+		Where("uuid = ? AND user_id = ? AND status = ?", uuid, userID, fromStatus).
 		Cols("status", "updated_at").
 		Update(&entity.DDL{
 			Status:    toStatus,
