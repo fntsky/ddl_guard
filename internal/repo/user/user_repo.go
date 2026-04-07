@@ -40,3 +40,10 @@ func (r *userRepo) GetUserByEmail(ctx context.Context, email string) (*entity.Us
 	}
 	return user, nil
 }
+
+func (r *userRepo) UpdatePassword(ctx context.Context, userID int64, passwordHash string) error {
+	_, err := r.data.DB.Context(ctx).
+		ID(userID).
+		Update(&entity.User{PasswordHash: passwordHash})
+	return err
+}

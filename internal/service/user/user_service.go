@@ -19,6 +19,7 @@ type UserRepo interface {
 	ExistsByEmail(ctx context.Context, email string) (bool, error)
 	CreateUser(ctx context.Context, user *entity.User) error
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
+	UpdatePassword(ctx context.Context, userID int64, passwordHash string) error
 }
 
 type UserService struct {
@@ -128,4 +129,76 @@ func (s *UserService) LoginByEmail(ctx context.Context, req *schema.LoginByEmail
 		AccessToken:  tokenPair.AccessToken,
 		RefreshToken: tokenPair.RefreshToken,
 	}, nil
+}
+
+const (
+	VerificationTypeEmail = "email"
+)
+
+// SendPasswordResetCode 发送密码重置验证码
+func (s *UserService) SendPasswordResetCode(ctx context.Context, req *schema.SendPasswordResetCodeReq) error {
+	target := strings.TrimSpace(req.Target)
+
+	switch req.Type {
+	case VerificationTypeEmail:
+		target = normalizeEmail(target)
+	default:
+		return apperrors.ErrUnsupportedVerificationType
+	}
+
+	err := s.emailOTP.Send(ctx, otp.PurposeResetPassword, target)
+	if errors.Is(err, apperrors.ErrEmailOTPDisabled) {
+		return apperrors.ErrEmailOTPDisabled
+	}
+	return err
+}
+
+// ChangePassword 通过验证码修改密码
+func (s *UserService) ChangePassword(ctx context.Context, req *schema.ChangePasswordReq) error {
+	target := strings.TrimSpace(req.Target)
+
+	switch req.Type {
+	case VerificationTypeEmail:
+		target = normalizeEmail(target)
+	default:
+		return apperrors.ErrUnsupportedVerificationType
+	}
+
+	// 验证验证码
+	ok, err := s.emailOTP.Verify(ctx, otp.PurposeResetPassword, target, strings.TrimSpace(req.Code))
+	if err != nil {
+		if errors.Is(err, apperrors.ErrEmailOTPDisabled) {
+			return apperrors.ErrEmailOTPDisabled
+		}
+		if errors.Is(err, apperrors.ErrCodeStoreNotConfigured) {
+			return apperrors.ErrVerificationUnavailable
+		}
+		return err
+	}
+	if !ok {
+		return apperrors.ErrInvalidVerificationCode
+	}
+
+	// 获取用户
+	var user *entity.User
+	switch req.Type {
+	case VerificationTypeEmail:
+		user, err = s.repo.GetUserByEmail(ctx, target)
+	default:
+		return apperrors.ErrUnsupportedVerificationType
+	}
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return apperrors.ErrUserNotFound
+	}
+
+	// 更新密码
+	pwdHash, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	return s.repo.UpdatePassword(ctx, user.ID, string(pwdHash))
 }

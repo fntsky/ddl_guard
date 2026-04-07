@@ -53,3 +53,27 @@ type LoginByEmailResp struct {
 	RefreshToken string `json:"refresh_token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
 	AccessToken  string `json:"access_token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
 }
+
+/*
+发送密码重置验证码请求
+type: 验证方式，目前支持 "email"
+target: 验证目标，邮箱类型时为邮箱地址
+*/
+type SendPasswordResetCodeReq struct {
+	Type   string `json:"type" binding:"required,oneof=email" example:"email"`
+	Target string `json:"target" binding:"required" example:"user@example.com"`
+}
+
+/*
+修改密码请求
+type: 验证方式，需与发送验证码时的类型一致
+target: 验证目标，需与发送验证码时的目标一致
+code: 收到的验证码，6 位数字
+new_password: 新密码，最少 6 个字符
+*/
+type ChangePasswordReq struct {
+	Type        string `json:"type" binding:"required,oneof=email" example:"email"`
+	Target      string `json:"target" binding:"required" example:"user@example.com"`
+	Code        string `json:"code" binding:"required" example:"123456"`
+	NewPassword string `json:"new_password" binding:"required,min=6" example:"newpassword123"`
+}

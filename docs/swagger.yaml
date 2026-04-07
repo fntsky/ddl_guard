@@ -8,6 +8,29 @@ definitions:
       message:
         type: string
     type: object
+  schema.ChangePasswordReq:
+    properties:
+      code:
+        example: "123456"
+        type: string
+      new_password:
+        example: newpassword123
+        minLength: 6
+        type: string
+      target:
+        example: user@example.com
+        type: string
+      type:
+        enum:
+        - email
+        example: email
+        type: string
+    required:
+    - code
+    - new_password
+    - target
+    - type
+    type: object
   schema.CreateDraftInput:
     properties:
       deadline:
@@ -129,6 +152,20 @@ definitions:
         type: string
     required:
     - email
+    type: object
+  schema.SendPasswordResetCodeReq:
+    properties:
+      target:
+        example: user@example.com
+        type: string
+      type:
+        enum:
+        - email
+        example: email
+        type: string
+    required:
+    - target
+    - type
     type: object
   schema.TokenPairResp:
     properties:
@@ -269,6 +306,78 @@ paths:
           schema:
             $ref: '#/definitions/handler.resp'
       summary: 发送邮箱验证码
+      tags:
+      - User
+  /users/password:
+    put:
+      consumes:
+      - application/json
+      description: |-
+        使用验证码验证身份后修改用户密码。验证码通过 SendPasswordResetCode 接口发送。
+        type: 验证方式，需与发送验证码时的类型一致，目前支持 "email"
+        target: 验证目标，需与发送验证码时的目标一致
+        code: 收到的验证码，6 位数字
+        new_password: 新密码，最少 6 个字符
+      parameters:
+      - description: 修改密码请求
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.ChangePasswordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 密码修改成功
+          schema:
+            $ref: '#/definitions/handler.resp'
+        "400":
+          description: 请求参数错误或验证码无效
+          schema:
+            $ref: '#/definitions/handler.resp'
+        "404":
+          description: 用户不存在
+          schema:
+            $ref: '#/definitions/handler.resp'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/handler.resp'
+      summary: 通过验证码修改密码
+      tags:
+      - User
+  /users/password/reset-codes:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        根据指定的验证类型发送验证码到目标地址。目前支持 email 类型，验证码有效期为 5 分钟。
+        type: 验证方式，目前支持 "email"
+        target: 验证目标，邮箱类型时为邮箱地址
+      parameters:
+      - description: 发送密码重置验证码请求
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.SendPasswordResetCodeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 验证码发送成功
+          schema:
+            $ref: '#/definitions/handler.resp'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/handler.resp'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/handler.resp'
+      summary: 发送密码重置验证码
       tags:
       - User
   /users/registrations/email:

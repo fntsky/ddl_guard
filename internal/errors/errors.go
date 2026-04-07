@@ -78,7 +78,8 @@ var (
 	ErrTokenConfigInvalid  = New(http.StatusInternalServerError, "token config is invalid")
 
 	// OTP 相关
-	ErrCodeStoreNotConfigured = New(http.StatusInternalServerError, "code store not configured")
+	ErrCodeStoreNotConfigured      = New(http.StatusInternalServerError, "code store not configured")
+	ErrUnsupportedVerificationType = New(http.StatusBadRequest, "unsupported verification type")
 )
 
 // Is 提供错误比较支持，兼容标准库 errors.Is

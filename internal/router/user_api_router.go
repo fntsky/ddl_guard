@@ -18,4 +18,6 @@ func (a *UserApiRouter) Register(r *gin.RouterGroup) {
 	userGroup.POST("/email/verification-codes", a.userController.SendEmailVerificationCode)
 	userGroup.POST("/registrations/email", a.userController.RegisterUserByEmail)
 	userGroup.POST("/sessions/email", a.userController.LoginByEmail)
+	userGroup.POST("/password/reset-codes", a.userController.SendPasswordResetCode)
+	userGroup.PUT("/password", a.userController.ChangePassword)
 }
