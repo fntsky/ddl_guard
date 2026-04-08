@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"strings"
+	"time"
 
 	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	"github.com/fntsky/ddl_guard/internal/entity"
@@ -20,6 +21,10 @@ type DDLRepo interface {
 	GetDraftByUUID(ctx context.Context, uuid string) (*entity.DDL, bool, error)
 	UpdateStatusByUUID(ctx context.Context, uuid string, fromStatus int, toStatus int) (int64, error)
 	UpdateStatusByUUIDAndUser(ctx context.Context, uuid string, userID int64, fromStatus int, toStatus int) (int64, error)
+	GetDDLsForRemind(ctx context.Context, start, end time.Time) ([]*entity.DDL, error)
+	MarkRemindSent(ctx context.Context, ddlID int64) error
+	GetDDLByID(ctx context.Context, ddlID int64) (*entity.DDL, error)
+	GetDDLsForRemindWithUserEmail(ctx context.Context, start, end time.Time) ([]*entity.DDLWithUserEmail, error)
 }
 
 type DDLService struct {

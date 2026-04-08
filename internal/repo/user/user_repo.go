@@ -47,3 +47,15 @@ func (r *userRepo) UpdatePassword(ctx context.Context, userID int64, passwordHas
 		Update(&entity.User{PasswordHash: passwordHash})
 	return err
 }
+
+func (r *userRepo) GetUserByID(ctx context.Context, userID int64) (*entity.User, error) {
+	user := &entity.User{}
+	has, err := r.data.DB.Context(ctx).ID(userID).Get(user)
+	if err != nil {
+		return nil, err
+	}
+	if !has {
+		return nil, nil
+	}
+	return user, nil
+}

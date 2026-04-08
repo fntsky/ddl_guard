@@ -18,6 +18,7 @@ type Config struct {
 	VISUAL_AI VisualAIConfig `yaml:"VISUAL_AI"`
 	EMAIL_OTP EmailOTPConfig `yaml:"EMAIL_OTP"`
 	JWT       JWTConfig      `yaml:"jwt"`
+	Publish   PublishConfig  `yaml:"publish"`
 }
 
 type ServerConfig struct {
@@ -65,6 +66,17 @@ type JWTConfig struct {
 	Secret           string `yaml:"secret"`
 	AccessTTLMinutes int    `yaml:"access_ttl_minutes"`
 	RefreshTTLHours  int    `yaml:"refresh_ttl_hours"`
+}
+
+// PublishConfig 推送配置
+type PublishConfig struct {
+	Email EmailPublishConfig `yaml:"email"`
+}
+
+// EmailPublishConfig 邮件推送配置
+type EmailPublishConfig struct {
+	Enabled bool       `yaml:"enabled"`
+	SMTP    SMTPConfig `yaml:"smtp"`
 }
 
 var (

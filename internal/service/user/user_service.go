@@ -20,6 +20,7 @@ type UserRepo interface {
 	CreateUser(ctx context.Context, user *entity.User) error
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 	UpdatePassword(ctx context.Context, userID int64, passwordHash string) error
+	GetUserByID(ctx context.Context, userID int64) (*entity.User, error)
 }
 
 type UserService struct {

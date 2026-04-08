@@ -65,6 +65,7 @@ func Migrate(ctx context.Context, engine *xorm.Engine) error {
 
 var migrations = []Migration{
 	NewMigration("0.0.1", "this is first version", nil),
+	NewMigration("0.0.2", "add remind_sent column to ddl table", addRemindSentColumn),
 }
 
 func ExpectVersion() int64 {

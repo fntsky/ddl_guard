@@ -20,6 +20,7 @@ import (
 	auth2 "github.com/fntsky/ddl_guard/internal/service/auth"
 	ddl2 "github.com/fntsky/ddl_guard/internal/service/ddl"
 	user2 "github.com/fntsky/ddl_guard/internal/service/user"
+	"github.com/fntsky/ddl_guard/internal/worker"
 	"github.com/gin-gonic/gin"
 )
 
@@ -59,7 +60,8 @@ func initApplication(debug bool) (*app, func(), error) {
 	userController := controller.NewUserController(userService)
 	userApiRouter := router.NewUserApiRouter(userController)
 	ginEngine := server.NewHttpServer(debug, swaggerRouter, authApiRouter, ddlApiRouter, userApiRouter)
-	ddlcmdApp := newApp(debug, ginEngine)
+	publishWorker := worker.NewPublishWorker(ddlRepo, redisClient)
+	ddlcmdApp := newApp(debug, ginEngine, publishWorker)
 	return ddlcmdApp, func() {
 		cleanup()
 	}, nil
@@ -69,10 +71,18 @@ func initApplication(debug bool) (*app, func(), error) {
 
 type app struct {
 	HttpServer *gin.Engine
+	Worker     *worker.PublishWorker
 }
 
-func newApp(debug bool, httpServer *gin.Engine) *app {
+func newApp(debug bool, httpServer *gin.Engine, w *worker.PublishWorker) *app {
 	return &app{
 		HttpServer: httpServer,
+		Worker:     w,
+	}
+}
+
+func (a *app) StartWorker() {
+	if a.Worker != nil {
+		a.Worker.Start()
 	}
 }
