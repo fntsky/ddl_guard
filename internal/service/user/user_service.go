@@ -21,6 +21,7 @@ type UserRepo interface {
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 	UpdatePassword(ctx context.Context, userID int64, passwordHash string) error
 	GetUserByID(ctx context.Context, userID int64) (*entity.User, error)
+	GetUserEmailsByIDs(ctx context.Context, userIDs []int64) (map[int64]string, error)
 }
 
 type UserService struct {

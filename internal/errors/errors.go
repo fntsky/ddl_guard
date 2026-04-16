@@ -58,6 +58,9 @@ var (
 	ErrAIProviderDisabled = New(http.StatusInternalServerError, "ai provider is not configured")
 	ErrUserNotFound       = New(http.StatusNotFound, "user not found")
 	ErrDraftNotOwned      = New(http.StatusForbidden, "draft not owned by user")
+	ErrDDLNotFound        = New(http.StatusNotFound, "ddl not found")
+	ErrDDLNotActive       = New(http.StatusBadRequest, "ddl is not active")
+	ErrDeadlineInPast     = New(http.StatusBadRequest, "deadline cannot be earlier than current time")
 
 	// User 相关
 	ErrEmailAlreadyExists      = New(http.StatusConflict, "email already exists")

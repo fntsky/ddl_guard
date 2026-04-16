@@ -24,7 +24,7 @@ func NewUserController(userService *user.UserService) *UserController {
 // @Produce json
 // @Param req body schema.SendEmailVerificationCodeReq true "Send Email Verification Code Request"
 // @success 200 {object} handler.resp "success"
-// @Router /users/email/verification-codes [post]
+// @Router /api/v1/users/email/verification-codes [post]
 func (uc *UserController) SendEmailVerificationCode(ctx *gin.Context) {
 	req := &schema.SendEmailVerificationCodeReq{}
 	if handler.BindAndCheck(ctx, req) {
@@ -41,7 +41,7 @@ func (uc *UserController) SendEmailVerificationCode(ctx *gin.Context) {
 // @Produce json
 // @Param req body schema.RegisterUserByEmailReq true "Register User By Email Request"
 // @success 200 {object} handler.resp{data=schema.RegisterUserByEmailResp} "success"
-// @Router /users/registrations/email [post]
+// @Router /api/v1/users/registrations/email [post]
 func (uc *UserController) RegisterUserByEmail(ctx *gin.Context) {
 	req := &schema.RegisterUserByEmailReq{}
 	if handler.BindAndCheck(ctx, req) {
@@ -58,7 +58,7 @@ func (uc *UserController) RegisterUserByEmail(ctx *gin.Context) {
 // @Produce json
 // @Param req body schema.LoginByEmailReq true "Login By Email Request"
 // @success 200 {object} handler.resp{data=schema.LoginByEmailResp} "success"
-// @Router /users/sessions/email [post]
+// @Router /api/v1/users/sessions/email [post]
 func (uc *UserController) LoginByEmail(ctx *gin.Context) {
 	req := &schema.LoginByEmailReq{}
 	if handler.BindAndCheck(ctx, req) {
@@ -80,7 +80,7 @@ func (uc *UserController) LoginByEmail(ctx *gin.Context) {
 // @success 200 {object} handler.resp "验证码发送成功"
 // @failure 400 {object} handler.resp "请求参数错误"
 // @failure 500 {object} handler.resp "服务器内部错误"
-// @Router /users/password/reset-codes [post]
+// @Router /api/v1/users/password/reset-codes [post]
 func (uc *UserController) SendPasswordResetCode(ctx *gin.Context) {
 	req := &schema.SendPasswordResetCodeReq{}
 	if handler.BindAndCheck(ctx, req) {
@@ -105,7 +105,7 @@ func (uc *UserController) SendPasswordResetCode(ctx *gin.Context) {
 // @failure 400 {object} handler.resp "请求参数错误或验证码无效"
 // @failure 404 {object} handler.resp "用户不存在"
 // @failure 500 {object} handler.resp "服务器内部错误"
-// @Router /users/password [put]
+// @Router /api/v1/users/password [put]
 func (uc *UserController) ChangePassword(ctx *gin.Context) {
 	req := &schema.ChangePasswordReq{}
 	if handler.BindAndCheck(ctx, req) {

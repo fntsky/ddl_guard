@@ -14,20 +14,25 @@ import (
 )
 
 type app struct {
-	HttpServer *gin.Engine
-	Worker     *worker.PublishWorker
+	HttpServer       *gin.Engine
+	PublishWorker    *worker.PublishWorker
+	ExpirationWorker *worker.ExpirationWorker
 }
 
-func newApp(debug bool, httpServer *gin.Engine, w *worker.PublishWorker) *app {
+func newApp(debug bool, httpServer *gin.Engine, pw *worker.PublishWorker, ew *worker.ExpirationWorker) *app {
 	return &app{
-		HttpServer: httpServer,
-		Worker:     w,
+		HttpServer:       httpServer,
+		PublishWorker:    pw,
+		ExpirationWorker: ew,
 	}
 }
 
-func (a *app) StartWorker() {
-	if a.Worker != nil {
-		a.Worker.Start()
+func (a *app) StartWorkers() {
+	if a.PublishWorker != nil {
+		a.PublishWorker.Start()
+	}
+	if a.ExpirationWorker != nil {
+		a.ExpirationWorker.Start()
 	}
 }
 
@@ -38,6 +43,7 @@ func initApplication(debug bool) (*app, func(), error) {
 		server.ProviderSetServer,
 		router.ProviderSetRouter,
 		worker.NewPublishWorker,
+		worker.NewExpirationWorker,
 		newApp,
 	))
 }

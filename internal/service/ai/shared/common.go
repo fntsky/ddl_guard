@@ -52,6 +52,6 @@ func ParseDraftFromModelJSON(raw string) (schema.CreateDraftResp, error) {
 		Title:       strings.TrimSpace(out.Title),
 		Description: strings.TrimSpace(out.Description),
 		Deadline:    deadline,
-		EealyRemind: out.EarlyRemind,
+		EarlyRemind: out.EarlyRemind,
 	}, nil
 }

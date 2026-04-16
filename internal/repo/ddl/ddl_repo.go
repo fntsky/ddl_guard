@@ -109,20 +109,82 @@ func (r *ddlRepo) GetDDLByID(ctx context.Context, ddlID int64) (*entity.DDL, err
 	return ddl, nil
 }
 
-// GetDDLsForRemindWithUserEmail 获取需要提醒的 DDL 及用户邮箱
-func (r *ddlRepo) GetDDLsForRemindWithUserEmail(ctx context.Context, start, end time.Time) ([]*entity.DDLWithUserEmail, error) {
-	var results []*entity.DDLWithUserEmail
+// GetExpiredDDLs 获取已过期的 DDL ID 列表
+// 查询条件：status = active，deadline < before
+func (r *ddlRepo) GetExpiredDDLs(ctx context.Context, before time.Time) ([]int64, error) {
+	var ids []int64
 	err := r.data.DB.Context(ctx).
 		Table("ddl").
-		Join("INNER", "user", "ddl.user_id = user.id").
-		Where("ddl.status = ?", entity.DDLStatusActive).
-		And("ddl.early_remind_time >= ?", start).
-		And("ddl.early_remind_time <= ?", end).
-		And("ddl.remind_sent = ?", false).
-		And("ddl.early_remind_time IS NOT NULL").
-		And("user.email IS NOT NULL").
-		And("user.email != ''").
-		Cols("ddl.*", "user.email").
-		Find(&results)
-	return results, err
+		Where("status = ?", entity.DDLStatusActive).
+		And("deadline < ?", before).
+		Cols("id").
+		Find(&ids)
+	return ids, err
+}
+
+// BatchUpdateStatusToExpired 批量更新 DDL 状态为过期
+func (r *ddlRepo) BatchUpdateStatusToExpired(ctx context.Context, ids []int64) (int64, error) {
+	if len(ids) == 0 {
+		return 0, nil
+	}
+	return r.data.DB.Context(ctx).
+		In("id", ids).
+		Cols("status", "updated_at").
+		Update(&entity.DDL{
+			Status:    entity.DDLStatusExpired,
+			UpdatedAt: stime.GetCurrentTime(),
+		})
+}
+
+// DeleteDDLByUUIDAndUser 删除 DDL（软删除，更新状态为 deleted）
+func (r *ddlRepo) DeleteDDLByUUIDAndUser(ctx context.Context, uuid string, userID int64) (int64, error) {
+	return r.data.DB.Context(ctx).
+		Where("uuid = ? AND user_id = ? AND status != ?", uuid, userID, entity.DDLStatusDeleted).
+		Cols("status", "updated_at").
+		Update(&entity.DDL{
+			Status:    entity.DDLStatusDeleted,
+			UpdatedAt: stime.GetCurrentTime(),
+		})
+}
+
+// GetDDLsByUserIDAndStatus 分页查询用户的DDL
+func (r *ddlRepo) GetDDLsByUserIDAndStatus(ctx context.Context, userID int64, status int, offset, limit int) ([]*entity.DDL, error) {
+	var ddls []*entity.DDL
+	err := r.data.DB.Context(ctx).
+		Where("user_id = ? AND status = ?", userID, status).
+		Desc("deadline").
+		Limit(limit, offset).
+		Find(&ddls)
+	return ddls, err
+}
+
+// CountDDLsByUserIDAndStatus 统计用户DDL数量
+func (r *ddlRepo) CountDDLsByUserIDAndStatus(ctx context.Context, userID int64, status int) (int64, error) {
+	return r.data.DB.Context(ctx).
+		Where("user_id = ? AND status = ?", userID, status).
+		Count(&entity.DDL{})
+}
+
+// GetDDLByUUIDAndUser 获取用户的DDL
+func (r *ddlRepo) GetDDLByUUIDAndUser(ctx context.Context, uuid string, userID int64) (*entity.DDL, error) {
+	ddl := &entity.DDL{}
+	has, err := r.data.DB.Context(ctx).
+		Where("uuid = ? AND user_id = ?", uuid, userID).
+		Get(ddl)
+	if err != nil {
+		return nil, err
+	}
+	if !has {
+		return nil, nil
+	}
+	return ddl, nil
+}
+
+// UpdateDDL 更新DDL
+func (r *ddlRepo) UpdateDDL(ctx context.Context, ddl *entity.DDL) error {
+	_, err := r.data.DB.Context(ctx).
+		ID(ddl.ID).
+		AllCols().
+		Update(ddl)
+	return err
 }

@@ -59,3 +59,31 @@ func (r *userRepo) GetUserByID(ctx context.Context, userID int64) (*entity.User,
 	}
 	return user, nil
 }
+
+// GetUserEmailsByIDs 批量获取用户邮箱，返回 userID -> email 映射
+func (r *userRepo) GetUserEmailsByIDs(ctx context.Context, userIDs []int64) (map[int64]string, error) {
+	result := make(map[int64]string)
+	if len(userIDs) == 0 {
+		return result, nil
+	}
+
+	var users []struct {
+		ID    int64  `xorm:"'id'"`
+		Email string `xorm:"'email'"`
+	}
+	err := r.data.DB.Context(ctx).
+		Table("user").
+		In("id", userIDs).
+		Where("email IS NOT NULL").
+		And("email != ''").
+		Cols("id", "email").
+		Find(&users)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, u := range users {
+		result[u.ID] = u.Email
+	}
+	return result, nil
+}

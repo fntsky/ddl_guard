@@ -24,7 +24,7 @@ type DDL struct {
 
 	Status int `xorm:"not null default 0 index 'idx_status_deadline' 'status'"`
 
-	EealyRemindTime time.Time `xorm:"index 'early_remind_time'"`
+	EarlyRemindTime time.Time `xorm:"index 'early_remind_time'"`
 
 	RemindSent bool `xorm:"not null default false 'remind_sent'"`
 
@@ -35,10 +35,4 @@ type DDL struct {
 
 func (DDL) TableName() string {
 	return "ddl"
-}
-
-// DDLWithUserEmail 用于预加载时关联用户邮箱
-type DDLWithUserEmail struct {
-	DDL
-	Email string `xorm:"email"`
 }

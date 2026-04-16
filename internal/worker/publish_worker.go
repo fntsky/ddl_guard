@@ -12,13 +12,14 @@ import (
 	"github.com/fntsky/ddl_guard/internal/base/data"
 	"github.com/fntsky/ddl_guard/internal/base/email"
 	ddlsvc "github.com/fntsky/ddl_guard/internal/service/ddl"
+	usersvc "github.com/fntsky/ddl_guard/internal/service/user"
 	stime "github.com/fntsky/ddl_guard/pkg/time"
 	"github.com/redis/go-redis/v9"
 )
 
 const (
-	scanInterval    = 1 * time.Minute // 扫描间隔
-	preloadMinutes  = 10              // 预加载时间（分钟）
+	scanInterval    = 1 * time.Minute      // 扫描间隔
+	preloadMinutes  = 10                   // 预加载时间（分钟）
 	remindZSetKey   = "ddl:remind:pending" // ZSET: 排序用
 	remindDetailKey = "ddl:remind:detail"  // Hash: 存储详情
 )
@@ -35,6 +36,7 @@ type DDLCache struct {
 
 type PublishWorker struct {
 	ddlRepo     ddlsvc.DDLRepo
+	userRepo    usersvc.UserRepo
 	emailSender email.Sender
 	redis       *data.RedisClient
 	stopCh      chan struct{}
@@ -43,6 +45,7 @@ type PublishWorker struct {
 
 func NewPublishWorker(
 	ddlRepo ddlsvc.DDLRepo,
+	userRepo usersvc.UserRepo,
 	redis *data.RedisClient,
 ) *PublishWorker {
 	var sender email.Sender
@@ -53,6 +56,7 @@ func NewPublishWorker(
 	}
 	return &PublishWorker{
 		ddlRepo:     ddlRepo,
+		userRepo:    userRepo,
 		emailSender: sender,
 		redis:       redis,
 		stopCh:      make(chan struct{}),
@@ -107,16 +111,38 @@ func (w *PublishWorker) preloadToRedis(ctx context.Context, now time.Time) {
 		return
 	}
 
-	start := now
+	// 允许获取过去30分钟内的提醒（处理启动时错过的）
+	pastStart := now.Add(-30 * time.Minute)
 	end := now.Add(preloadMinutes * time.Minute)
 
-	ddls, err := w.ddlRepo.GetDDLsForRemindWithUserEmail(ctx, start, end)
+	// 1. 查询 DDL
+	ddls, err := w.ddlRepo.GetDDLsForRemind(ctx, pastStart, end)
 	if err != nil {
 		log.Printf("[PublishWorker] failed to get DDLs: %v", err)
 		return
 	}
+	if len(ddls) == 0 {
+		return
+	}
 
+	// 2. 收集用户ID，批量查询邮箱
+	userIDs := make([]int64, 0, len(ddls))
 	for _, d := range ddls {
+		userIDs = append(userIDs, d.UserID)
+	}
+	userEmailMap, err := w.userRepo.GetUserEmailsByIDs(ctx, userIDs)
+	if err != nil {
+		log.Printf("[PublishWorker] failed to get user emails: %v", err)
+		return
+	}
+
+	// 3. 写入 Redis
+	for _, d := range ddls {
+		email, ok := userEmailMap[d.UserID]
+		if !ok {
+			continue // 用户没有邮箱
+		}
+
 		ddlIDStr := fmt.Sprintf("%d", d.ID)
 
 		// 检查是否已在 Redis 中
@@ -134,7 +160,7 @@ func (w *PublishWorker) preloadToRedis(ctx context.Context, now time.Time) {
 
 		// 1. 加入 ZSET
 		pipe.ZAdd(ctx, remindZSetKey, redis.Z{
-			Score:  float64(d.EealyRemindTime.Unix()),
+			Score:  float64(d.EarlyRemindTime.Unix()),
 			Member: d.ID,
 		})
 
@@ -145,7 +171,7 @@ func (w *PublishWorker) preloadToRedis(ctx context.Context, now time.Time) {
 			Title:       d.Title,
 			Description: d.Description,
 			Deadline:    d.DeadLine.Unix(),
-			Email:       d.Email,
+			Email:       email,
 		}
 		data, _ := json.Marshal(cache)
 		pipe.HSet(ctx, remindDetailKey, ddlIDStr, data)

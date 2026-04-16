@@ -15,3 +15,8 @@ func SubTime(t time.Time, d time.Duration) time.Time {
 func GetTimeBeforeMinutes(minutes int) time.Time {
 	return SubTime(GetCurrentTime(), time.Duration(minutes)*time.Minute)
 }
+
+// GetTimeBeforeMinutesFrom 基准时间前n分钟的时间
+func GetTimeBeforeMinutesFrom(base time.Time, minutes int) time.Time {
+	return base.Add(-time.Duration(minutes) * time.Minute)
+}

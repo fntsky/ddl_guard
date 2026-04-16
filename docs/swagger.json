@@ -7,9 +7,8 @@
         "contact": {},
         "version": "1.0"
     },
-    "basePath": "/api/v1",
     "paths": {
-        "/auth/refresh-tokens": {
+        "/api/v1/auth/refresh-tokens": {
             "post": {
                 "description": "使用refresh token换取新的access token和refresh token",
                 "consumes": [
@@ -55,8 +54,69 @@
                 }
             }
         },
-        "/ddl/draft": {
+        "/api/v1/ddl/active": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "分页获取用户所有激活状态的DDL",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DDL"
+                ],
+                "summary": "获取激活状态的DDL列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.DDLListResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/ddl/draft": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "创建DDL草稿",
                 "consumes": [
                     "application/json"
@@ -101,8 +161,13 @@
                 }
             }
         },
-        "/ddl/drafts/{uuid}": {
+        "/api/v1/ddl/drafts/{uuid}": {
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "将草稿状态从draft变更为active",
                 "consumes": [
                     "application/json"
@@ -154,7 +219,203 @@
                 }
             }
         },
-        "/users/email/verification-codes": {
+        "/api/v1/ddl/expired": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "分页获取用户所有过期状态的DDL",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DDL"
+                ],
+                "summary": "获取过期状态的DDL列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.DDLListResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/ddl/{uuid}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "获取单个DDL的详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DDL"
+                ],
+                "summary": "获取DDL详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "DDL UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.DDLDetailResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "修改DDL的标题、描述、截止时间或提前提醒时间",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DDL"
+                ],
+                "summary": "修改DDL",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "DDL UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update DDL Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.UpdateDDLReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.UpdateDDLResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "删除DDL（软删除）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DDL"
+                ],
+                "summary": "删除DDL",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "DDL UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/handler.resp"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/email/verification-codes": {
             "post": {
                 "description": "发送邮箱验证码用于注册",
                 "consumes": [
@@ -188,7 +449,7 @@
                 }
             }
         },
-        "/users/password": {
+        "/api/v1/users/password": {
             "put": {
                 "description": "使用验证码验证身份后修改用户密码。验证码通过 SendPasswordResetCode 接口发送。\ntype: 验证方式，需与发送验证码时的类型一致，目前支持 \"email\"\ntarget: 验证目标，需与发送验证码时的目标一致\ncode: 收到的验证码，6 位数字\nnew_password: 新密码，最少 6 个字符",
                 "consumes": [
@@ -240,7 +501,7 @@
                 }
             }
         },
-        "/users/password/reset-codes": {
+        "/api/v1/users/password/reset-codes": {
             "post": {
                 "description": "根据指定的验证类型发送验证码到目标地址。目前支持 email 类型，验证码有效期为 5 分钟。\ntype: 验证方式，目前支持 \"email\"\ntarget: 验证目标，邮箱类型时为邮箱地址",
                 "consumes": [
@@ -286,7 +547,7 @@
                 }
             }
         },
-        "/users/registrations/email": {
+        "/api/v1/users/registrations/email": {
             "post": {
                 "description": "使用邮箱验证码注册用户",
                 "consumes": [
@@ -332,7 +593,7 @@
                 }
             }
         },
-        "/users/sessions/email": {
+        "/api/v1/users/sessions/email": {
             "post": {
                 "description": "使用邮箱和密码登录",
                 "consumes": [
@@ -488,6 +749,107 @@
                 }
             }
         },
+        "schema.DDLDetailResp": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T10:00:00+08:00"
+                },
+                "deadline": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T14:30:00+08:00"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "from swagger"
+                },
+                "early_remind_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T14:00:00+08:00"
+                },
+                "remind_sent": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "status": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "title": {
+                    "type": "string",
+                    "example": "test ddl"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T10:00:00+08:00"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.DDLListItem": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T10:00:00+08:00"
+                },
+                "deadline": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T14:30:00+08:00"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "from swagger"
+                },
+                "early_remind_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T14:00:00+08:00"
+                },
+                "status": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "title": {
+                    "type": "string",
+                    "example": "test ddl"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.DDLListResp": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.DDLListItem"
+                    }
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "schema.LoginByEmailReq": {
             "type": "object",
             "required": [
@@ -627,6 +989,55 @@
                 }
             }
         },
+        "schema.UpdateDDLReq": {
+            "type": "object",
+            "properties": {
+                "deadline": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T14:30:00+08:00"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "from swagger"
+                },
+                "early_remind": {
+                    "description": "提前多少分钟提醒",
+                    "type": "integer",
+                    "example": 30
+                },
+                "title": {
+                    "type": "string",
+                    "example": "test ddl"
+                }
+            }
+        },
+        "schema.UpdateDDLResp": {
+            "type": "object",
+            "properties": {
+                "deadline": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-24T14:30:00+08:00"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "from swagger"
+                },
+                "early_remind": {
+                    "type": "integer",
+                    "example": 30
+                },
+                "title": {
+                    "type": "string",
+                    "example": "test ddl"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
         "schema.UpdateDraftStatusReq": {
             "type": "object",
             "required": [
@@ -651,6 +1062,14 @@
                     "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

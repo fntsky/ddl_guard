@@ -17,8 +17,8 @@ func runApp(configPath string) {
 	}
 	defer cleanup()
 
-	// 启动后台 Worker
-	app.StartWorker()
+	// 启动后台 Workers
+	app.StartWorkers()
 
 	if err := app.HttpServer.Run(conf.Global().Server.HTTP.Addr); err != nil {
 		panic(err)

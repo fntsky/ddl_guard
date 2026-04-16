@@ -24,4 +24,9 @@ func (a *DDLApiRouter) Register(r *gin.RouterGroup) {
 	ddlGroup.Use(middleware.AuthMiddleware(a.tokenService))
 	ddlGroup.POST("/draft", a.ddlController.CreateDraft)
 	ddlGroup.PATCH("/drafts/:uuid", a.ddlController.ApproveDraft)
+	ddlGroup.GET("/active", a.ddlController.GetActiveDDLs)
+	ddlGroup.GET("/expired", a.ddlController.GetExpiredDDLs)
+	ddlGroup.GET("/:uuid", a.ddlController.GetDDLDetail)
+	ddlGroup.PUT("/:uuid", a.ddlController.UpdateDDL)
+	ddlGroup.DELETE("/:uuid", a.ddlController.DeleteDDL)
 }
