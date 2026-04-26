@@ -47,11 +47,13 @@ func Migrate(ctx context.Context, engine *xorm.Engine) error {
 	if err != nil {
 		return fmt.Errorf("get current version failed: %w", err)
 	}
-	if currentVersion < minDBVersion+int64(len(migrations)) {
-		fmt.Printf("Now update database to next version: %s\n", migrations[currentVersion+1].Version())
-		fmt.Printf("Description: %s\n", migrations[currentVersion+1].Description())
-		if err := migrations[currentVersion+1].Migrate(ctx, engine); err != nil {
-			return fmt.Errorf("migrate to version %s failed: %w", migrations[currentVersion+1].Version(), err)
+	expectedVersion := minDBVersion + int64(len(migrations))
+	for currentVersion < expectedVersion {
+		migrationIdx := currentVersion
+		fmt.Printf("Now update database to next version: %s\n", migrations[migrationIdx].Version())
+		fmt.Printf("Description: %s\n", migrations[migrationIdx].Description())
+		if err := migrations[migrationIdx].Migrate(ctx, engine); err != nil {
+			return fmt.Errorf("migrate to version %s failed: %w", migrations[migrationIdx].Version(), err)
 		}
 		currentVersion++
 		// Update version in database
@@ -66,6 +68,8 @@ func Migrate(ctx context.Context, engine *xorm.Engine) error {
 var migrations = []Migration{
 	NewMigration("0.0.1", "this is first version", nil),
 	NewMigration("0.0.2", "add remind_sent column to ddl table", addRemindSentColumn),
+	NewMigration("0.0.3", "add exam table", addExamTable),
+	NewMigration("0.0.4", "add final_grades and daily_scores tables", addGradeTables),
 }
 
 func ExpectVersion() int64 {

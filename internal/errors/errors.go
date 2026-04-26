@@ -227,6 +227,12 @@ var (
 	ErrExamNotFound    = New(http.StatusNotFound, CodeNotFound, "exam not found")
 	ErrExamNotOwned    = New(http.StatusForbidden, CodeForbidden, "exam not owned by user")
 	ErrExamTimeInvalid = New(http.StatusBadRequest, CodeBadRequest, "end time must be after start time")
+
+	// FinalGrade 相关
+	ErrFinalGradeNotFound = New(http.StatusNotFound, CodeNotFound, "final grade not found")
+
+	// DailyScore 相关
+	ErrDailyScoreNotFound = New(http.StatusNotFound, CodeNotFound, "daily score not found")
 )
 
 func Is(err, target error) bool {

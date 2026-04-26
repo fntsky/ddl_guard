@@ -12,4 +12,6 @@ var ProviderSetRouter = wire.NewSet(
 	NewUserApiRouter,
 	NewDDLApiRouter,
 	NewExamApiRouter,
+	NewFinalGradeApiRouter,
+	NewDailyScoreApiRouter,
 )
