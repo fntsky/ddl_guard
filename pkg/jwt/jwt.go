@@ -2,7 +2,7 @@ package jwt
 
 import (
 	"errors"
-	"fmt"
+	"net/http"
 	"strings"
 
 	apperrors "github.com/fntsky/ddl_guard/internal/errors"
@@ -10,10 +10,11 @@ import (
 )
 
 var (
+	// 直接使用 apperrors 中的错误定义
 	ErrInvalidToken     = apperrors.ErrInvalidToken
 	ErrTokenExpired     = apperrors.ErrTokenExpired
-	ErrInvalidSignature = apperrors.New(401, "invalid signature")
-	ErrInvalidClaims    = apperrors.New(401, "invalid claims")
+	ErrInvalidSignature = apperrors.New(http.StatusUnauthorized, apperrors.CodeInvalidToken, "invalid signature")
+	ErrInvalidClaims    = apperrors.New(http.StatusUnauthorized, apperrors.CodeInvalidToken, "invalid claims")
 )
 
 type Claims struct {
@@ -24,9 +25,13 @@ type Claims struct {
 	Iat      int64  `json:"iat"`
 }
 
+func (c *Claims) GetUserUUID() string {
+	return c.UserUUID
+}
+
 func GenerateToken(secret string, claims Claims) (string, error) {
 	if strings.TrimSpace(secret) == "" {
-		return "", fmt.Errorf("secret is empty")
+		return "", apperrors.ErrTokenConfigInvalid
 	}
 	token := gjwt.NewWithClaims(gjwt.SigningMethodHS256, gjwt.MapClaims{
 		"user_uuid": claims.UserUUID,
@@ -40,7 +45,7 @@ func GenerateToken(secret string, claims Claims) (string, error) {
 
 func ParseToken(secret string, token string) (*Claims, error) {
 	if strings.TrimSpace(secret) == "" {
-		return nil, fmt.Errorf("secret is empty")
+		return nil, apperrors.ErrTokenConfigInvalid
 	}
 
 	parsedToken, err := gjwt.Parse(token, func(t *gjwt.Token) (any, error) {

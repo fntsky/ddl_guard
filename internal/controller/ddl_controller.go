@@ -32,7 +32,7 @@ func NewDDLController(ddl_service *ddl.DDLService) *DDLController {
 func (dc *DDLController) CreateDraft(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
 	if !ok || userClaims.UserUUID == "" {
-		handler.HandleResponse(ctx, handler.NewError(401, "unauthorized", nil), nil)
+		handler.HandleResponse(ctx, handler.Unauthorized("unauthorized", nil), nil)
 		return
 	}
 
@@ -58,7 +58,7 @@ func (dc *DDLController) CreateDraft(ctx *gin.Context) {
 func (dc *DDLController) ApproveDraft(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
 	if !ok || userClaims.UserUUID == "" {
-		handler.HandleResponse(ctx, handler.NewError(401, "unauthorized", nil), nil)
+		handler.HandleResponse(ctx, handler.Unauthorized("unauthorized", nil), nil)
 		return
 	}
 
@@ -89,7 +89,7 @@ func (dc *DDLController) ApproveDraft(ctx *gin.Context) {
 func (dc *DDLController) DeleteDDL(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
 	if !ok || userClaims.UserUUID == "" {
-		handler.HandleResponse(ctx, handler.NewError(401, "unauthorized", nil), nil)
+		handler.HandleResponse(ctx, handler.Unauthorized("unauthorized", nil), nil)
 		return
 	}
 
@@ -116,7 +116,7 @@ func (dc *DDLController) DeleteDDL(ctx *gin.Context) {
 func (dc *DDLController) GetActiveDDLs(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
 	if !ok || userClaims.UserUUID == "" {
-		handler.HandleResponse(ctx, handler.NewError(401, "unauthorized", nil), nil)
+		handler.HandleResponse(ctx, handler.Unauthorized("unauthorized", nil), nil)
 		return
 	}
 
@@ -143,7 +143,7 @@ func (dc *DDLController) GetActiveDDLs(ctx *gin.Context) {
 func (dc *DDLController) GetExpiredDDLs(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
 	if !ok || userClaims.UserUUID == "" {
-		handler.HandleResponse(ctx, handler.NewError(401, "unauthorized", nil), nil)
+		handler.HandleResponse(ctx, handler.Unauthorized("unauthorized", nil), nil)
 		return
 	}
 
@@ -170,7 +170,7 @@ func (dc *DDLController) GetExpiredDDLs(ctx *gin.Context) {
 func (dc *DDLController) UpdateDDL(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
 	if !ok || userClaims.UserUUID == "" {
-		handler.HandleResponse(ctx, handler.NewError(401, "unauthorized", nil), nil)
+		handler.HandleResponse(ctx, handler.Unauthorized("unauthorized", nil), nil)
 		return
 	}
 
@@ -202,7 +202,7 @@ func (dc *DDLController) UpdateDDL(ctx *gin.Context) {
 func (dc *DDLController) GetDDLDetail(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
 	if !ok || userClaims.UserUUID == "" {
-		handler.HandleResponse(ctx, handler.NewError(401, "unauthorized", nil), nil)
+		handler.HandleResponse(ctx, handler.Unauthorized("unauthorized", nil), nil)
 		return
 	}
 

@@ -3,16 +3,18 @@ package provider
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/fntsky/ddl_guard/internal/base/conf"
+	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	"github.com/fntsky/ddl_guard/internal/schema"
 	"github.com/fntsky/ddl_guard/internal/service/ai/shared"
 )
+
+const providerName = "glm"
 
 type GLMProvider struct {
 	APIKey   string
@@ -33,7 +35,7 @@ func NewGLMProvider(config conf.VisualAIConfig) *GLMProvider {
 func (p *GLMProvider) AnalyzeImage(imageData []byte) (schema.CreateDraftResp, error) {
 	dataURL, err := shared.BuildImageDataURL(imageData)
 	if err != nil {
-		return schema.CreateDraftResp{}, err
+		return schema.CreateDraftResp{}, apperrors.AIResponseInvalid(providerName, "build_image_url", err)
 	}
 
 	model := strings.TrimSpace(p.Model)
@@ -66,19 +68,19 @@ func (p *GLMProvider) AnalyzeImage(imageData []byte) (schema.CreateDraftResp, er
 
 	payload, err := json.Marshal(reqBody)
 	if err != nil {
-		return schema.CreateDraftResp{}, fmt.Errorf("marshal glm request failed: %w", err)
+		return schema.CreateDraftResp{}, apperrors.AIResponseInvalid(providerName, "marshal_request", err)
 	}
 
 	req, err := http.NewRequest(http.MethodPost, p.Endpoint, bytes.NewReader(payload))
 	if err != nil {
-		return schema.CreateDraftResp{}, fmt.Errorf("create glm request failed: %w", err)
+		return schema.CreateDraftResp{}, apperrors.AIRequestFailed(providerName, 0, "", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+p.APIKey)
 
 	resp, err := p.Client.Do(req)
 	if err != nil {
-		return schema.CreateDraftResp{}, fmt.Errorf("glm request failed: %w", err)
+		return schema.CreateDraftResp{}, apperrors.AIRequestFailed(providerName, 0, "", err)
 	}
 	defer func() {
 		_ = resp.Body.Close()
@@ -86,10 +88,10 @@ func (p *GLMProvider) AnalyzeImage(imageData []byte) (schema.CreateDraftResp, er
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return schema.CreateDraftResp{}, fmt.Errorf("read glm response failed: %w", err)
+		return schema.CreateDraftResp{}, apperrors.AIResponseInvalid(providerName, "read_response", err)
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return schema.CreateDraftResp{}, fmt.Errorf("glm api failed: status=%d body=%s", resp.StatusCode, string(body))
+		return schema.CreateDraftResp{}, apperrors.AIRequestFailed(providerName, resp.StatusCode, string(body), nil)
 	}
 
 	chatResp := struct {
@@ -100,16 +102,21 @@ func (p *GLMProvider) AnalyzeImage(imageData []byte) (schema.CreateDraftResp, er
 		} `json:"choices"`
 	}{}
 	if err := json.Unmarshal(body, &chatResp); err != nil {
-		return schema.CreateDraftResp{}, fmt.Errorf("unmarshal glm response failed: %w", err)
+		return schema.CreateDraftResp{}, apperrors.AIResponseInvalid(providerName, "parse_response", err)
 	}
 	if len(chatResp.Choices) == 0 {
-		return schema.CreateDraftResp{}, fmt.Errorf("glm response has no choices")
+		return schema.CreateDraftResp{}, apperrors.AIResponseInvalid(providerName, "no_choices", nil)
 	}
 
 	content := strings.TrimSpace(chatResp.Choices[0].Message.Content)
 	if content == "" {
-		return schema.CreateDraftResp{}, fmt.Errorf("glm response content is empty")
+		return schema.CreateDraftResp{}, apperrors.AIResponseInvalid(providerName, "empty_content", nil)
 	}
 
-	return shared.ParseDraftFromModelJSON(content)
+	result, err := shared.ParseDraftFromModelJSON(content)
+	if err != nil {
+		return schema.CreateDraftResp{}, apperrors.AIResponseInvalid(providerName, "parse_draft", err)
+	}
+
+	return result, nil
 }
