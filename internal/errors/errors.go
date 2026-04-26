@@ -83,6 +83,11 @@ var (
 	// OTP 相关
 	ErrCodeStoreNotConfigured      = New(http.StatusInternalServerError, "code store not configured")
 	ErrUnsupportedVerificationType = New(http.StatusBadRequest, "unsupported verification type")
+
+	// Exam 相关
+	ErrExamNotFound     = New(http.StatusNotFound, "exam not found")
+	ErrExamNotOwned     = New(http.StatusForbidden, "exam not owned by user")
+	ErrExamTimeInvalid  = New(http.StatusBadRequest, "end time must be after start time")
 )
 
 // Is 提供错误比较支持，兼容标准库 errors.Is

@@ -13,12 +13,14 @@ import (
 	"github.com/fntsky/ddl_guard/internal/base/server"
 	"github.com/fntsky/ddl_guard/internal/controller"
 	"github.com/fntsky/ddl_guard/internal/repo/ddl"
+	"github.com/fntsky/ddl_guard/internal/repo/exam"
 	"github.com/fntsky/ddl_guard/internal/repo/session"
 	"github.com/fntsky/ddl_guard/internal/repo/user"
 	"github.com/fntsky/ddl_guard/internal/router"
 	"github.com/fntsky/ddl_guard/internal/service/ai"
 	auth2 "github.com/fntsky/ddl_guard/internal/service/auth"
 	ddl2 "github.com/fntsky/ddl_guard/internal/service/ddl"
+	exam2 "github.com/fntsky/ddl_guard/internal/service/exam"
 	user2 "github.com/fntsky/ddl_guard/internal/service/user"
 	"github.com/fntsky/ddl_guard/internal/worker"
 	"github.com/gin-gonic/gin"
@@ -54,12 +56,16 @@ func initApplication(debug bool) (*app, func(), error) {
 	ddlService := ddl2.NewDDLService(ddlRepo, aiProvider)
 	ddlController := controller.NewDDLController(ddlService)
 	ddlApiRouter := router.NewDDLApiRouter(ddlController, tokenService)
+	examRepo := exam.NewExamRepo(dataData)
+	examService := exam2.NewExamService(examRepo)
+	examController := controller.NewExamController(examService)
+	examApiRouter := router.NewExamApiRouter(examController, tokenService)
 	userRepo := user.NewUserRepo(dataData)
 	otpOTP := otp.NewSMTPEmailOTP(redisClient)
 	userService := user2.NewUserService(userRepo, otpOTP, authService)
 	userController := controller.NewUserController(userService)
 	userApiRouter := router.NewUserApiRouter(userController)
-	ginEngine := server.NewHttpServer(debug, swaggerRouter, authApiRouter, ddlApiRouter, userApiRouter)
+	ginEngine := server.NewHttpServer(debug, swaggerRouter, authApiRouter, ddlApiRouter, examApiRouter, userApiRouter)
 	publishWorker := worker.NewPublishWorker(ddlRepo, userRepo, redisClient)
 	expirationWorker := worker.NewExpirationWorker(ddlRepo)
 	ddlcmdApp := newApp(debug, ginEngine, publishWorker, expirationWorker)
