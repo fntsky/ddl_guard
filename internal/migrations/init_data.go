@@ -8,6 +8,7 @@ var (
 		&entity.UserAuth{},
 		&entity.UserSession{},
 		&entity.DDL{},
+		&entity.Exam{},
 		&entity.Version{},
 	}
 )

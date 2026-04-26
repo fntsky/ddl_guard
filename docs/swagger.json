@@ -415,6 +415,251 @@
                 }
             }
         },
+        "/api/v1/exams": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "分页获取用户所有考试",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exam"
+                ],
+                "summary": "获取考试列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.ExamListResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "创建一个新的考试",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exam"
+                ],
+                "summary": "创建考试",
+                "parameters": [
+                    {
+                        "description": "Create Exam Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.CreateExamReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.CreateExamResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/exams/{uuid}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "获取单个考试的详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exam"
+                ],
+                "summary": "获取考试详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Exam UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.ExamDetailResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "更新考试的信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exam"
+                ],
+                "summary": "更新考试",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Exam UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Exam Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.UpdateExamReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.UpdateExamResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "删除考试",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Exam"
+                ],
+                "summary": "删除考试",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Exam UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/handler.resp"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/email/verification-codes": {
             "post": {
                 "description": "发送邮箱验证码用于注册",
@@ -749,6 +994,69 @@
                 }
             }
         },
+        "schema.CreateExamReq": {
+            "type": "object",
+            "required": [
+                "end_time",
+                "name",
+                "start_time"
+            ],
+            "properties": {
+                "end_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T11:00:00+08:00"
+                },
+                "location": {
+                    "type": "string",
+                    "example": "教学楼A301"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "高等数学期末考试"
+                },
+                "notes": {
+                    "type": "string",
+                    "example": "带计算器"
+                },
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T09:00:00+08:00"
+                }
+            }
+        },
+        "schema.CreateExamResp": {
+            "type": "object",
+            "properties": {
+                "end_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T11:00:00+08:00"
+                },
+                "location": {
+                    "type": "string",
+                    "example": "教学楼A301"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "高等数学期末考试"
+                },
+                "notes": {
+                    "type": "string",
+                    "example": "带计算器"
+                },
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T09:00:00+08:00"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
         "schema.DDLDetailResp": {
             "type": "object",
             "properties": {
@@ -837,6 +1145,99 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.DDLListItem"
+                    }
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.ExamDetailResp": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-20T10:00:00+08:00"
+                },
+                "end_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T11:00:00+08:00"
+                },
+                "location": {
+                    "type": "string",
+                    "example": "教学楼A301"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "高等数学期末考试"
+                },
+                "notes": {
+                    "type": "string",
+                    "example": "带计算器"
+                },
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T09:00:00+08:00"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-20T10:00:00+08:00"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.ExamListItem": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-20T10:00:00+08:00"
+                },
+                "end_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T11:00:00+08:00"
+                },
+                "location": {
+                    "type": "string",
+                    "example": "教学楼A301"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "高等数学期末考试"
+                },
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T09:00:00+08:00"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.ExamListResp": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.ExamListItem"
                     }
                 },
                 "page": {
@@ -1056,6 +1457,64 @@
                 "status": {
                     "type": "integer",
                     "example": 1
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.UpdateExamReq": {
+            "type": "object",
+            "properties": {
+                "end_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T11:00:00+08:00"
+                },
+                "location": {
+                    "type": "string",
+                    "example": "教学楼A301"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "高等数学期末考试"
+                },
+                "notes": {
+                    "type": "string",
+                    "example": "带计算器"
+                },
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T09:00:00+08:00"
+                }
+            }
+        },
+        "schema.UpdateExamResp": {
+            "type": "object",
+            "properties": {
+                "end_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T11:00:00+08:00"
+                },
+                "location": {
+                    "type": "string",
+                    "example": "教学楼A301"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "高等数学期末考试"
+                },
+                "notes": {
+                    "type": "string",
+                    "example": "带计算器"
+                },
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-04-26T09:00:00+08:00"
                 },
                 "uuid": {
                     "type": "string",

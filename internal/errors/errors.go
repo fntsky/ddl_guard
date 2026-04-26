@@ -222,6 +222,11 @@ var (
 
 	// OTP 相关
 	ErrCodeStoreNotConfigured = New(http.StatusInternalServerError, CodeRedisError, "code store not configured")
+
+	// Exam 相关
+	ErrExamNotFound    = New(http.StatusNotFound, CodeNotFound, "exam not found")
+	ErrExamNotOwned    = New(http.StatusForbidden, CodeForbidden, "exam not owned by user")
+	ErrExamTimeInvalid = New(http.StatusBadRequest, CodeBadRequest, "end time must be after start time")
 )
 
 func Is(err, target error) bool {

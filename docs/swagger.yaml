@@ -77,6 +77,53 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
+  schema.CreateExamReq:
+    properties:
+      end_time:
+        example: "2026-04-26T11:00:00+08:00"
+        format: date-time
+        type: string
+      location:
+        example: 教学楼A301
+        type: string
+      name:
+        example: 高等数学期末考试
+        type: string
+      notes:
+        example: 带计算器
+        type: string
+      start_time:
+        example: "2026-04-26T09:00:00+08:00"
+        format: date-time
+        type: string
+    required:
+    - end_time
+    - name
+    - start_time
+    type: object
+  schema.CreateExamResp:
+    properties:
+      end_time:
+        example: "2026-04-26T11:00:00+08:00"
+        format: date-time
+        type: string
+      location:
+        example: 教学楼A301
+        type: string
+      name:
+        example: 高等数学期末考试
+        type: string
+      notes:
+        example: 带计算器
+        type: string
+      start_time:
+        example: "2026-04-26T09:00:00+08:00"
+        format: date-time
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
   schema.DDLDetailResp:
     properties:
       created_at:
@@ -143,6 +190,74 @@ definitions:
       list:
         items:
           $ref: '#/definitions/schema.DDLListItem'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  schema.ExamDetailResp:
+    properties:
+      created_at:
+        example: "2026-04-20T10:00:00+08:00"
+        format: date-time
+        type: string
+      end_time:
+        example: "2026-04-26T11:00:00+08:00"
+        format: date-time
+        type: string
+      location:
+        example: 教学楼A301
+        type: string
+      name:
+        example: 高等数学期末考试
+        type: string
+      notes:
+        example: 带计算器
+        type: string
+      start_time:
+        example: "2026-04-26T09:00:00+08:00"
+        format: date-time
+        type: string
+      updated_at:
+        example: "2026-04-20T10:00:00+08:00"
+        format: date-time
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.ExamListItem:
+    properties:
+      created_at:
+        example: "2026-04-20T10:00:00+08:00"
+        format: date-time
+        type: string
+      end_time:
+        example: "2026-04-26T11:00:00+08:00"
+        format: date-time
+        type: string
+      location:
+        example: 教学楼A301
+        type: string
+      name:
+        example: 高等数学期末考试
+        type: string
+      start_time:
+        example: "2026-04-26T09:00:00+08:00"
+        format: date-time
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.ExamListResp:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/schema.ExamListItem'
         type: array
       page:
         type: integer
@@ -298,6 +413,49 @@ definitions:
       status:
         example: 1
         type: integer
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.UpdateExamReq:
+    properties:
+      end_time:
+        example: "2026-04-26T11:00:00+08:00"
+        format: date-time
+        type: string
+      location:
+        example: 教学楼A301
+        type: string
+      name:
+        example: 高等数学期末考试
+        type: string
+      notes:
+        example: 带计算器
+        type: string
+      start_time:
+        example: "2026-04-26T09:00:00+08:00"
+        format: date-time
+        type: string
+    type: object
+  schema.UpdateExamResp:
+    properties:
+      end_time:
+        example: "2026-04-26T11:00:00+08:00"
+        format: date-time
+        type: string
+      location:
+        example: 教学楼A301
+        type: string
+      name:
+        example: 高等数学期末考试
+        type: string
+      notes:
+        example: 带计算器
+        type: string
+      start_time:
+        example: "2026-04-26T09:00:00+08:00"
+        format: date-time
+        type: string
       uuid:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
@@ -548,6 +706,150 @@ paths:
       summary: 获取过期状态的DDL列表
       tags:
       - DDL
+  /api/v1/exams:
+    get:
+      consumes:
+      - application/json
+      description: 分页获取用户所有考试
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.ExamListResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 获取考试列表
+      tags:
+      - Exam
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新的考试
+      parameters:
+      - description: Create Exam Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.CreateExamReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.CreateExamResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 创建考试
+      tags:
+      - Exam
+  /api/v1/exams/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除考试
+      parameters:
+      - description: Exam UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/handler.resp'
+      security:
+      - BearerAuth: []
+      summary: 删除考试
+      tags:
+      - Exam
+    get:
+      consumes:
+      - application/json
+      description: 获取单个考试的详细信息
+      parameters:
+      - description: Exam UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.ExamDetailResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 获取考试详情
+      tags:
+      - Exam
+    put:
+      consumes:
+      - application/json
+      description: 更新考试的信息
+      parameters:
+      - description: Exam UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update Exam Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UpdateExamReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.UpdateExamResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 更新考试
+      tags:
+      - Exam
   /api/v1/users/email/verification-codes:
     post:
       consumes:
