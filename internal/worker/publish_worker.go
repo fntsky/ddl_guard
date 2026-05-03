@@ -11,6 +11,7 @@ import (
 	"github.com/fntsky/ddl_guard/internal/base/conf"
 	"github.com/fntsky/ddl_guard/internal/base/data"
 	"github.com/fntsky/ddl_guard/internal/base/email"
+	"github.com/fntsky/ddl_guard/internal/entity"
 	ddlsvc "github.com/fntsky/ddl_guard/internal/service/ddl"
 	usersvc "github.com/fntsky/ddl_guard/internal/service/user"
 	stime "github.com/fntsky/ddl_guard/pkg/time"
@@ -18,10 +19,11 @@ import (
 )
 
 const (
-	scanInterval    = 1 * time.Minute      // 扫描间隔
-	preloadMinutes  = 10                   // 预加载时间（分钟）
-	remindZSetKey   = "ddl:remind:pending" // ZSET: 排序用
-	remindDetailKey = "ddl:remind:detail"  // Hash: 存储详情
+	scanInterval      = 1 * time.Minute       // 扫描间隔
+	preloadMinutes    = 10                    // 预加载时间（分钟）
+	remindZSetKey24h  = "ddl:remind:24h"      // ZSET: 24小时提醒
+	remindZSetKey2h   = "ddl:remind:2h"       // ZSET: 2小时提醒
+	remindDetailKey   = "ddl:remind:detail"   // Hash: 存储详情
 )
 
 // DDLCache 用于存储在 Redis 中的 DDL 信息
@@ -32,6 +34,7 @@ type DDLCache struct {
 	Description string `json:"description"`
 	Deadline    int64  `json:"deadline"` // Unix timestamp
 	Email       string `json:"email"`    // 用户邮箱
+	RemindType  string `json:"remind_type"` // "24h" 或 "2h"
 }
 
 type PublishWorker struct {
@@ -106,26 +109,40 @@ func (w *PublishWorker) scanAndNotify() {
 }
 
 // preloadToRedis 将即将到期的 DDL 加入 Redis (ZSET + Hash)
+// 提醒规则：截止时间前24小时和前2小时各提醒一次
 func (w *PublishWorker) preloadToRedis(ctx context.Context, now time.Time) {
 	if w.redis == nil || w.redis.Client == nil {
 		return
 	}
 
-	// 允许获取过去30分钟内的提醒（处理启动时错过的）
-	pastStart := now.Add(-30 * time.Minute)
-	end := now.Add(preloadMinutes * time.Minute)
+	// 预加载24小时提醒：deadline 在 [now+24h, now+24h+preloadInterval]
+	start24h := now.Add(24 * time.Hour)
+	end24h := now.Add(24*time.Hour + preloadMinutes*time.Minute)
 
-	// 1. 查询 DDL
-	ddls, err := w.ddlRepo.GetDDLsForRemind(ctx, pastStart, end)
+	ddls24h, err := w.ddlRepo.GetDDLsForRemind24h(ctx, start24h, end24h)
 	if err != nil {
-		log.Printf("[PublishWorker] failed to get DDLs: %v", err)
-		return
+		log.Printf("[PublishWorker] failed to get DDLs for 24h remind: %v", err)
+	} else {
+		w.preloadDDLsToRedis(ctx, ddls24h, "24h", now)
 	}
+
+	// 预加载2小时提醒：deadline 在 [now+2h, now+2h+preloadInterval]
+	start2h := now.Add(2 * time.Hour)
+	end2h := now.Add(2*time.Hour + preloadMinutes*time.Minute)
+
+	ddls2h, err := w.ddlRepo.GetDDLsForRemind2h(ctx, start2h, end2h)
+	if err != nil {
+		log.Printf("[PublishWorker] failed to get DDLs for 2h remind: %v", err)
+	} else {
+		w.preloadDDLsToRedis(ctx, ddls2h, "2h", now)
+	}
+}
+
+func (w *PublishWorker) preloadDDLsToRedis(ctx context.Context, ddls []*entity.DDL, remindType string, now time.Time) {
 	if len(ddls) == 0 {
 		return
 	}
 
-	// 2. 收集用户ID，批量查询邮箱
 	userIDs := make([]int64, 0, len(ddls))
 	for _, d := range ddls {
 		userIDs = append(userIDs, d.UserID)
@@ -136,35 +153,35 @@ func (w *PublishWorker) preloadToRedis(ctx context.Context, now time.Time) {
 		return
 	}
 
-	// 3. 写入 Redis
+	zsetKey := remindZSetKey24h
+	if remindType == "2h" {
+		zsetKey = remindZSetKey2h
+	}
+
 	for _, d := range ddls {
 		email, ok := userEmailMap[d.UserID]
 		if !ok {
-			continue // 用户没有邮箱
+			continue
 		}
 
 		ddlIDStr := fmt.Sprintf("%d", d.ID)
 
-		// 检查是否已在 Redis 中
-		score, err := w.redis.Client.ZScore(ctx, remindZSetKey, ddlIDStr).Result()
+		score, err := w.redis.Client.ZScore(ctx, zsetKey, ddlIDStr).Result()
 		if err != nil && err != redis.Nil {
 			log.Printf("[PublishWorker] failed to check redis: %v", err)
 			continue
 		}
 		if score != 0 {
-			continue // 已存在
+			continue
 		}
 
-		// 使用 Pipeline 批量写入
 		pipe := w.redis.Client.Pipeline()
 
-		// 1. 加入 ZSET
-		pipe.ZAdd(ctx, remindZSetKey, redis.Z{
-			Score:  float64(d.EarlyRemindTime.Unix()),
+		pipe.ZAdd(ctx, zsetKey, redis.Z{
+			Score:  float64(d.DeadLine.Unix()),
 			Member: d.ID,
 		})
 
-		// 2. 存储详情到 Hash
 		cache := DDLCache{
 			ID:          d.ID,
 			UserID:      d.UserID,
@@ -172,9 +189,10 @@ func (w *PublishWorker) preloadToRedis(ctx context.Context, now time.Time) {
 			Description: d.Description,
 			Deadline:    d.DeadLine.Unix(),
 			Email:       email,
+			RemindType:  remindType,
 		}
 		data, _ := json.Marshal(cache)
-		pipe.HSet(ctx, remindDetailKey, ddlIDStr, data)
+		pipe.HSet(ctx, remindDetailKey, ddlIDStr+"_"+remindType, data)
 
 		if _, err := pipe.Exec(ctx); err != nil {
 			log.Printf("[PublishWorker] failed to add to redis: %v", err)
@@ -188,11 +206,29 @@ func (w *PublishWorker) sendPendingNotifications(ctx context.Context, now time.T
 		return
 	}
 
-	nowTimestamp := now.Unix()
+	// 处理24小时提醒（deadline <= now + 24h，即提前24小时已过）
+	w.sendReminders(ctx, now, remindZSetKey24h, "24h")
+
+	// 处理2小时提醒
+	w.sendReminders(ctx, now, remindZSetKey2h, "2h")
+}
+
+func (w *PublishWorker) sendReminders(ctx context.Context, now time.Time, zsetKey, remindType string) {
+	// 查找需要发送的提醒：deadline <= now + remindTime
+	// 对于24h提醒：当 now >= deadline - 24h 时发送，即 deadline <= now + 24h
+	// 对于2h提醒：当 now >= deadline - 2h 时发送，即 deadline <= now + 2h
+	var remindOffset time.Duration
+	if remindType == "24h" {
+		remindOffset = 24 * time.Hour
+	} else {
+		remindOffset = 2 * time.Hour
+	}
+
+	threshold := now.Add(remindOffset).Unix()
 	ddlIDs, err := w.redis.Client.ZRangeArgs(ctx, redis.ZRangeArgs{
-		Key:     remindZSetKey,
+		Key:     zsetKey,
 		Start:   "-inf",
-		Stop:    fmt.Sprintf("%d", nowTimestamp),
+		Stop:    fmt.Sprintf("%d", threshold),
 		ByScore: true,
 	}).Result()
 	if err != nil {
@@ -201,8 +237,7 @@ func (w *PublishWorker) sendPendingNotifications(ctx context.Context, now time.T
 	}
 
 	for _, ddlIDStr := range ddlIDs {
-		// 从 Hash 获取详情
-		data, err := w.redis.Client.HGet(ctx, remindDetailKey, ddlIDStr).Result()
+		data, err := w.redis.Client.HGet(ctx, remindDetailKey, ddlIDStr+"_"+remindType).Result()
 		if err != nil {
 			if err != redis.Nil {
 				log.Printf("[PublishWorker] failed to get detail: %v", err)
@@ -216,15 +251,17 @@ func (w *PublishWorker) sendPendingNotifications(ctx context.Context, now time.T
 			continue
 		}
 
-		// 直接发送，无需查数据库
 		if err := w.sendEmailNotificationFromCache(ctx, &cache); err != nil {
 			log.Printf("[PublishWorker] failed to send notification for DDL %d: %v", cache.ID, err)
 		} else {
-			// 清理：移除 ZSET 和 Hash
-			w.redis.Client.ZRem(ctx, remindZSetKey, ddlIDStr)
-			w.redis.Client.HDel(ctx, remindDetailKey, ddlIDStr)
-			w.ddlRepo.MarkRemindSent(ctx, cache.ID)
-			log.Printf("[PublishWorker] notification for DDL %d sent successfully", cache.ID)
+			w.redis.Client.ZRem(ctx, zsetKey, ddlIDStr)
+			w.redis.Client.HDel(ctx, remindDetailKey, ddlIDStr+"_"+remindType)
+			if remindType == "24h" {
+				w.ddlRepo.MarkRemind24hSent(ctx, cache.ID)
+			} else {
+				w.ddlRepo.MarkRemind2hSent(ctx, cache.ID)
+			}
+			log.Printf("[PublishWorker] %s notification for DDL %d sent successfully", remindType, cache.ID)
 		}
 	}
 }

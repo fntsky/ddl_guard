@@ -28,7 +28,7 @@ func NewDailyScoreController(dsService *daily_score.DailyScoreService) *DailySco
 // @Security BearerAuth
 // @Param final_grade_uuid path string true "Final Grade UUID"
 // @Param req body schema.CreateDailyScoreReq true "Create Daily Score Request" SchemaExample({"type":"quiz","name":"小测1","score":90,"ratio":20})
-// @success 200 {object} handler.resp{data=schema.CreateDailyScoreResp} "success"
+// @success 200 {object} handler.Response{data=schema.CreateDailyScoreResp} "success"
 // @Router /api/v1/final-grades/{final_grade_uuid}/daily-scores [post]
 func (c *DailyScoreController) CreateDailyScore(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -59,7 +59,7 @@ func (c *DailyScoreController) CreateDailyScore(ctx *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param final_grade_uuid path string true "Final Grade UUID"
-// @success 200 {object} handler.resp{data=schema.DailyScoreListResp} "success"
+// @success 200 {object} handler.Response{data=schema.DailyScoreListResp} "success"
 // @Router /api/v1/final-grades/{final_grade_uuid}/daily-scores [get]
 func (c *DailyScoreController) ListDailyScores(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -86,7 +86,7 @@ func (c *DailyScoreController) ListDailyScores(ctx *gin.Context) {
 // @Security BearerAuth
 // @Param uuid path string true "Daily Score UUID"
 // @Param req body schema.UpdateDailyScoreReq true "Update Daily Score Request"
-// @success 200 {object} handler.resp{data=schema.UpdateDailyScoreResp} "success"
+// @success 200 {object} handler.Response{data=schema.UpdateDailyScoreResp} "success"
 // @Router /api/v1/daily-scores/{uuid} [put]
 func (c *DailyScoreController) UpdateDailyScore(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -118,7 +118,7 @@ func (c *DailyScoreController) UpdateDailyScore(ctx *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param uuid path string true "Daily Score UUID"
-// @success 200 {object} handler.resp "success"
+// @success 200 {object} handler.Response "success"
 // @Router /api/v1/daily-scores/{uuid} [delete]
 func (c *DailyScoreController) DeleteDailyScore(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)

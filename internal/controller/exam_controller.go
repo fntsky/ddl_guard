@@ -27,7 +27,7 @@ func NewExamController(exam_service *exam.ExamService) *ExamController {
 // @Produce json
 // @Security BearerAuth
 // @Param req body schema.CreateExamReq true "Create Exam Request" SchemaExample({"name":"高等数学期末考试","start_time":"2026-04-26T09:00:00+08:00","end_time":"2026-04-26T11:00:00+08:00","location":"教学楼A301","notes":"带计算器"})
-// @success 200 {object} handler.resp{data=schema.CreateExamResp} "success"
+// @success 200 {object} handler.Response{data=schema.CreateExamResp} "success"
 // @Router /api/v1/exams [post]
 func (ec *ExamController) CreateExam(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -53,7 +53,7 @@ func (ec *ExamController) CreateExam(ctx *gin.Context) {
 // @Security BearerAuth
 // @Param page query int false "页码" default(1)
 // @Param page_size query int false "每页数量" default(10)
-// @success 200 {object} handler.resp{data=schema.ExamListResp} "success"
+// @success 200 {object} handler.Response{data=schema.ExamListResp} "success"
 // @Router /api/v1/exams [get]
 func (ec *ExamController) ListExams(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -79,7 +79,7 @@ func (ec *ExamController) ListExams(ctx *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param uuid path string true "Exam UUID"
-// @success 200 {object} handler.resp{data=schema.ExamDetailResp} "success"
+// @success 200 {object} handler.Response{data=schema.ExamDetailResp} "success"
 // @Router /api/v1/exams/{uuid} [get]
 func (ec *ExamController) GetExam(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -106,7 +106,7 @@ func (ec *ExamController) GetExam(ctx *gin.Context) {
 // @Security BearerAuth
 // @Param uuid path string true "Exam UUID"
 // @Param req body schema.UpdateExamReq true "Update Exam Request"
-// @success 200 {object} handler.resp{data=schema.UpdateExamResp} "success"
+// @success 200 {object} handler.Response{data=schema.UpdateExamResp} "success"
 // @Router /api/v1/exams/{uuid} [put]
 func (ec *ExamController) UpdateExam(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -138,7 +138,7 @@ func (ec *ExamController) UpdateExam(ctx *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param uuid path string true "Exam UUID"
-// @success 200 {object} handler.resp "success"
+// @success 200 {object} handler.Response "success"
 // @Router /api/v1/exams/{uuid} [delete]
 func (ec *ExamController) DeleteExam(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)

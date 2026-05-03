@@ -5,15 +5,17 @@ import (
 )
 
 type resp struct {
-	Code      apperrors.ErrorCode `json:"code"`
-	Message   string              `json:"message"`
-	Data      any                 `json:"data,omitempty"`
-	RequestID string              `json:"request_id,omitempty"`
+	Code    string `json:"code"`
+	Message string `json:"message"`
+	Data    any    `json:"data,omitempty"`
+	RequestID string `json:"request_id,omitempty"`
 }
+
+type Response = resp
 
 func NewRespBodyData(code int, message string, data any) *resp {
 	return &resp{
-		Code:    apperrors.CodeSuccess,
+		Code:    string(apperrors.CodeSuccess),
 		Message: message,
 		Data:    data,
 	}
@@ -21,7 +23,7 @@ func NewRespBodyData(code int, message string, data any) *resp {
 
 func NewErrorResp(err *apperrors.AppError, requestID string) *resp {
 	return &resp{
-		Code:      err.Code,
+		Code:      string(err.Code),
 		Message:   err.Message,
 		RequestID: requestID,
 	}

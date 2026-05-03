@@ -15,10 +15,10 @@ type CreateDraftReq struct {
 }
 
 type CreateDraftInput struct {
-	Title       string    `json:"title" example:"test ddl"`
-	Description string    `json:"description" example:"from swagger"`
+	Title       string  `json:"title" example:"test ddl"`
+	Description string  `json:"description" example:"from swagger"`
 	Deadline    time.Time `json:"deadline" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
-	EarlyRemind int       `json:"early_remind" example:"30"`
+	Subject     *string `json:"subject,omitempty" example:"数学"`
 }
 
 /*
@@ -26,14 +26,14 @@ uuid
 标题
 描述
 截止时间
-截止时间前多少分钟提醒
+科目
 */
 type CreateDraftResp struct {
 	UUID        string    `json:"uuid" example:"7a178766-4b8e-4e99-ab4c-843f7dbd95fd"`
 	Title       string    `json:"title" example:"test ddl"`
 	Description string    `json:"description" example:"from swagger"`
 	Deadline    time.Time `json:"deadline" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
-	EarlyRemind int       `json:"early_remind" example:"30"`
+	Subject     string    `json:"subject" example:"数学"`
 }
 
 type UpdateDraftStatusReq struct {
@@ -71,13 +71,13 @@ func (r *PageReq) Offset() int {
 
 // DDLListItem DDL列表项
 type DDLListItem struct {
-	UUID            string    `json:"uuid" example:"7a178766-4b8e-4e99-ab4c-843f7dbd95fd"`
-	Title           string    `json:"title" example:"test ddl"`
-	Description     string    `json:"description" example:"from swagger"`
-	Deadline        time.Time `json:"deadline" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
-	EarlyRemindTime time.Time `json:"early_remind_time" swaggertype:"string" format:"date-time" example:"2026-03-24T14:00:00+08:00"`
-	Status          int       `json:"status" example:"1"`
-	CreatedAt       time.Time `json:"created_at" swaggertype:"string" format:"date-time" example:"2026-03-24T10:00:00+08:00"`
+	UUID        string    `json:"uuid" example:"7a178766-4b8e-4e99-ab4c-843f7dbd95fd"`
+	Title       string    `json:"title" example:"test ddl"`
+	Description string    `json:"description" example:"from swagger"`
+	Deadline    time.Time `json:"deadline" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
+	Subject     string    `json:"subject" example:"数学"`
+	Status      int       `json:"status" example:"1"`
+	CreatedAt   time.Time `json:"created_at" swaggertype:"string" format:"date-time" example:"2026-03-24T10:00:00+08:00"`
 }
 
 // DDLListResp DDL列表分页响应
@@ -93,7 +93,7 @@ type UpdateDDLReq struct {
 	Title       *string    `json:"title,omitempty" example:"test ddl"`
 	Description *string    `json:"description,omitempty" example:"from swagger"`
 	Deadline    *time.Time `json:"deadline,omitempty" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
-	EarlyRemind *int       `json:"early_remind,omitempty" example:"30"` // 提前多少分钟提醒
+	Subject     *string    `json:"subject,omitempty" example:"数学"`
 }
 
 // UpdateDDLResp 修改DDL响应
@@ -102,18 +102,19 @@ type UpdateDDLResp struct {
 	Title       string    `json:"title" example:"test ddl"`
 	Description string    `json:"description" example:"from swagger"`
 	Deadline    time.Time `json:"deadline" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
-	EarlyRemind int       `json:"early_remind" example:"30"`
+	Subject     string    `json:"subject" example:"数学"`
 }
 
 // DDLDetailResp DDL详情响应
 type DDLDetailResp struct {
-	UUID            string    `json:"uuid" example:"7a178766-4b8e-4e99-ab4c-843f7dbd95fd"`
-	Title           string    `json:"title" example:"test ddl"`
-	Description     string    `json:"description" example:"from swagger"`
-	Deadline        time.Time `json:"deadline" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
-	EarlyRemindTime time.Time `json:"early_remind_time" swaggertype:"string" format:"date-time" example:"2026-03-24T14:00:00+08:00"`
-	Status          int       `json:"status" example:"1"`
-	RemindSent      bool      `json:"remind_sent" example:"false"`
-	CreatedAt       time.Time `json:"created_at" swaggertype:"string" format:"date-time" example:"2026-03-24T10:00:00+08:00"`
-	UpdatedAt       time.Time `json:"updated_at" swaggertype:"string" format:"date-time" example:"2026-03-24T10:00:00+08:00"`
+	UUID        string    `json:"uuid" example:"7a178766-4b8e-4e99-ab4c-843f7dbd95fd"`
+	Title       string    `json:"title" example:"test ddl"`
+	Description string    `json:"description" example:"from swagger"`
+	Deadline    time.Time `json:"deadline" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
+	Subject     string    `json:"subject" example:"数学"`
+	Status      int       `json:"status" example:"1"`
+	Remind24h   bool      `json:"remind_24h" example:"false"`
+	Remind2h    bool      `json:"remind_2h" example:"false"`
+	CreatedAt   time.Time `json:"created_at" swaggertype:"string" format:"date-time" example:"2026-03-24T10:00:00+08:00"`
+	UpdatedAt   time.Time `json:"updated_at" swaggertype:"string" format:"date-time" example:"2026-03-24T10:00:00+08:00"`
 }

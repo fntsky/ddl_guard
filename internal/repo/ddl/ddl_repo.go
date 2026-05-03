@@ -70,16 +70,15 @@ func (r *ddlRepo) UpdateStatusByUUIDAndUser(ctx context.Context, uuid string, us
 		})
 }
 
-// GetDDLsForRemind 获取指定时间范围内需要提醒的 DDL
-// 查询条件：status = active，early_remind_time 在 [start, end] 范围内，remind_sent = false
-func (r *ddlRepo) GetDDLsForRemind(ctx context.Context, start, end time.Time) ([]*entity.DDL, error) {
+// GetDDLsForRemind24h 获取需要在24小时内提醒的DDL
+// 条件：status=active, deadline 在 [now+24h, now+24h+interval], remind_24h=false
+func (r *ddlRepo) GetDDLsForRemind24h(ctx context.Context, start, end time.Time) ([]*entity.DDL, error) {
 	var ddls []*entity.DDL
 	err := r.data.DB.Context(ctx).
 		Where("status = ?", entity.DDLStatusActive).
-		And("early_remind_time >= ?", start).
-		And("early_remind_time <= ?", end).
-		And("remind_sent = ?", false).
-		And("early_remind_time IS NOT NULL").
+		And("deadline >= ?", start).
+		And("deadline <= ?", end).
+		And("remind_24h = ?", false).
 		Find(&ddls)
 	if err != nil {
 		return nil, err
@@ -87,12 +86,37 @@ func (r *ddlRepo) GetDDLsForRemind(ctx context.Context, start, end time.Time) ([
 	return ddls, nil
 }
 
-// MarkRemindSent 标记提醒已发送
-func (r *ddlRepo) MarkRemindSent(ctx context.Context, ddlID int64) error {
+// GetDDLsForRemind2h 获取需要在2小时内提醒的DDL
+// 条件：status=active, deadline 在 [now+2h, now+2h+interval], remind_2h=false
+func (r *ddlRepo) GetDDLsForRemind2h(ctx context.Context, start, end time.Time) ([]*entity.DDL, error) {
+	var ddls []*entity.DDL
+	err := r.data.DB.Context(ctx).
+		Where("status = ?", entity.DDLStatusActive).
+		And("deadline >= ?", start).
+		And("deadline <= ?", end).
+		And("remind_2h = ?", false).
+		Find(&ddls)
+	if err != nil {
+		return nil, err
+	}
+	return ddls, nil
+}
+
+// MarkRemind24hSent 标记24小时提醒已发送
+func (r *ddlRepo) MarkRemind24hSent(ctx context.Context, ddlID int64) error {
 	_, err := r.data.DB.Context(ctx).
 		ID(ddlID).
-		Cols("remind_sent", "updated_at").
-		Update(&entity.DDL{RemindSent: true})
+		Cols("remind_24h", "updated_at").
+		Update(&entity.DDL{Remind24h: true, UpdatedAt: stime.GetCurrentTime()})
+	return err
+}
+
+// MarkRemind2hSent 标记2小时提醒已发送
+func (r *ddlRepo) MarkRemind2hSent(ctx context.Context, ddlID int64) error {
+	_, err := r.data.DB.Context(ctx).
+		ID(ddlID).
+		Cols("remind_2h", "updated_at").
+		Update(&entity.DDL{Remind2h: true, UpdatedAt: stime.GetCurrentTime()})
 	return err
 }
 

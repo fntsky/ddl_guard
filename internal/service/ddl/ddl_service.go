@@ -21,8 +21,10 @@ type DDLRepo interface {
 	GetDraftByUUID(ctx context.Context, uuid string) (*entity.DDL, bool, error)
 	UpdateStatusByUUID(ctx context.Context, uuid string, fromStatus int, toStatus int) (int64, error)
 	UpdateStatusByUUIDAndUser(ctx context.Context, uuid string, userID int64, fromStatus int, toStatus int) (int64, error)
-	GetDDLsForRemind(ctx context.Context, start, end time.Time) ([]*entity.DDL, error)
-	MarkRemindSent(ctx context.Context, ddlID int64) error
+	GetDDLsForRemind24h(ctx context.Context, start, end time.Time) ([]*entity.DDL, error)
+	GetDDLsForRemind2h(ctx context.Context, start, end time.Time) ([]*entity.DDL, error)
+	MarkRemind24hSent(ctx context.Context, ddlID int64) error
+	MarkRemind2hSent(ctx context.Context, ddlID int64) error
 	GetDDLByID(ctx context.Context, ddlID int64) (*entity.DDL, error)
 	GetExpiredDDLs(ctx context.Context, before time.Time) ([]int64, error)
 	BatchUpdateStatusToExpired(ctx context.Context, ids []int64) (int64, error)
@@ -81,7 +83,7 @@ func (s *DDLService) CreateDraft(ctx context.Context, draft *schema.CreateDraftR
 			Title:       imageDraft.Title,
 			Description: imageDraft.Description,
 			Deadline:    imageDraft.Deadline,
-			EarlyRemind: imageDraft.EarlyRemind,
+			Subject:     &imageDraft.Subject,
 		}
 	default:
 		return nil, fmt.Errorf("unsupported data_type: %s", draftType)
@@ -94,15 +96,15 @@ func (s *DDLService) CreateDraft(ctx context.Context, draft *schema.CreateDraftR
 	}
 
 	d := &entity.DDL{
-		UUID:            uuid.GenerateUUID(),
-		UserID:          userID,
-		Title:           draft.Draft.Title,
-		Description:     draft.Draft.Description,
-		DeadLine:        draft.Draft.Deadline,
-		EarlyRemindTime: stime.GetTimeBeforeMinutesFrom(draft.Draft.Deadline, draft.Draft.EarlyRemind),
-		CreatedAt:       now,
-		UpdatedAt:       now,
-		Status:          entity.DDLStatusDraft,
+		UUID:        uuid.GenerateUUID(),
+		UserID:      userID,
+		Title:       draft.Draft.Title,
+		Description: draft.Draft.Description,
+		DeadLine:    draft.Draft.Deadline,
+		Subject:     func() string { if draft.Draft.Subject != nil { return *draft.Draft.Subject }; return "" }(),
+		CreatedAt:   now,
+		UpdatedAt:   now,
+		Status:      entity.DDLStatusDraft,
 	}
 	if err := s.repo.AddDraft(ctx, d); err != nil {
 		return nil, err
@@ -112,7 +114,7 @@ func (s *DDLService) CreateDraft(ctx context.Context, draft *schema.CreateDraftR
 		Title:       d.Title,
 		Description: d.Description,
 		Deadline:    d.DeadLine,
-		EarlyRemind: draft.Draft.EarlyRemind,
+		Subject:     d.Subject,
 	}, nil
 }
 
@@ -210,13 +212,13 @@ func (s *DDLService) getDDLsByStatus(ctx context.Context, userUUID string, statu
 	list := make([]schema.DDLListItem, 0, len(ddls))
 	for _, d := range ddls {
 		list = append(list, schema.DDLListItem{
-			UUID:            d.UUID,
-			Title:           d.Title,
-			Description:     d.Description,
-			Deadline:        d.DeadLine,
-			EarlyRemindTime: d.EarlyRemindTime,
-			Status:          d.Status,
-			CreatedAt:       d.CreatedAt,
+			UUID:        d.UUID,
+			Title:       d.Title,
+			Description: d.Description,
+			Deadline:    d.DeadLine,
+			Subject:     d.Subject,
+			Status:      d.Status,
+			CreatedAt:   d.CreatedAt,
 		})
 	}
 
@@ -230,13 +232,11 @@ func (s *DDLService) getDDLsByStatus(ctx context.Context, userUUID string, statu
 
 // UpdateDDL 修改DDL
 func (s *DDLService) UpdateDDL(ctx context.Context, uuid string, req *schema.UpdateDDLReq, userUUID string) (*schema.UpdateDDLResp, error) {
-	// 获取用户ID
 	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
 	if err != nil {
 		return nil, err
 	}
 
-	// 获取DDL
 	ddl, err := s.repo.GetDDLByUUIDAndUser(ctx, uuid, userID)
 	if err != nil {
 		return nil, err
@@ -245,12 +245,10 @@ func (s *DDLService) UpdateDDL(ctx context.Context, uuid string, req *schema.Upd
 		return nil, apperrors.ErrDDLNotFound
 	}
 
-	// 只允许修改 active 状态的 DDL
 	if ddl.Status != entity.DDLStatusActive {
 		return nil, apperrors.ErrDDLNotActive
 	}
 
-	// 验证截止时间不能早于当前时间
 	now := stime.GetCurrentTime()
 	effectiveDeadline := ddl.DeadLine
 	if req.Deadline != nil {
@@ -260,27 +258,6 @@ func (s *DDLService) UpdateDDL(ctx context.Context, uuid string, req *schema.Upd
 		return nil, apperrors.ErrDeadlineInPast
 	}
 
-	// 计算新的 early_remind_time
-	var newEarlyRemindTime time.Time
-	var earlyRemind int
-	if req.EarlyRemind != nil {
-		earlyRemind = *req.EarlyRemind
-		if req.Deadline != nil {
-			newEarlyRemindTime = stime.GetTimeBeforeMinutesFrom(*req.Deadline, earlyRemind)
-		} else {
-			newEarlyRemindTime = stime.GetTimeBeforeMinutesFrom(ddl.DeadLine, earlyRemind)
-		}
-	} else if req.Deadline != nil {
-		// deadline 变了但 early_remind 没变，重新计算 early_remind_time
-		oldRemindMinutes := int(ddl.DeadLine.Sub(ddl.EarlyRemindTime).Minutes())
-		earlyRemind = oldRemindMinutes
-		newEarlyRemindTime = stime.GetTimeBeforeMinutesFrom(*req.Deadline, earlyRemind)
-	} else {
-		earlyRemind = int(ddl.DeadLine.Sub(ddl.EarlyRemindTime).Minutes())
-		newEarlyRemindTime = ddl.EarlyRemindTime
-	}
-
-	// 更新字段
 	needResetRemind := false
 	if req.Title != nil {
 		ddl.Title = *req.Title
@@ -294,20 +271,16 @@ func (s *DDLService) UpdateDDL(ctx context.Context, uuid string, req *schema.Upd
 		}
 		ddl.DeadLine = *req.Deadline
 	}
-	if req.EarlyRemind != nil {
-		needResetRemind = true
-		ddl.EarlyRemindTime = newEarlyRemindTime
-	} else if req.Deadline != nil {
-		ddl.EarlyRemindTime = newEarlyRemindTime
+	if req.Subject != nil {
+		ddl.Subject = *req.Subject
 	}
 
-	// 如果时间相关字段变了，重置提醒状态
 	if needResetRemind {
-		ddl.RemindSent = false
+		ddl.Remind24h = false
+		ddl.Remind2h = false
 	}
 	ddl.UpdatedAt = now
 
-	// 保存
 	if err := s.repo.UpdateDDL(ctx, ddl); err != nil {
 		return nil, err
 	}
@@ -317,19 +290,17 @@ func (s *DDLService) UpdateDDL(ctx context.Context, uuid string, req *schema.Upd
 		Title:       ddl.Title,
 		Description: ddl.Description,
 		Deadline:    ddl.DeadLine,
-		EarlyRemind: earlyRemind,
+		Subject:     ddl.Subject,
 	}, nil
 }
 
 // GetDDLDetail 获取DDL详情
 func (s *DDLService) GetDDLDetail(ctx context.Context, uuid string, userUUID string) (*schema.DDLDetailResp, error) {
-	// 获取用户ID
 	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
 	if err != nil {
 		return nil, err
 	}
 
-	// 获取DDL
 	ddl, err := s.repo.GetDDLByUUIDAndUser(ctx, uuid, userID)
 	if err != nil {
 		return nil, err
@@ -339,14 +310,15 @@ func (s *DDLService) GetDDLDetail(ctx context.Context, uuid string, userUUID str
 	}
 
 	return &schema.DDLDetailResp{
-		UUID:            ddl.UUID,
-		Title:           ddl.Title,
-		Description:     ddl.Description,
-		Deadline:        ddl.DeadLine,
-		EarlyRemindTime: ddl.EarlyRemindTime,
-		Status:          ddl.Status,
-		RemindSent:      ddl.RemindSent,
-		CreatedAt:       ddl.CreatedAt,
-		UpdatedAt:       ddl.UpdatedAt,
+		UUID:        ddl.UUID,
+		Title:       ddl.Title,
+		Description: ddl.Description,
+		Deadline:    ddl.DeadLine,
+		Subject:     ddl.Subject,
+		Status:      ddl.Status,
+		Remind24h:   ddl.Remind24h,
+		Remind2h:    ddl.Remind2h,
+		CreatedAt:   ddl.CreatedAt,
+		UpdatedAt:   ddl.UpdatedAt,
 	}, nil
 }

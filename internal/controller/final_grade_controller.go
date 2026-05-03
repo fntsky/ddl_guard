@@ -27,7 +27,7 @@ func NewFinalGradeController(fgService *final_grade.FinalGradeService) *FinalGra
 // @Produce json
 // @Security BearerAuth
 // @Param req body schema.CreateFinalGradeReq true "Create Final Grade Request" SchemaExample({"name":"2024春季期末成绩","exam_ratio":40,"daily_ratio":60})
-// @success 200 {object} handler.resp{data=schema.CreateFinalGradeResp} "success"
+// @success 200 {object} handler.Response{data=schema.CreateFinalGradeResp} "success"
 // @Router /api/v1/final-grades [post]
 func (c *FinalGradeController) CreateFinalGrade(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -53,7 +53,7 @@ func (c *FinalGradeController) CreateFinalGrade(ctx *gin.Context) {
 // @Security BearerAuth
 // @Param page query int false "页码" default(1)
 // @Param page_size query int false "每页数量" default(10)
-// @success 200 {object} handler.resp{data=schema.FinalGradeListResp} "success"
+// @success 200 {object} handler.Response{data=schema.FinalGradeListResp} "success"
 // @Router /api/v1/final-grades [get]
 func (c *FinalGradeController) ListFinalGrades(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -79,7 +79,7 @@ func (c *FinalGradeController) ListFinalGrades(ctx *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param uuid path string true "Final Grade UUID"
-// @success 200 {object} handler.resp{data=schema.FinalGradeDetailResp} "success"
+// @success 200 {object} handler.Response{data=schema.FinalGradeDetailResp} "success"
 // @Router /api/v1/final-grades/{uuid} [get]
 func (c *FinalGradeController) GetFinalGrade(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -106,7 +106,7 @@ func (c *FinalGradeController) GetFinalGrade(ctx *gin.Context) {
 // @Security BearerAuth
 // @Param uuid path string true "Final Grade UUID"
 // @Param req body schema.UpdateFinalGradeReq true "Update Final Grade Request"
-// @success 200 {object} handler.resp{data=schema.UpdateFinalGradeResp} "success"
+// @success 200 {object} handler.Response{data=schema.UpdateFinalGradeResp} "success"
 // @Router /api/v1/final-grades/{uuid} [put]
 func (c *FinalGradeController) UpdateFinalGrade(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -138,7 +138,7 @@ func (c *FinalGradeController) UpdateFinalGrade(ctx *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param uuid path string true "Final Grade UUID"
-// @success 200 {object} handler.resp "success"
+// @success 200 {object} handler.Response "success"
 // @Router /api/v1/final-grades/{uuid} [delete]
 func (c *FinalGradeController) DeleteFinalGrade(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)

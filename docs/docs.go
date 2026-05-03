@@ -46,7 +46,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -57,6 +57,99 @@ const docTemplate = `{
                                     }
                                 }
                             ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/daily-scores/{uuid}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "更新平时成绩的信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DailyScore"
+                ],
+                "summary": "更新平时成绩",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Daily Score UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Daily Score Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.UpdateDailyScoreReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.UpdateDailyScoreResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "删除平时成绩",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DailyScore"
+                ],
+                "summary": "删除平时成绩",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Daily Score UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
                         }
                     }
                 }
@@ -102,7 +195,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -153,7 +246,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -211,7 +304,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -267,7 +360,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -316,7 +409,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -372,7 +465,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -417,7 +510,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/handler.resp"
+                            "$ref": "#/definitions/handler.Response"
                         }
                     }
                 }
@@ -463,7 +556,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -512,7 +605,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -561,7 +654,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -617,7 +710,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -662,7 +755,357 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/handler.resp"
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/final-grades": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "分页获取用户所有期末成绩记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FinalGrade"
+                ],
+                "summary": "获取期末成绩列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.FinalGradeListResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "创建一个新的期末成绩记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FinalGrade"
+                ],
+                "summary": "创建期末成绩",
+                "parameters": [
+                    {
+                        "description": "Create Final Grade Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.CreateFinalGradeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.CreateFinalGradeResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/final-grades/{final_grade_uuid}/daily-scores": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "获取指定期末成绩记录下的所有平时成绩",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DailyScore"
+                ],
+                "summary": "获取平时成绩列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Final Grade UUID",
+                        "name": "final_grade_uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.DailyScoreListResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "为指定期末成绩记录添加平时成绩（小测或作业）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DailyScore"
+                ],
+                "summary": "创建平时成绩",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Final Grade UUID",
+                        "name": "final_grade_uuid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Create Daily Score Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.CreateDailyScoreReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.CreateDailyScoreResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/final-grades/{uuid}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "获取单个期末成绩记录的详细信息，包含关联的平时成绩",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FinalGrade"
+                ],
+                "summary": "获取期末成绩详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Final Grade UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.FinalGradeDetailResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "更新期末成绩记录的信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FinalGrade"
+                ],
+                "summary": "更新期末成绩",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Final Grade UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Final Grade Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.UpdateFinalGradeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.UpdateFinalGradeResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "删除期末成绩记录及其关联的平时成绩",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FinalGrade"
+                ],
+                "summary": "删除期末成绩",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Final Grade UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
                         }
                     }
                 }
@@ -696,7 +1139,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/handler.resp"
+                            "$ref": "#/definitions/handler.Response"
                         }
                     }
                 }
@@ -730,25 +1173,25 @@ const docTemplate = `{
                     "200": {
                         "description": "密码修改成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.resp"
+                            "$ref": "#/definitions/handler.Response"
                         }
                     },
                     "400": {
                         "description": "请求参数错误或验证码无效",
                         "schema": {
-                            "$ref": "#/definitions/handler.resp"
+                            "$ref": "#/definitions/handler.Response"
                         }
                     },
                     "404": {
                         "description": "用户不存在",
                         "schema": {
-                            "$ref": "#/definitions/handler.resp"
+                            "$ref": "#/definitions/handler.Response"
                         }
                     },
                     "500": {
                         "description": "服务器内部错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.resp"
+                            "$ref": "#/definitions/handler.Response"
                         }
                     }
                 }
@@ -782,19 +1225,19 @@ const docTemplate = `{
                     "200": {
                         "description": "验证码发送成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.resp"
+                            "$ref": "#/definitions/handler.Response"
                         }
                     },
                     "400": {
                         "description": "请求参数错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.resp"
+                            "$ref": "#/definitions/handler.Response"
                         }
                     },
                     "500": {
                         "description": "服务器内部错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.resp"
+                            "$ref": "#/definitions/handler.Response"
                         }
                     }
                 }
@@ -830,7 +1273,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -876,7 +1319,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.resp"
+                                    "$ref": "#/definitions/handler.Response"
                                 },
                                 {
                                     "type": "object",
@@ -894,14 +1337,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.resp": {
+        "handler.Response": {
             "type": "object",
             "properties": {
                 "code": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "data": {},
                 "message": {
+                    "type": "string"
+                },
+                "request_id": {
                     "type": "string"
                 }
             }
@@ -937,6 +1383,66 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.CreateDailyScoreReq": {
+            "type": "object",
+            "required": [
+                "name",
+                "type"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "小测1"
+                },
+                "ratio": {
+                    "description": "占平时成绩的比例",
+                    "type": "integer",
+                    "example": 20
+                },
+                "score": {
+                    "type": "number",
+                    "example": 90
+                },
+                "type": {
+                    "description": "quiz 或 homework",
+                    "type": "string",
+                    "enum": [
+                        "quiz",
+                        "homework"
+                    ],
+                    "example": "quiz"
+                }
+            }
+        },
+        "schema.CreateDailyScoreResp": {
+            "type": "object",
+            "properties": {
+                "final_grade_id": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "小测1"
+                },
+                "ratio": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "score": {
+                    "type": "number",
+                    "example": 90
+                },
+                "type": {
+                    "type": "string",
+                    "example": "quiz"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
         "schema.CreateDraftInput": {
             "type": "object",
             "properties": {
@@ -949,9 +1455,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "from swagger"
                 },
-                "early_remind": {
-                    "type": "integer",
-                    "example": 30
+                "subject": {
+                    "type": "string",
+                    "example": "数学"
                 },
                 "title": {
                     "type": "string",
@@ -988,9 +1494,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "from swagger"
                 },
-                "early_remind": {
-                    "type": "integer",
-                    "example": 30
+                "subject": {
+                    "type": "string",
+                    "example": "数学"
                 },
                 "title": {
                     "type": "string",
@@ -1065,6 +1571,58 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.CreateFinalGradeReq": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "daily_ratio": {
+                    "description": "平时成绩占比（默认60）",
+                    "type": "integer",
+                    "example": 60
+                },
+                "exam_ratio": {
+                    "description": "期末考试占比（默认40）",
+                    "type": "integer",
+                    "example": 40
+                },
+                "name": {
+                    "description": "期末成绩名称",
+                    "type": "string",
+                    "example": "2024春季期末成绩"
+                }
+            }
+        },
+        "schema.CreateFinalGradeResp": {
+            "type": "object",
+            "properties": {
+                "daily_ratio": {
+                    "type": "integer",
+                    "example": 60
+                },
+                "exam_ratio": {
+                    "type": "integer",
+                    "example": 40
+                },
+                "exam_score": {
+                    "type": "number",
+                    "example": 85.5
+                },
+                "final_score": {
+                    "type": "number",
+                    "example": 87
+                },
+                "name": {
+                    "type": "string",
+                    "example": "2024春季期末成绩"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
         "schema.DDLDetailResp": {
             "type": "object",
             "properties": {
@@ -1082,18 +1640,21 @@ const docTemplate = `{
                     "type": "string",
                     "example": "from swagger"
                 },
-                "early_remind_time": {
-                    "type": "string",
-                    "format": "date-time",
-                    "example": "2026-03-24T14:00:00+08:00"
+                "remind_24h": {
+                    "type": "boolean",
+                    "example": false
                 },
-                "remind_sent": {
+                "remind_2h": {
                     "type": "boolean",
                     "example": false
                 },
                 "status": {
                     "type": "integer",
                     "example": 1
+                },
+                "subject": {
+                    "type": "string",
+                    "example": "数学"
                 },
                 "title": {
                     "type": "string",
@@ -1127,14 +1688,13 @@ const docTemplate = `{
                     "type": "string",
                     "example": "from swagger"
                 },
-                "early_remind_time": {
-                    "type": "string",
-                    "format": "date-time",
-                    "example": "2026-03-24T14:00:00+08:00"
-                },
                 "status": {
                     "type": "integer",
                     "example": 1
+                },
+                "subject": {
+                    "type": "string",
+                    "example": "数学"
                 },
                 "title": {
                     "type": "string",
@@ -1153,6 +1713,82 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.DDLListItem"
+                    }
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.DailyScoreItem": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "小测1"
+                },
+                "ratio": {
+                    "description": "占平时成绩的比例",
+                    "type": "integer",
+                    "example": 20
+                },
+                "score": {
+                    "type": "number",
+                    "example": 90
+                },
+                "type": {
+                    "description": "quiz 或 homework",
+                    "type": "string",
+                    "example": "quiz"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.DailyScoreListItem": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-04-20T10:00:00+08:00"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "小测1"
+                },
+                "ratio": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "score": {
+                    "type": "number",
+                    "example": 90
+                },
+                "type": {
+                    "type": "string",
+                    "example": "quiz"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.DailyScoreListResp": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.DailyScoreListItem"
                     }
                 },
                 "page": {
@@ -1246,6 +1882,103 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/schema.ExamListItem"
+                    }
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.FinalGradeDetailResp": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-04-20T10:00:00+08:00"
+                },
+                "daily_ratio": {
+                    "type": "integer",
+                    "example": 60
+                },
+                "daily_scores": {
+                    "description": "关联的平时成绩列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.DailyScoreItem"
+                    }
+                },
+                "exam_ratio": {
+                    "type": "integer",
+                    "example": 40
+                },
+                "exam_score": {
+                    "type": "number",
+                    "example": 85.5
+                },
+                "final_score": {
+                    "type": "number",
+                    "example": 87
+                },
+                "name": {
+                    "type": "string",
+                    "example": "2024春季期末成绩"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-04-20T10:00:00+08:00"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.FinalGradeListItem": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-04-20T10:00:00+08:00"
+                },
+                "daily_ratio": {
+                    "type": "integer",
+                    "example": 60
+                },
+                "exam_ratio": {
+                    "type": "integer",
+                    "example": 40
+                },
+                "exam_score": {
+                    "type": "number",
+                    "example": 85.5
+                },
+                "final_score": {
+                    "type": "number",
+                    "example": 87
+                },
+                "name": {
+                    "type": "string",
+                    "example": "2024春季期末成绩"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.FinalGradeListResp": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.FinalGradeListItem"
                     }
                 },
                 "page": {
@@ -1410,10 +2143,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "from swagger"
                 },
-                "early_remind": {
-                    "description": "提前多少分钟提醒",
-                    "type": "integer",
-                    "example": 30
+                "subject": {
+                    "type": "string",
+                    "example": "数学"
                 },
                 "title": {
                     "type": "string",
@@ -1433,13 +2165,59 @@ const docTemplate = `{
                     "type": "string",
                     "example": "from swagger"
                 },
-                "early_remind": {
-                    "type": "integer",
-                    "example": 30
+                "subject": {
+                    "type": "string",
+                    "example": "数学"
                 },
                 "title": {
                     "type": "string",
                     "example": "test ddl"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.UpdateDailyScoreReq": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "小测1"
+                },
+                "ratio": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "score": {
+                    "type": "number",
+                    "example": 90
+                },
+                "type": {
+                    "type": "string",
+                    "example": "quiz"
+                }
+            }
+        },
+        "schema.UpdateDailyScoreResp": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "小测1"
+                },
+                "ratio": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "score": {
+                    "type": "number",
+                    "example": 90
+                },
+                "type": {
+                    "type": "string",
+                    "example": "quiz"
                 },
                 "uuid": {
                     "type": "string",
@@ -1523,6 +2301,60 @@ const docTemplate = `{
                     "type": "string",
                     "format": "date-time",
                     "example": "2026-04-26T09:00:00+08:00"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.UpdateFinalGradeReq": {
+            "type": "object",
+            "properties": {
+                "daily_ratio": {
+                    "type": "integer",
+                    "example": 60
+                },
+                "exam_ratio": {
+                    "type": "integer",
+                    "example": 40
+                },
+                "exam_score": {
+                    "type": "number",
+                    "example": 85.5
+                },
+                "final_score": {
+                    "type": "number",
+                    "example": 87
+                },
+                "name": {
+                    "type": "string",
+                    "example": "2024春季期末成绩"
+                }
+            }
+        },
+        "schema.UpdateFinalGradeResp": {
+            "type": "object",
+            "properties": {
+                "daily_ratio": {
+                    "type": "integer",
+                    "example": 60
+                },
+                "exam_ratio": {
+                    "type": "integer",
+                    "example": 40
+                },
+                "exam_score": {
+                    "type": "number",
+                    "example": 85.5
+                },
+                "final_score": {
+                    "type": "number",
+                    "example": 87
+                },
+                "name": {
+                    "type": "string",
+                    "example": "2024春季期末成绩"
                 },
                 "uuid": {
                     "type": "string",

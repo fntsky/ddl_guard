@@ -27,7 +27,7 @@ func NewDDLController(ddl_service *ddl.DDLService) *DDLController {
 // @Produce json
 // @Security BearerAuth
 // @Param req body schema.CreateDraftReq true "Create Draft Request" SchemaExample({"data_type":"picture","raw_base64":"iVBORw0KGgoAAAANSUhEUgAA...","draft":{"title":"test ddl","description":"from swagger","deadline":"2026-03-24T14:30:00+08:00","early_remind":30}})
-// @success 200 {object} handler.resp{data=schema.CreateDraftResp} "success"
+// @success 200 {object} handler.Response{data=schema.CreateDraftResp} "success"
 // @Router /api/v1/ddl/draft [post]
 func (dc *DDLController) CreateDraft(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -53,7 +53,7 @@ func (dc *DDLController) CreateDraft(ctx *gin.Context) {
 // @Security BearerAuth
 // @Param uuid path string true "Draft UUID"
 // @Param req body schema.UpdateDraftStatusReq true "Update Draft Status Request" SchemaExample({"status":"active"})
-// @success 200 {object} handler.resp{data=schema.UpdateDraftStatusResp} "success"
+// @success 200 {object} handler.Response{data=schema.UpdateDraftStatusResp} "success"
 // @Router /api/v1/ddl/drafts/{uuid} [patch]
 func (dc *DDLController) ApproveDraft(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -84,7 +84,7 @@ func (dc *DDLController) ApproveDraft(ctx *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param uuid path string true "DDL UUID"
-// @success 200 {object} handler.resp "success"
+// @success 200 {object} handler.Response "success"
 // @Router /api/v1/ddl/{uuid} [delete]
 func (dc *DDLController) DeleteDDL(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -111,7 +111,7 @@ func (dc *DDLController) DeleteDDL(ctx *gin.Context) {
 // @Security BearerAuth
 // @Param page query int false "页码" default(1)
 // @Param page_size query int false "每页数量" default(10)
-// @success 200 {object} handler.resp{data=schema.DDLListResp} "success"
+// @success 200 {object} handler.Response{data=schema.DDLListResp} "success"
 // @Router /api/v1/ddl/active [get]
 func (dc *DDLController) GetActiveDDLs(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -138,7 +138,7 @@ func (dc *DDLController) GetActiveDDLs(ctx *gin.Context) {
 // @Security BearerAuth
 // @Param page query int false "页码" default(1)
 // @Param page_size query int false "每页数量" default(10)
-// @success 200 {object} handler.resp{data=schema.DDLListResp} "success"
+// @success 200 {object} handler.Response{data=schema.DDLListResp} "success"
 // @Router /api/v1/ddl/expired [get]
 func (dc *DDLController) GetExpiredDDLs(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -165,7 +165,7 @@ func (dc *DDLController) GetExpiredDDLs(ctx *gin.Context) {
 // @Security BearerAuth
 // @Param uuid path string true "DDL UUID"
 // @Param req body schema.UpdateDDLReq true "Update DDL Request"
-// @success 200 {object} handler.resp{data=schema.UpdateDDLResp} "success"
+// @success 200 {object} handler.Response{data=schema.UpdateDDLResp} "success"
 // @Router /api/v1/ddl/{uuid} [put]
 func (dc *DDLController) UpdateDDL(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)
@@ -197,7 +197,7 @@ func (dc *DDLController) UpdateDDL(ctx *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param uuid path string true "DDL UUID"
-// @success 200 {object} handler.resp{data=schema.DDLDetailResp} "success"
+// @success 200 {object} handler.Response{data=schema.DDLDetailResp} "success"
 // @Router /api/v1/ddl/{uuid} [get]
 func (dc *DDLController) GetDDLDetail(ctx *gin.Context) {
 	userClaims, ok := middleware.GetUserFromGin(ctx)

@@ -21,7 +21,7 @@ func NewAuthController(authService *authsvc.AuthService) *AuthController {
 // @Accept json
 // @Produce json
 // @Param req body schema.RefreshTokenReq true "Refresh Token Request"
-// @success 200 {object} handler.resp{data=schema.TokenPairResp} "success"
+// @success 200 {object} handler.Response{data=schema.TokenPairResp} "success"
 // @Router /api/v1/auth/refresh-tokens [post]
 func (ac *AuthController) RefreshToken(ctx *gin.Context) {
 	req := &schema.RefreshTokenReq{}

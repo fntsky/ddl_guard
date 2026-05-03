@@ -11,13 +11,13 @@ import (
 	"github.com/fntsky/ddl_guard/internal/schema"
 )
 
-const visionPrompt = "You are a DDL assistant. Read the image and output STRICT JSON only with keys: title, description, deadline, early_remind. deadline must be RFC3339 format with timezone (example: 2026-03-24T14:30:00+08:00). early_remind must be an integer number of minutes. Do not output markdown."
+const visionPrompt = "You are a DDL assistant. Read the image and output STRICT JSON only with keys: title, description, deadline, subject. deadline must be RFC3339 format with timezone (example: 2026-03-24T14:30:00+08:00). subject is optional and should be the course/subject name. Do not output markdown."
 
 type draftVisionResult struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Deadline    string `json:"deadline"`
-	EarlyRemind int    `json:"early_remind"`
+	Subject     string `json:"subject"`
 }
 
 func VisionPrompt() string {
@@ -52,6 +52,6 @@ func ParseDraftFromModelJSON(raw string) (schema.CreateDraftResp, error) {
 		Title:       strings.TrimSpace(out.Title),
 		Description: strings.TrimSpace(out.Description),
 		Deadline:    deadline,
-		EarlyRemind: out.EarlyRemind,
+		Subject:     strings.TrimSpace(out.Subject),
 	}, nil
 }

@@ -1,10 +1,12 @@
 definitions:
-  handler.resp:
+  handler.Response:
     properties:
       code:
-        type: integer
+        type: string
       data: {}
       message:
+        type: string
+      request_id:
         type: string
     type: object
   schema.ChangePasswordReq:
@@ -30,6 +32,50 @@ definitions:
     - target
     - type
     type: object
+  schema.CreateDailyScoreReq:
+    properties:
+      name:
+        example: 小测1
+        type: string
+      ratio:
+        description: 占平时成绩的比例
+        example: 20
+        type: integer
+      score:
+        example: 90
+        type: number
+      type:
+        description: quiz 或 homework
+        enum:
+        - quiz
+        - homework
+        example: quiz
+        type: string
+    required:
+    - name
+    - type
+    type: object
+  schema.CreateDailyScoreResp:
+    properties:
+      final_grade_id:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+      name:
+        example: 小测1
+        type: string
+      ratio:
+        example: 20
+        type: integer
+      score:
+        example: 90
+        type: number
+      type:
+        example: quiz
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
   schema.CreateDraftInput:
     properties:
       deadline:
@@ -39,9 +85,9 @@ definitions:
       description:
         example: from swagger
         type: string
-      early_remind:
-        example: 30
-        type: integer
+      subject:
+        example: 数学
+        type: string
       title:
         example: test ddl
         type: string
@@ -67,9 +113,9 @@ definitions:
       description:
         example: from swagger
         type: string
-      early_remind:
-        example: 30
-        type: integer
+      subject:
+        example: 数学
+        type: string
       title:
         example: test ddl
         type: string
@@ -124,6 +170,44 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
+  schema.CreateFinalGradeReq:
+    properties:
+      daily_ratio:
+        description: 平时成绩占比（默认60）
+        example: 60
+        type: integer
+      exam_ratio:
+        description: 期末考试占比（默认40）
+        example: 40
+        type: integer
+      name:
+        description: 期末成绩名称
+        example: 2024春季期末成绩
+        type: string
+    required:
+    - name
+    type: object
+  schema.CreateFinalGradeResp:
+    properties:
+      daily_ratio:
+        example: 60
+        type: integer
+      exam_ratio:
+        example: 40
+        type: integer
+      exam_score:
+        example: 85.5
+        type: number
+      final_score:
+        example: 87
+        type: number
+      name:
+        example: 2024春季期末成绩
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
   schema.DDLDetailResp:
     properties:
       created_at:
@@ -137,16 +221,18 @@ definitions:
       description:
         example: from swagger
         type: string
-      early_remind_time:
-        example: "2026-03-24T14:00:00+08:00"
-        format: date-time
-        type: string
-      remind_sent:
+      remind_24h:
+        example: false
+        type: boolean
+      remind_2h:
         example: false
         type: boolean
       status:
         example: 1
         type: integer
+      subject:
+        example: 数学
+        type: string
       title:
         example: test ddl
         type: string
@@ -171,13 +257,12 @@ definitions:
       description:
         example: from swagger
         type: string
-      early_remind_time:
-        example: "2026-03-24T14:00:00+08:00"
-        format: date-time
-        type: string
       status:
         example: 1
         type: integer
+      subject:
+        example: 数学
+        type: string
       title:
         example: test ddl
         type: string
@@ -190,6 +275,60 @@ definitions:
       list:
         items:
           $ref: '#/definitions/schema.DDLListItem'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  schema.DailyScoreItem:
+    properties:
+      name:
+        example: 小测1
+        type: string
+      ratio:
+        description: 占平时成绩的比例
+        example: 20
+        type: integer
+      score:
+        example: 90
+        type: number
+      type:
+        description: quiz 或 homework
+        example: quiz
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.DailyScoreListItem:
+    properties:
+      created_at:
+        example: "2026-04-20T10:00:00+08:00"
+        type: string
+      name:
+        example: 小测1
+        type: string
+      ratio:
+        example: 20
+        type: integer
+      score:
+        example: 90
+        type: number
+      type:
+        example: quiz
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.DailyScoreListResp:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/schema.DailyScoreListItem'
         type: array
       page:
         type: integer
@@ -258,6 +397,75 @@ definitions:
       list:
         items:
           $ref: '#/definitions/schema.ExamListItem'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  schema.FinalGradeDetailResp:
+    properties:
+      created_at:
+        example: "2026-04-20T10:00:00+08:00"
+        type: string
+      daily_ratio:
+        example: 60
+        type: integer
+      daily_scores:
+        description: 关联的平时成绩列表
+        items:
+          $ref: '#/definitions/schema.DailyScoreItem'
+        type: array
+      exam_ratio:
+        example: 40
+        type: integer
+      exam_score:
+        example: 85.5
+        type: number
+      final_score:
+        example: 87
+        type: number
+      name:
+        example: 2024春季期末成绩
+        type: string
+      updated_at:
+        example: "2026-04-20T10:00:00+08:00"
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.FinalGradeListItem:
+    properties:
+      created_at:
+        example: "2026-04-20T10:00:00+08:00"
+        type: string
+      daily_ratio:
+        example: 60
+        type: integer
+      exam_ratio:
+        example: 40
+        type: integer
+      exam_score:
+        example: 85.5
+        type: number
+      final_score:
+        example: 87
+        type: number
+      name:
+        example: 2024春季期末成绩
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.FinalGradeListResp:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/schema.FinalGradeListItem'
         type: array
       page:
         type: integer
@@ -373,10 +581,9 @@ definitions:
       description:
         example: from swagger
         type: string
-      early_remind:
-        description: 提前多少分钟提醒
-        example: 30
-        type: integer
+      subject:
+        example: 数学
+        type: string
       title:
         example: test ddl
         type: string
@@ -390,11 +597,44 @@ definitions:
       description:
         example: from swagger
         type: string
-      early_remind:
-        example: 30
-        type: integer
+      subject:
+        example: 数学
+        type: string
       title:
         example: test ddl
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.UpdateDailyScoreReq:
+    properties:
+      name:
+        example: 小测1
+        type: string
+      ratio:
+        example: 20
+        type: integer
+      score:
+        example: 90
+        type: number
+      type:
+        example: quiz
+        type: string
+    type: object
+  schema.UpdateDailyScoreResp:
+    properties:
+      name:
+        example: 小测1
+        type: string
+      ratio:
+        example: 20
+        type: integer
+      score:
+        example: 90
+        type: number
+      type:
+        example: quiz
         type: string
       uuid:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
@@ -460,6 +700,45 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
+  schema.UpdateFinalGradeReq:
+    properties:
+      daily_ratio:
+        example: 60
+        type: integer
+      exam_ratio:
+        example: 40
+        type: integer
+      exam_score:
+        example: 85.5
+        type: number
+      final_score:
+        example: 87
+        type: number
+      name:
+        example: 2024春季期末成绩
+        type: string
+    type: object
+  schema.UpdateFinalGradeResp:
+    properties:
+      daily_ratio:
+        example: 60
+        type: integer
+      exam_ratio:
+        example: 40
+        type: integer
+      exam_score:
+        example: 85.5
+        type: number
+      final_score:
+        example: 87
+        type: number
+      name:
+        example: 2024春季期末成绩
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
 info:
   contact: {}
   description: This is a DDL Guard server API.
@@ -486,7 +765,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.TokenPairResp'
@@ -494,6 +773,62 @@ paths:
       summary: 刷新Token
       tags:
       - Auth
+  /api/v1/daily-scores/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除平时成绩
+      parameters:
+      - description: Daily Score UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/handler.Response'
+      security:
+      - BearerAuth: []
+      summary: 删除平时成绩
+      tags:
+      - DailyScore
+    put:
+      consumes:
+      - application/json
+      description: 更新平时成绩的信息
+      parameters:
+      - description: Daily Score UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update Daily Score Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UpdateDailyScoreReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.UpdateDailyScoreResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 更新平时成绩
+      tags:
+      - DailyScore
   /api/v1/ddl/{uuid}:
     delete:
       consumes:
@@ -511,7 +846,7 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/handler.resp'
+            $ref: '#/definitions/handler.Response'
       security:
       - BearerAuth: []
       summary: 删除DDL
@@ -534,7 +869,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.DDLDetailResp'
@@ -567,7 +902,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.UpdateDDLResp'
@@ -600,7 +935,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.DDLListResp'
@@ -629,7 +964,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.CreateDraftResp'
@@ -663,7 +998,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.UpdateDraftStatusResp'
@@ -696,7 +1031,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.DDLListResp'
@@ -729,7 +1064,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.ExamListResp'
@@ -757,7 +1092,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.CreateExamResp'
@@ -784,7 +1119,7 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/handler.resp'
+            $ref: '#/definitions/handler.Response'
       security:
       - BearerAuth: []
       summary: 删除考试
@@ -807,7 +1142,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.ExamDetailResp'
@@ -840,7 +1175,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.UpdateExamResp'
@@ -850,6 +1185,211 @@ paths:
       summary: 更新考试
       tags:
       - Exam
+  /api/v1/final-grades:
+    get:
+      consumes:
+      - application/json
+      description: 分页获取用户所有期末成绩记录
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.FinalGradeListResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 获取期末成绩列表
+      tags:
+      - FinalGrade
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新的期末成绩记录
+      parameters:
+      - description: Create Final Grade Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.CreateFinalGradeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.CreateFinalGradeResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 创建期末成绩
+      tags:
+      - FinalGrade
+  /api/v1/final-grades/{final_grade_uuid}/daily-scores:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定期末成绩记录下的所有平时成绩
+      parameters:
+      - description: Final Grade UUID
+        in: path
+        name: final_grade_uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.DailyScoreListResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 获取平时成绩列表
+      tags:
+      - DailyScore
+    post:
+      consumes:
+      - application/json
+      description: 为指定期末成绩记录添加平时成绩（小测或作业）
+      parameters:
+      - description: Final Grade UUID
+        in: path
+        name: final_grade_uuid
+        required: true
+        type: string
+      - description: Create Daily Score Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.CreateDailyScoreReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.CreateDailyScoreResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 创建平时成绩
+      tags:
+      - DailyScore
+  /api/v1/final-grades/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除期末成绩记录及其关联的平时成绩
+      parameters:
+      - description: Final Grade UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/handler.Response'
+      security:
+      - BearerAuth: []
+      summary: 删除期末成绩
+      tags:
+      - FinalGrade
+    get:
+      consumes:
+      - application/json
+      description: 获取单个期末成绩记录的详细信息，包含关联的平时成绩
+      parameters:
+      - description: Final Grade UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.FinalGradeDetailResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 获取期末成绩详情
+      tags:
+      - FinalGrade
+    put:
+      consumes:
+      - application/json
+      description: 更新期末成绩记录的信息
+      parameters:
+      - description: Final Grade UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update Final Grade Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UpdateFinalGradeReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.UpdateFinalGradeResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 更新期末成绩
+      tags:
+      - FinalGrade
   /api/v1/users/email/verification-codes:
     post:
       consumes:
@@ -868,7 +1408,7 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/handler.resp'
+            $ref: '#/definitions/handler.Response'
       summary: 发送邮箱验证码
       tags:
       - User
@@ -895,19 +1435,19 @@ paths:
         "200":
           description: 密码修改成功
           schema:
-            $ref: '#/definitions/handler.resp'
+            $ref: '#/definitions/handler.Response'
         "400":
           description: 请求参数错误或验证码无效
           schema:
-            $ref: '#/definitions/handler.resp'
+            $ref: '#/definitions/handler.Response'
         "404":
           description: 用户不存在
           schema:
-            $ref: '#/definitions/handler.resp'
+            $ref: '#/definitions/handler.Response'
         "500":
           description: 服务器内部错误
           schema:
-            $ref: '#/definitions/handler.resp'
+            $ref: '#/definitions/handler.Response'
       summary: 通过验证码修改密码
       tags:
       - User
@@ -932,15 +1472,15 @@ paths:
         "200":
           description: 验证码发送成功
           schema:
-            $ref: '#/definitions/handler.resp'
+            $ref: '#/definitions/handler.Response'
         "400":
           description: 请求参数错误
           schema:
-            $ref: '#/definitions/handler.resp'
+            $ref: '#/definitions/handler.Response'
         "500":
           description: 服务器内部错误
           schema:
-            $ref: '#/definitions/handler.resp'
+            $ref: '#/definitions/handler.Response'
       summary: 发送密码重置验证码
       tags:
       - User
@@ -963,7 +1503,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.RegisterUserByEmailResp'
@@ -990,7 +1530,7 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.resp'
+            - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
                   $ref: '#/definitions/schema.LoginByEmailResp'

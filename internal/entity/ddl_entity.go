@@ -24,9 +24,11 @@ type DDL struct {
 
 	Status int `xorm:"not null default 0 index 'idx_status_deadline' 'status'"`
 
-	EarlyRemindTime time.Time `xorm:"index 'early_remind_time'"`
+	Subject string `xorm:"text 'subject'"`
 
-	RemindSent bool `xorm:"not null default false 'remind_sent'"`
+	Remind24h bool `xorm:"not null default false 'remind_24h'"`
+
+	Remind2h bool `xorm:"not null default false 'remind_2h'"`
 
 	Title string `xorm:"text not null 'title'"`
 
