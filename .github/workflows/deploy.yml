@@ -40,5 +40,5 @@ jobs:
             EOF
 
             # Build and restart
-            docker-compose build --no-cache app
-            docker-compose up -d
+            docker compose build --no-cache app
+            docker compose up -d
