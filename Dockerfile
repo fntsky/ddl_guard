@@ -19,9 +19,11 @@ RUN apk add --no-cache ca-certificates tzdata netcat-openbsd
 WORKDIR /app
 
 COPY --from=builder /ddl_guard /app/ddl_guard
-COPY configs/config.yaml /app/configs/config.yaml
 
-RUN mkdir -p /app/data
+RUN mkdir -p /app/data/conf
+
+# Copy config file if it exists (wildcard pattern handles missing file)
+COPY configs/* /app/data/conf/
 
 EXPOSE 8080
 
@@ -35,10 +37,6 @@ RUN echo '#!/bin/sh' > /app/entrypoint.sh && \
     echo 'echo "Waiting for Redis..."' >> /app/entrypoint.sh && \
     echo 'while ! nc -z redis 6379; do sleep 1; done' >> /app/entrypoint.sh && \
     echo 'echo "Redis is ready"' >> /app/entrypoint.sh && \
-    echo 'if [ ! -f /app/data/conf/config.yaml ]; then' >> /app/entrypoint.sh && \
-    echo '    mkdir -p /app/data/conf' >> /app/entrypoint.sh && \
-    echo '    cp /app/configs/config.yaml /app/data/conf/config.yaml' >> /app/entrypoint.sh && \
-    echo 'fi' >> /app/entrypoint.sh && \
     echo '/app/ddl_guard init -d /app/data' >> /app/entrypoint.sh && \
     echo 'exec /app/ddl_guard run -d /app/data' >> /app/entrypoint.sh && \
     chmod +x /app/entrypoint.sh
