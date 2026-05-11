@@ -1,0 +1,44 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            cd /opt/ddl_guard
+
+            # Pull latest code
+            git pull
+
+            # Create .env file from secrets
+            cat > .env << EOF
+            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+            VISUAL_AI_API_KEY=${{ secrets.VISUAL_AI_API_KEY }}
+            VISUAL_AI_ENDPOINT=${{ secrets.VISUAL_AI_ENDPOINT }}
+            VISUAL_AI_MODEL=${{ secrets.VISUAL_AI_MODEL }}
+            VISUAL_AI_PROVIDER=${{ secrets.VISUAL_AI_PROVIDER }}
+            SMTP_HOST=${{ secrets.SMTP_HOST }}
+            SMTP_PORT=${{ secrets.SMTP_PORT }}
+            SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}
+            SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            PUBLISH_EMAIL_ENABLED=${{ secrets.PUBLISH_EMAIL_ENABLED }}
+            EOF
+
+            # Build and restart
+            docker-compose build --no-cache app
+            docker-compose up -d

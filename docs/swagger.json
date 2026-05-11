@@ -154,7 +154,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "分页获取用户所有激活状态的DDL",
+                "description": "分页获取用户所有激活状态的DDL。status字段说明: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成",
                 "consumes": [
                     "application/json"
                 ],
@@ -319,7 +319,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "分页获取用户所有过期状态的DDL",
+                "description": "分页获取用户所有过期状态的DDL。status字段说明: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成",
                 "consumes": [
                     "application/json"
                 ],
@@ -375,7 +375,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "获取单个DDL的详细信息",
+                "description": "获取单个DDL的详细信息。status字段说明: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成",
                 "consumes": [
                     "application/json"
                 ],
@@ -503,6 +503,64 @@
                         "description": "success",
                         "schema": {
                             "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/ddl/{uuid}/status": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "修改DDL状态。允许的状态转换: active(1)-\u003edone(4), done(4)-\u003eactive(1), deleted(3)-\u003eactive(1)。重新激活时需验证deadline不能早于当前时间。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DDL"
+                ],
+                "summary": "修改DDL状态",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "DDL UUID",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update DDL Status Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.UpdateDDLStatusReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.UpdateDDLStatusResp"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1139,7 +1197,7 @@
         },
         "/api/v1/users/password": {
             "put": {
-                "description": "使用验证码验证身份后修改用户密码。验证码通过 SendPasswordResetCode 接口发送。\ntype: 验证方式，需与发送验证码时的类型一致，目前支持 \"email\"\ntarget: 验证目标，需与发送验证码时的目标一致\ncode: 收到的验证码，6 位数字\nnew_password: 新密码，最少 6 个字符",
+                "description": "使用验证码验证身份后修改用户密码。验证码通过 SendPasswordResetCode 接口发送。\ntype: 验证方式，需与发送验证码时的类型一致，目前支持 \"email\", \"phone\"\ntarget: 验证目标，需与发送验证码时的目标一致\ncode: 收到的验证码，6 位数字\nnew_password: 新密码，最少 6 个字符",
                 "consumes": [
                     "application/json"
                 ],
@@ -1191,7 +1249,7 @@
         },
         "/api/v1/users/password/reset-codes": {
             "post": {
-                "description": "根据指定的验证类型发送验证码到目标地址。目前支持 email 类型，验证码有效期为 5 分钟。\ntype: 验证方式，目前支持 \"email\"\ntarget: 验证目标，邮箱类型时为邮箱地址",
+                "description": "根据指定的验证类型发送验证码到目标地址。目前支持 email 和 phone 类型，验证码有效期为 5 分钟。\ntype: 验证方式，目前支持 \"email\", \"phone\"\ntarget: 验证目标，邮箱类型时为邮箱地址，手机类型时为手机号",
                 "consumes": [
                     "application/json"
                 ],
@@ -1228,6 +1286,98 @@
                     },
                     "500": {
                         "description": "服务器内部错误",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/phone/login-verification-codes": {
+            "post": {
+                "description": "发送手机验证码用于快捷登录（暂未实现）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "发送手机登录验证码",
+                "parameters": [
+                    {
+                        "description": "发送手机登录验证码请求",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.SendPhoneLoginCodeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "验证码发送成功",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    },
+                    "503": {
+                        "description": "短信服务未启用",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/phone/verification-codes": {
+            "post": {
+                "description": "发送手机验证码用于注册（暂未实现）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "发送手机注册验证码",
+                "parameters": [
+                    {
+                        "description": "发送手机验证码请求",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.SendPhoneVerificationCodeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "验证码发送成功",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    },
+                    "503": {
+                        "description": "短信服务未启用",
                         "schema": {
                             "$ref": "#/definitions/handler.Response"
                         }
@@ -1281,6 +1431,64 @@
                 }
             }
         },
+        "/api/v1/users/registrations/phone": {
+            "post": {
+                "description": "使用手机号验证码注册用户（暂未实现）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "手机号注册",
+                "parameters": [
+                    {
+                        "description": "手机号注册请求",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.RegisterUserByPhoneReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "注册成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.RegisterUserByPhoneResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误或验证码无效",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    },
+                    "503": {
+                        "description": "短信服务未启用",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/sessions/email": {
             "post": {
                 "description": "使用邮箱和密码登录",
@@ -1322,6 +1530,122 @@
                                     }
                                 }
                             ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/sessions/phone": {
+            "post": {
+                "description": "使用手机号和密码登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "手机号+密码登录",
+                "parameters": [
+                    {
+                        "description": "手机号登录请求",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.LoginByPhoneReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "登录成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.LoginByPhoneResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "手机号或密码错误",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/sessions/phone/code": {
+            "post": {
+                "description": "使用手机号和验证码快捷登录（暂未实现）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "手机号+验证码登录",
+                "parameters": [
+                    {
+                        "description": "手机号验证码登录请求",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.LoginByPhoneCodeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "登录成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.LoginByPhoneCodeResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误或验证码无效",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    },
+                    "503": {
+                        "description": "短信服务未启用",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
                         }
                     }
                 }
@@ -1369,7 +1693,8 @@
                 "type": {
                     "type": "string",
                     "enum": [
-                        "email"
+                        "email",
+                        "phone"
                     ],
                     "example": "email"
                 }
@@ -1641,6 +1966,7 @@
                     "example": false
                 },
                 "status": {
+                    "description": "DDL状态: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成",
                     "type": "integer",
                     "example": 1
                 },
@@ -1681,6 +2007,7 @@
                     "example": "from swagger"
                 },
                 "status": {
+                    "description": "DDL状态: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成",
                     "type": "integer",
                     "example": 1
                 },
@@ -2022,6 +2349,82 @@
                 }
             }
         },
+        "schema.LoginByPhoneCodeReq": {
+            "type": "object",
+            "required": [
+                "code",
+                "phone"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "123456"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "13800138000"
+                }
+            }
+        },
+        "schema.LoginByPhoneCodeResp": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "username": {
+                    "type": "string",
+                    "example": "testuser"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.LoginByPhoneReq": {
+            "type": "object",
+            "required": [
+                "password",
+                "phone"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "password123"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "13800138000"
+                }
+            }
+        },
+        "schema.LoginByPhoneResp": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "username": {
+                    "type": "string",
+                    "example": "testuser"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
         "schema.RefreshTokenReq": {
             "type": "object",
             "required": [
@@ -2078,6 +2481,51 @@
                 }
             }
         },
+        "schema.RegisterUserByPhoneReq": {
+            "type": "object",
+            "required": [
+                "code",
+                "password",
+                "phone",
+                "username"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "123456"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "password123"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "13800138000"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "testuser"
+                }
+            }
+        },
+        "schema.RegisterUserByPhoneResp": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
         "schema.SendEmailVerificationCodeReq": {
             "type": "object",
             "required": [
@@ -2104,9 +2552,34 @@
                 "type": {
                     "type": "string",
                     "enum": [
-                        "email"
+                        "email",
+                        "phone"
                     ],
                     "example": "email"
+                }
+            }
+        },
+        "schema.SendPhoneLoginCodeReq": {
+            "type": "object",
+            "required": [
+                "phone"
+            ],
+            "properties": {
+                "phone": {
+                    "type": "string",
+                    "example": "13800138000"
+                }
+            }
+        },
+        "schema.SendPhoneVerificationCodeReq": {
+            "type": "object",
+            "required": [
+                "phone"
+            ],
+            "properties": {
+                "phone": {
+                    "type": "string",
+                    "example": "13800138000"
                 }
             }
         },
@@ -2164,6 +2637,33 @@
                 "title": {
                     "type": "string",
                     "example": "test ddl"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "schema.UpdateDDLStatusReq": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "description": "目标状态: 1-激活, 4-已完成",
+                    "type": "integer",
+                    "example": 4
+                }
+            }
+        },
+        "schema.UpdateDDLStatusResp": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "description": "DDL状态: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成",
+                    "type": "integer",
+                    "example": 4
                 },
                 "uuid": {
                     "type": "string",

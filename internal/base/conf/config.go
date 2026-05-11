@@ -26,7 +26,7 @@ type ServerConfig struct {
 }
 
 type HTTPConfig struct {
-	Addr string `yaml:"addr"`
+	Addr string `yaml:"addr" env:"SERVER_HTTP_ADDR"`
 }
 
 type DataConfig struct {
@@ -34,21 +34,21 @@ type DataConfig struct {
 }
 
 type DatabaseConfig struct {
-	Driver     string `yaml:"driver"`
-	Connection string `yaml:"connection"`
+	Driver     string `yaml:"driver" env:"DATABASE_DRIVER"`
+	Connection string `yaml:"connection" env:"DATABASE_CONNECTION"`
 }
 
 type RedisConfig struct {
-	Addr     string `yaml:"addr"`
-	Password string `yaml:"password"`
-	DB       int    `yaml:"db"`
+	Addr     string `yaml:"addr" env:"REDIS_ADDR"`
+	Password string `yaml:"password" env:"REDIS_PASSWORD"`
+	DB       int    `yaml:"db" env:"REDIS_DB"`
 }
 
 type VisualAIConfig struct {
-	APIKey   string `yaml:"api_key"`
-	Endpoint string `yaml:"endpoint"`
-	Model    string `yaml:"model"`
-	Provider string `yaml:"provider"`
+	APIKey   string `yaml:"api_key" env:"VISUAL_AI_API_KEY"`
+	Endpoint string `yaml:"endpoint" env:"VISUAL_AI_ENDPOINT"`
+	Model    string `yaml:"model" env:"VISUAL_AI_MODEL"`
+	Provider string `yaml:"provider" env:"VISUAL_AI_PROVIDER"`
 }
 
 type EmailOTPConfig struct {
@@ -56,16 +56,16 @@ type EmailOTPConfig struct {
 }
 
 type SMTPConfig struct {
-	Host     string `yaml:"host"`
-	Port     int    `yaml:"port"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
+	Host     string `yaml:"host" env:"SMTP_HOST"`
+	Port     int    `yaml:"port" env:"SMTP_PORT"`
+	Username string `yaml:"username" env:"SMTP_USERNAME"`
+	Password string `yaml:"password" env:"SMTP_PASSWORD"`
 }
 
 type JWTConfig struct {
-	Secret           string `yaml:"secret"`
-	AccessTTLMinutes int    `yaml:"access_ttl_minutes"`
-	RefreshTTLHours  int    `yaml:"refresh_ttl_hours"`
+	Secret           string `yaml:"secret" env:"JWT_SECRET"`
+	AccessTTLMinutes int    `yaml:"access_ttl_minutes" env:"JWT_ACCESS_TTL_MINUTES"`
+	RefreshTTLHours  int    `yaml:"refresh_ttl_hours" env:"JWT_REFRESH_TTL_HOURS"`
 }
 
 // PublishConfig 推送配置
@@ -75,7 +75,7 @@ type PublishConfig struct {
 
 // EmailPublishConfig 邮件推送配置
 type EmailPublishConfig struct {
-	Enabled bool       `yaml:"enabled"`
+	Enabled bool       `yaml:"enabled" env:"PUBLISH_EMAIL_ENABLED"`
 	SMTP    SMTPConfig `yaml:"smtp"`
 }
 
@@ -97,6 +97,8 @@ func ReadConfig(configPath string) (*Config, error) {
 	if err = yaml.Unmarshal(content, c); err != nil {
 		return nil, err
 	}
+	// 用环境变量覆盖配置
+	applyEnvVars(c)
 	return c, nil
 }
 

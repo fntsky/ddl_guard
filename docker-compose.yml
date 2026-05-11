@@ -1,0 +1,62 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - TZ=Asia/Shanghai
+      - DATABASE_CONNECTION=host=postgres port=5432 user=${POSTGRES_USER} password=${POSTGRES_PASSWORD} dbname=${POSTGRES_DB} sslmode=disable
+      - REDIS_ADDR=redis:6379
+      - VISUAL_AI_API_KEY=${VISUAL_AI_API_KEY}
+      - VISUAL_AI_ENDPOINT=${VISUAL_AI_ENDPOINT}
+      - VISUAL_AI_MODEL=${VISUAL_AI_MODEL}
+      - VISUAL_AI_PROVIDER=${VISUAL_AI_PROVIDER}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - PUBLISH_EMAIL_ENABLED=${PUBLISH_EMAIL_ENABLED}
+    volumes:
+      - app-data:/app/data
+    networks:
+      - ddl-guard-network
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ddl-guard-network
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ddl-guard-network
+
+volumes:
+  app-data:
+  postgres-data:
+
+networks:
+  ddl-guard-network:
+    driver: bridge

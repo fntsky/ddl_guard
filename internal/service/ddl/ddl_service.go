@@ -21,6 +21,7 @@ type DDLRepo interface {
 	GetDraftByUUID(ctx context.Context, uuid string) (*entity.DDL, bool, error)
 	UpdateStatusByUUID(ctx context.Context, uuid string, fromStatus int, toStatus int) (int64, error)
 	UpdateStatusByUUIDAndUser(ctx context.Context, uuid string, userID int64, fromStatus int, toStatus int) (int64, error)
+	UpdateDDLStatusByUUIDAndUser(ctx context.Context, uuid string, userID int64, toStatus int) (int64, error)
 	GetDDLsForRemind24h(ctx context.Context, start, end time.Time) ([]*entity.DDL, error)
 	GetDDLsForRemind2h(ctx context.Context, start, end time.Time) ([]*entity.DDL, error)
 	MarkRemind24hSent(ctx context.Context, ddlID int64) error
@@ -320,5 +321,56 @@ func (s *DDLService) GetDDLDetail(ctx context.Context, uuid string, userUUID str
 		Remind2h:    ddl.Remind2h,
 		CreatedAt:   ddl.CreatedAt,
 		UpdatedAt:   ddl.UpdatedAt,
+	}, nil
+}
+
+func (s *DDLService) UpdateDDLStatus(ctx context.Context, uuid string, req *schema.UpdateDDLStatusReq, userUUID string) (*schema.UpdateDDLStatusResp, error) {
+	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
+	if err != nil {
+		return nil, err
+	}
+
+	ddl, err := s.repo.GetDDLByUUIDAndUser(ctx, uuid, userID)
+	if err != nil {
+		return nil, err
+	}
+	if ddl == nil {
+		return nil, apperrors.ErrDDLNotFound
+	}
+
+	targetStatus := req.Status
+	currentStatus := ddl.Status
+
+	validTransition := false
+	switch {
+	case currentStatus == entity.DDLStatusActive && targetStatus == entity.DDLStatusDone:
+		validTransition = true
+	case currentStatus == entity.DDLStatusDone && targetStatus == entity.DDLStatusActive:
+		if ddl.DeadLine.Before(stime.GetCurrentTime()) {
+			return nil, apperrors.ErrDeadlineInPast
+		}
+		validTransition = true
+	case currentStatus == entity.DDLStatusDeleted && targetStatus == entity.DDLStatusActive:
+		if ddl.DeadLine.Before(stime.GetCurrentTime()) {
+			return nil, apperrors.ErrDeadlineInPast
+		}
+		validTransition = true
+	}
+
+	if !validTransition {
+		return nil, apperrors.ErrInvalidStatusTransition
+	}
+
+	affected, err := s.repo.UpdateDDLStatusByUUIDAndUser(ctx, uuid, userID, targetStatus)
+	if err != nil {
+		return nil, err
+	}
+	if affected == 0 {
+		return nil, apperrors.ErrDDLNotFound
+	}
+
+	return &schema.UpdateDDLStatusResp{
+		UUID:   uuid,
+		Status: targetStatus,
 	}, nil
 }

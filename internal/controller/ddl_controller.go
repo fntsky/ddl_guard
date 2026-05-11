@@ -104,7 +104,7 @@ func (dc *DDLController) DeleteDDL(ctx *gin.Context) {
 }
 
 // @Summary 获取激活状态的DDL列表
-// @Description 分页获取用户所有激活状态的DDL
+// @Description 分页获取用户所有激活状态的DDL。status字段说明: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成
 // @Tags DDL
 // @Accept json
 // @Produce json
@@ -131,7 +131,7 @@ func (dc *DDLController) GetActiveDDLs(ctx *gin.Context) {
 }
 
 // @Summary 获取过期状态的DDL列表
-// @Description 分页获取用户所有过期状态的DDL
+// @Description 分页获取用户所有过期状态的DDL。status字段说明: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成
 // @Tags DDL
 // @Accept json
 // @Produce json
@@ -191,7 +191,7 @@ func (dc *DDLController) UpdateDDL(ctx *gin.Context) {
 }
 
 // @Summary 获取DDL详情
-// @Description 获取单个DDL的详细信息
+// @Description 获取单个DDL的详细信息。status字段说明: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成
 // @Tags DDL
 // @Accept json
 // @Produce json
@@ -213,5 +213,38 @@ func (dc *DDLController) GetDDLDetail(ctx *gin.Context) {
 	}
 
 	resp, err := dc.ddl_service.GetDDLDetail(ctx, uuid, userClaims.UserUUID)
+	handler.HandleResponse(ctx, err, resp)
+}
+
+// @Summary 修改DDL状态
+// @Description 修改DDL状态。允许的状态转换: active(1)->done(4), done(4)->active(1), deleted(3)->active(1)。重新激活时需验证deadline不能早于当前时间。
+// @Tags DDL
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param uuid path string true "DDL UUID"
+// @Param req body schema.UpdateDDLStatusReq true "Update DDL Status Request" SchemaExample({"status":4})
+// @success 200 {object} handler.Response{data=schema.UpdateDDLStatusResp} "success"
+// @Router /api/v1/ddl/{uuid}/status [patch]
+func (dc *DDLController) UpdateDDLStatus(ctx *gin.Context) {
+	userClaims, ok := middleware.GetUserFromGin(ctx)
+	if !ok || userClaims.UserUUID == "" {
+		handler.HandleResponse(ctx, handler.Unauthorized("unauthorized", nil), nil)
+		return
+	}
+
+	uuid := strings.TrimSpace(ctx.Param("uuid"))
+	if uuid == "" {
+		handler.HandleResponse(ctx, handler.BadRequest("uuid is required", nil), nil)
+		return
+	}
+
+	var req schema.UpdateDDLStatusReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		handler.HandleResponse(ctx, handler.BadRequest("invalid request body", err), nil)
+		return
+	}
+
+	resp, err := dc.ddl_service.UpdateDDLStatus(ctx, uuid, &req, userClaims.UserUUID)
 	handler.HandleResponse(ctx, err, resp)
 }

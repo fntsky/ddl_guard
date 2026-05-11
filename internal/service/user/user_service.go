@@ -22,6 +22,8 @@ type UserRepo interface {
 	UpdatePassword(ctx context.Context, userID int64, passwordHash string) error
 	GetUserByID(ctx context.Context, userID int64) (*entity.User, error)
 	GetUserEmailsByIDs(ctx context.Context, userIDs []int64) (map[int64]string, error)
+	GetUserByPhone(ctx context.Context, phone string) (*entity.User, error)
+	ExistsByPhone(ctx context.Context, phone string) (bool, error)
 }
 
 type UserService struct {
@@ -135,6 +137,7 @@ func (s *UserService) LoginByEmail(ctx context.Context, req *schema.LoginByEmail
 
 const (
 	VerificationTypeEmail = "email"
+	VerificationTypePhone = "phone"
 )
 
 // SendPasswordResetCode 发送密码重置验证码
@@ -144,6 +147,9 @@ func (s *UserService) SendPasswordResetCode(ctx context.Context, req *schema.Sen
 	switch req.Type {
 	case VerificationTypeEmail:
 		target = normalizeEmail(target)
+	case VerificationTypePhone:
+		// TODO: 实现短信发送
+		return apperrors.ErrSMSServiceDisabled
 	default:
 		return apperrors.ErrUnsupportedVerificationType
 	}
@@ -162,6 +168,9 @@ func (s *UserService) ChangePassword(ctx context.Context, req *schema.ChangePass
 	switch req.Type {
 	case VerificationTypeEmail:
 		target = normalizeEmail(target)
+	case VerificationTypePhone:
+		// TODO: 实现短信验证码验证
+		return apperrors.ErrSMSServiceDisabled
 	default:
 		return apperrors.ErrUnsupportedVerificationType
 	}
@@ -186,6 +195,8 @@ func (s *UserService) ChangePassword(ctx context.Context, req *schema.ChangePass
 	switch req.Type {
 	case VerificationTypeEmail:
 		user, err = s.repo.GetUserByEmail(ctx, target)
+	case VerificationTypePhone:
+		user, err = s.repo.GetUserByPhone(ctx, target)
 	default:
 		return apperrors.ErrUnsupportedVerificationType
 	}
@@ -203,4 +214,60 @@ func (s *UserService) ChangePassword(ctx context.Context, req *schema.ChangePass
 	}
 
 	return s.repo.UpdatePassword(ctx, user.ID, string(pwdHash))
+}
+
+// ========== 手机号相关方法（空实现） ==========
+
+// SendPhoneVerificationCode 发送手机注册验证码
+func (s *UserService) SendPhoneVerificationCode(ctx context.Context, req *schema.SendPhoneVerificationCodeReq) error {
+	// TODO: 实现短信发送
+	return apperrors.ErrSMSServiceDisabled
+}
+
+// SendPhoneLoginCode 发送手机登录验证码
+func (s *UserService) SendPhoneLoginCode(ctx context.Context, req *schema.SendPhoneLoginCodeReq) error {
+	// TODO: 实现短信发送
+	return apperrors.ErrSMSServiceDisabled
+}
+
+// RegisterByPhone 手机号注册
+func (s *UserService) RegisterByPhone(ctx context.Context, req *schema.RegisterUserByPhoneReq) (*schema.RegisterUserByPhoneResp, error) {
+	// TODO: 实现手机号注册
+	return nil, apperrors.ErrSMSServiceDisabled
+}
+
+// LoginByPhone 手机号+密码登录
+func (s *UserService) LoginByPhone(ctx context.Context, req *schema.LoginByPhoneReq) (*schema.LoginByPhoneResp, error) {
+	phone := strings.TrimSpace(req.Phone)
+
+	user, err := s.repo.GetUserByPhone(ctx, phone)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, apperrors.ErrInvalidCredentials
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password))
+	if err != nil {
+		return nil, apperrors.ErrInvalidCredentials
+	}
+
+	tokenPair, err := s.authService.IssueTokensForUser(ctx, user.ID, user.UUID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &schema.LoginByPhoneResp{
+		UUID:         user.UUID,
+		Username:     user.Username,
+		AccessToken:  tokenPair.AccessToken,
+		RefreshToken: tokenPair.RefreshToken,
+	}, nil
+}
+
+// LoginByPhoneCode 手机号+验证码登录
+func (s *UserService) LoginByPhoneCode(ctx context.Context, req *schema.LoginByPhoneCodeReq) (*schema.LoginByPhoneCodeResp, error) {
+	// TODO: 实现手机号验证码登录
+	return nil, apperrors.ErrSMSServiceDisabled
 }

@@ -11,6 +11,8 @@ type User struct {
 
 	Email string `xorm:"null unique 'email'"`
 
+	Phone string `xorm:"null unique 'phone'"`
+
 	PasswordHash string `xorm:"not null 'password_hash'"`
 
 	CreatedAt time.Time `xorm:"created index 'created_at'"`

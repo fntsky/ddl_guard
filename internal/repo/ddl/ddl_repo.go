@@ -70,6 +70,16 @@ func (r *ddlRepo) UpdateStatusByUUIDAndUser(ctx context.Context, uuid string, us
 		})
 }
 
+func (r *ddlRepo) UpdateDDLStatusByUUIDAndUser(ctx context.Context, uuid string, userID int64, toStatus int) (int64, error) {
+	return r.data.DB.Context(ctx).
+		Where("uuid = ? AND user_id = ?", uuid, userID).
+		Cols("status", "updated_at").
+		Update(&entity.DDL{
+			Status:    toStatus,
+			UpdatedAt: stime.GetCurrentTime(),
+		})
+}
+
 // GetDDLsForRemind24h 获取需要在24小时内提醒的DDL
 // 条件：status=active, deadline 在 [now+24h, now+24h+interval], remind_24h=false
 func (r *ddlRepo) GetDDLsForRemind24h(ctx context.Context, start, end time.Time) ([]*entity.DDL, error) {

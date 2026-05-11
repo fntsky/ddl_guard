@@ -87,3 +87,23 @@ func (r *userRepo) GetUserEmailsByIDs(ctx context.Context, userIDs []int64) (map
 	}
 	return result, nil
 }
+
+func (r *userRepo) GetUserByPhone(ctx context.Context, phone string) (*entity.User, error) {
+	user := &entity.User{}
+	has, err := r.data.DB.Context(ctx).
+		Where("phone = ?", phone).
+		Get(user)
+	if err != nil {
+		return nil, err
+	}
+	if !has {
+		return nil, nil
+	}
+	return user, nil
+}
+
+func (r *userRepo) ExistsByPhone(ctx context.Context, phone string) (bool, error) {
+	return r.data.DB.Context(ctx).
+		Where("phone = ?", phone).
+		Exist(&entity.User{})
+}

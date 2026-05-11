@@ -28,5 +28,6 @@ func (a *DDLApiRouter) Register(r *gin.RouterGroup) {
 	ddlGroup.GET("/expired", a.ddlController.GetExpiredDDLs)
 	ddlGroup.GET("/:uuid", a.ddlController.GetDDLDetail)
 	ddlGroup.PUT("/:uuid", a.ddlController.UpdateDDL)
+	ddlGroup.PATCH("/:uuid/status", a.ddlController.UpdateDDLStatus)
 	ddlGroup.DELETE("/:uuid", a.ddlController.DeleteDDL)
 }

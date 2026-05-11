@@ -76,7 +76,7 @@ type DDLListItem struct {
 	Description string    `json:"description" example:"from swagger"`
 	Deadline    time.Time `json:"deadline" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
 	Subject     string    `json:"subject" example:"数学"`
-	Status      int       `json:"status" example:"1"`
+	Status      int       `json:"status" example:"1"` // DDL状态: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成
 	CreatedAt   time.Time `json:"created_at" swaggertype:"string" format:"date-time" example:"2026-03-24T10:00:00+08:00"`
 }
 
@@ -112,9 +112,20 @@ type DDLDetailResp struct {
 	Description string    `json:"description" example:"from swagger"`
 	Deadline    time.Time `json:"deadline" swaggertype:"string" format:"date-time" example:"2026-03-24T14:30:00+08:00"`
 	Subject     string    `json:"subject" example:"数学"`
-	Status      int       `json:"status" example:"1"`
+	Status      int       `json:"status" example:"1"` // DDL状态: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成
 	Remind24h   bool      `json:"remind_24h" example:"false"`
 	Remind2h    bool      `json:"remind_2h" example:"false"`
 	CreatedAt   time.Time `json:"created_at" swaggertype:"string" format:"date-time" example:"2026-03-24T10:00:00+08:00"`
 	UpdatedAt   time.Time `json:"updated_at" swaggertype:"string" format:"date-time" example:"2026-03-24T10:00:00+08:00"`
+}
+
+// UpdateDDLStatusReq 修改DDL状态请求
+type UpdateDDLStatusReq struct {
+	Status int `json:"status" binding:"required" example:"4"` // 目标状态: 1-激活, 4-已完成
+}
+
+// UpdateDDLStatusResp 修改DDL状态响应
+type UpdateDDLStatusResp struct {
+	UUID   string `json:"uuid" example:"7a178766-4b8e-4e99-ab4c-843f7dbd95fd"`
+	Status int    `json:"status" example:"4"` // DDL状态: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成
 }

@@ -27,14 +27,18 @@ const (
 	CodeDDLNotActive       ErrorCode = "DDL_NOT_ACTIVE"
 	CodeDDLNotOwned        ErrorCode = "DDL_NOT_OWNED"
 	CodeAIProviderDisabled ErrorCode = "AI_PROVIDER_DISABLED"
+	CodeInvalidStatusTransition ErrorCode = "INVALID_STATUS_TRANSITION"
 
 	// User 领域错误
 	CodeUserNotFound                ErrorCode = "USER_NOT_FOUND"
 	CodeEmailAlreadyExists          ErrorCode = "EMAIL_ALREADY_EXISTS"
+	CodePhoneAlreadyExists          ErrorCode = "PHONE_ALREADY_EXISTS"
+	CodePhoneNotBound               ErrorCode = "PHONE_NOT_BOUND"
 	CodeInvalidCredentials          ErrorCode = "INVALID_CREDENTIALS"
 	CodeInvalidVerificationCode     ErrorCode = "INVALID_VERIFICATION_CODE"
 	CodeVerificationUnavailable     ErrorCode = "VERIFICATION_UNAVAILABLE"
 	CodeEmailOTPDisabled            ErrorCode = "EMAIL_OTP_DISABLED"
+	CodeSMSServiceDisabled          ErrorCode = "SMS_SERVICE_DISABLED"
 	CodeUnsupportedVerificationType ErrorCode = "UNSUPPORTED_VERIFICATION_TYPE"
 
 	// Auth 领域错误
@@ -200,12 +204,16 @@ var (
 	ErrDDLNotFound        = New(http.StatusNotFound, CodeDDLNotFound, "ddl not found")
 	ErrDDLNotActive       = New(http.StatusBadRequest, CodeDDLNotActive, "ddl is not active")
 	ErrDeadlineInPast     = New(http.StatusBadRequest, CodeDeadlineInPast, "deadline cannot be earlier than current time")
+	ErrInvalidStatusTransition = New(http.StatusBadRequest, CodeInvalidStatusTransition, "invalid status transition")
 
 	// User 相关
 	ErrEmailAlreadyExists          = New(http.StatusConflict, CodeEmailAlreadyExists, "email already exists")
+	ErrPhoneAlreadyExists          = New(http.StatusConflict, CodePhoneAlreadyExists, "phone already exists")
+	ErrPhoneNotBound               = New(http.StatusBadRequest, CodePhoneNotBound, "phone not bound")
 	ErrInvalidVerificationCode     = New(http.StatusBadRequest, CodeInvalidVerificationCode, "invalid verification code")
 	ErrVerificationUnavailable     = New(http.StatusInternalServerError, CodeVerificationUnavailable, "verification service is not available")
 	ErrEmailOTPDisabled            = New(http.StatusServiceUnavailable, CodeEmailOTPDisabled, "email otp is disabled")
+	ErrSMSServiceDisabled          = New(http.StatusServiceUnavailable, CodeSMSServiceDisabled, "sms service is not available")
 	ErrInvalidCredentials          = New(http.StatusUnauthorized, CodeInvalidCredentials, "invalid email or password")
 	ErrUnsupportedVerificationType = New(http.StatusBadRequest, CodeUnsupportedVerificationType, "unsupported verification type")
 
