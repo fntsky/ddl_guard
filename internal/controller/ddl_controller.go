@@ -157,6 +157,33 @@ func (dc *DDLController) GetExpiredDDLs(ctx *gin.Context) {
 	handler.HandleResponse(ctx, err, resp)
 }
 
+// @Summary 获取已完成状态的DDL列表
+// @Description 分页获取用户所有已完成状态的DDL。status字段说明: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成
+// @Tags DDL
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param page query int false "页码" default(1)
+// @Param page_size query int false "每页数量" default(10)
+// @success 200 {object} handler.Response{data=schema.DDLListResp} "success"
+// @Router /api/v1/ddl/done [get]
+func (dc *DDLController) GetDoneDDLs(ctx *gin.Context) {
+	userClaims, ok := middleware.GetUserFromGin(ctx)
+	if !ok || userClaims.UserUUID == "" {
+		handler.HandleResponse(ctx, handler.Unauthorized("unauthorized", nil), nil)
+		return
+	}
+
+	var pageReq schema.PageReq
+	if err := ctx.ShouldBindQuery(&pageReq); err != nil {
+		handler.HandleResponse(ctx, handler.BadRequest("invalid pagination params", err), nil)
+		return
+	}
+
+	resp, err := dc.ddl_service.GetDoneDDLs(ctx, userClaims.UserUUID, &pageReq)
+	handler.HandleResponse(ctx, err, resp)
+}
+
 // @Summary 修改DDL
 // @Description 修改DDL的标题、描述、截止时间或提前提醒时间
 // @Tags DDL

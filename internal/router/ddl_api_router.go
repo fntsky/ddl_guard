@@ -26,6 +26,7 @@ func (a *DDLApiRouter) Register(r *gin.RouterGroup) {
 	ddlGroup.PATCH("/drafts/:uuid", a.ddlController.ApproveDraft)
 	ddlGroup.GET("/active", a.ddlController.GetActiveDDLs)
 	ddlGroup.GET("/expired", a.ddlController.GetExpiredDDLs)
+	ddlGroup.GET("/done", a.ddlController.GetDoneDDLs)
 	ddlGroup.GET("/:uuid", a.ddlController.GetDDLDetail)
 	ddlGroup.PUT("/:uuid", a.ddlController.UpdateDDL)
 	ddlGroup.PATCH("/:uuid/status", a.ddlController.UpdateDDLStatus)

@@ -1105,6 +1105,39 @@ paths:
       summary: 获取激活状态的DDL列表
       tags:
       - DDL
+  /api/v1/ddl/done:
+    get:
+      consumes:
+      - application/json
+      description: '分页获取用户所有已完成状态的DDL。status字段说明: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成'
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.DDLListResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 获取已完成状态的DDL列表
+      tags:
+      - DDL
   /api/v1/ddl/draft:
     post:
       consumes:

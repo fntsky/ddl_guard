@@ -192,6 +192,11 @@ func (s *DDLService) GetExpiredDDLs(ctx context.Context, userUUID string, pageRe
 	return s.getDDLsByStatus(ctx, userUUID, entity.DDLStatusExpired, pageReq)
 }
 
+// GetDoneDDLs 获取用户已完成状态的DDL列表
+func (s *DDLService) GetDoneDDLs(ctx context.Context, userUUID string, pageReq *schema.PageReq) (*schema.DDLListResp, error) {
+	return s.getDDLsByStatus(ctx, userUUID, entity.DDLStatusDone, pageReq)
+}
+
 func (s *DDLService) getDDLsByStatus(ctx context.Context, userUUID string, status int, pageReq *schema.PageReq) (*schema.DDLListResp, error) {
 	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
 	if err != nil {
