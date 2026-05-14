@@ -12,5 +12,7 @@ func addExamTable(ctx context.Context, x *xorm.Engine) error {
 }
 
 func addGradeTables(ctx context.Context, x *xorm.Engine) error {
-	return x.Context(ctx).Sync2(&entity.FinalGrade{}, &entity.DailyScore{})
+	// DailyScore entity has been removed; only FinalGrade is synced here.
+	// v6 migration will drop and recreate these tables with the new schema.
+	return x.Context(ctx).Sync2(&entity.FinalGrade{})
 }

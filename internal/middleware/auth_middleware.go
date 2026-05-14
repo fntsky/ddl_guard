@@ -30,7 +30,6 @@ func AuthMiddleware(tokenService *baseauth.TokenService) gin.HandlerFunc {
 
 		claims, err := tokenService.ParseAccessToken(strings.TrimSpace(parts[1]))
 		if err != nil {
-			// 将 pkgjwt 错误转换为 apperrors
 			var appErr *apperrors.AppError
 			if errors.As(err, &appErr) {
 				handler.HandleResponse(ctx, appErr, nil)

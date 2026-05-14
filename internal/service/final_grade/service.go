@@ -2,247 +2,298 @@ package final_grade
 
 import (
 	"context"
-	"strings"
+	"fmt"
 
-	apperrors "github.com/fntsky/ddl_guard/internal/errors"
 	"github.com/fntsky/ddl_guard/internal/entity"
-	"github.com/fntsky/ddl_guard/internal/repo/daily_score"
 	"github.com/fntsky/ddl_guard/internal/repo/final_grade"
+	"github.com/fntsky/ddl_guard/internal/repo/homework_score"
+	"github.com/fntsky/ddl_guard/internal/repo/quiz_score"
 	"github.com/fntsky/ddl_guard/internal/schema"
-	stime "github.com/fntsky/ddl_guard/pkg/time"
 	"github.com/fntsky/ddl_guard/pkg/uuid"
 )
 
-// FinalGradeService 期末成绩服务
 type FinalGradeService struct {
-	repo         final_grade.FinalGradeRepo
-	dailyScoreRepo daily_score.DailyScoreRepo
+	finalGradeRepo   final_grade.FinalGradeRepo
+	quizScoreRepo    quiz_score.QuizScoreRepo
+	homeworkScoreRepo homework_score.HomeworkScoreRepo
 }
 
-func NewFinalGradeService(repo final_grade.FinalGradeRepo, dailyScoreRepo daily_score.DailyScoreRepo) *FinalGradeService {
+func NewFinalGradeService(
+	finalGradeRepo final_grade.FinalGradeRepo,
+	quizScoreRepo quiz_score.QuizScoreRepo,
+	homeworkScoreRepo homework_score.HomeworkScoreRepo,
+) *FinalGradeService {
 	return &FinalGradeService{
-		repo:           repo,
-		dailyScoreRepo: dailyScoreRepo,
+		finalGradeRepo:    finalGradeRepo,
+		quizScoreRepo:     quizScoreRepo,
+		homeworkScoreRepo: homeworkScoreRepo,
 	}
 }
 
-// CreateFinalGrade 创建期末成绩
 func (s *FinalGradeService) CreateFinalGrade(ctx context.Context, req *schema.CreateFinalGradeReq, userUUID string) (*schema.CreateFinalGradeResp, error) {
-	// 获取用户ID
-	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
+	userID, err := s.finalGradeRepo.GetUserIDByUserUUID(ctx, userUUID)
 	if err != nil {
+		return nil, fmt.Errorf("get user id failed: %w", err)
+	}
+
+	if err := s.validateRatios(req.ExamRatio, req.ClassroomBonusRatio, req.AttendanceRatio, req.QuizRatio, req.HomeworkRatio); err != nil {
 		return nil, err
 	}
 
-	// 设置默认比例
-	examRatio := req.ExamRatio
-	dailyRatio := req.DailyRatio
-	if examRatio == 0 && dailyRatio == 0 {
-		examRatio = 40
-		dailyRatio = 60
-	}
-
-	// 验证比例之和为100
-	if examRatio+dailyRatio != 100 {
-		return nil, apperrors.New(400, apperrors.CodeBadRequest, "exam_ratio + daily_ratio must equal 100")
-	}
-
-	now := stime.GetCurrentTime()
 	fg := &entity.FinalGrade{
-		UUID:       uuid.GenerateUUID(),
-		UserID:     userID,
-		Name:       strings.TrimSpace(req.Name),
-		ExamRatio:  examRatio,
-		DailyRatio: dailyRatio,
-		CreatedAt:  now,
-		UpdatedAt:  now,
+		UUID:                  uuid.GenerateUUID(),
+		UserID:                userID,
+		Name:                  req.Name,
+		ExamRatio:             req.ExamRatio,
+		ClassroomBonusRatio:   req.ClassroomBonusRatio,
+		AttendanceRatio:       req.AttendanceRatio,
+		QuizRatio:             req.QuizRatio,
+		HomeworkRatio:         req.HomeworkRatio,
 	}
 
-	if err := s.repo.Create(ctx, fg); err != nil {
-		return nil, err
+	if err := s.finalGradeRepo.Create(ctx, fg); err != nil {
+		return nil, fmt.Errorf("create final grade failed: %w", err)
 	}
 
 	return &schema.CreateFinalGradeResp{
-		UUID:       fg.UUID,
-		Name:       fg.Name,
-		ExamScore:  fg.ExamScore,
-		ExamRatio:  fg.ExamRatio,
-		DailyRatio: fg.DailyRatio,
-		FinalScore: fg.FinalScore,
+		UUID:                fg.UUID,
+		Name:                fg.Name,
+		ExamScore:           fg.ExamScore,
+		ExamRatio:           fg.ExamRatio,
+		ClassroomBonusScore: fg.ClassroomBonusScore,
+		ClassroomBonusRatio: fg.ClassroomBonusRatio,
+		AttendanceScore:     fg.AttendanceScore,
+		AttendanceRatio:     fg.AttendanceRatio,
+		QuizRatio:           fg.QuizRatio,
+		HomeworkRatio:       fg.HomeworkRatio,
+		FinalScore:          fg.FinalScore,
 	}, nil
 }
 
-// GetFinalGrade 获取期末成绩详情
-func (s *FinalGradeService) GetFinalGrade(ctx context.Context, fgUUID string, userUUID string) (*schema.FinalGradeDetailResp, error) {
-	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
-	if err != nil {
-		return nil, err
-	}
-
-	fg, err := s.repo.GetByUUIDAndUser(ctx, fgUUID, userID)
-	if err != nil {
-		return nil, err
-	}
-	if fg == nil {
-		return nil, apperrors.ErrFinalGradeNotFound
-	}
-
-	// 获取关联的平时成绩
-	dailyScores, err := s.dailyScoreRepo.ListByFinalGradeID(ctx, fg.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	dailyScoreItems := make([]schema.DailyScoreItem, 0, len(dailyScores))
-	for _, ds := range dailyScores {
-		dailyScoreItems = append(dailyScoreItems, schema.DailyScoreItem{
-			UUID:  ds.UUID,
-			Type:  string(ds.Type),
-			Name:  ds.Name,
-			Score: ds.Score,
-			Ratio: ds.Ratio,
-		})
-	}
-
-	return &schema.FinalGradeDetailResp{
-		UUID:        fg.UUID,
-		Name:        fg.Name,
-		ExamScore:   fg.ExamScore,
-		ExamRatio:   fg.ExamRatio,
-		DailyRatio:  fg.DailyRatio,
-		FinalScore:  fg.FinalScore,
-		CreatedAt:   fg.CreatedAt.Format("2006-01-02T15:04:05+08:00"),
-		UpdatedAt:   fg.UpdatedAt.Format("2006-01-02T15:04:05+08:00"),
-		DailyScores: dailyScoreItems,
-	}, nil
-}
-
-// ListFinalGrades 获取期末成绩列表
 func (s *FinalGradeService) ListFinalGrades(ctx context.Context, userUUID string, pageReq *schema.PageReq) (*schema.FinalGradeListResp, error) {
-	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
+	userID, err := s.finalGradeRepo.GetUserIDByUserUUID(ctx, userUUID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get user id failed: %w", err)
 	}
 
 	pageReq.Normalize()
 
-	total, err := s.repo.CountByUserID(ctx, userID)
+	total, err := s.finalGradeRepo.CountByUserID(ctx, userID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("count final grades failed: %w", err)
 	}
 
-	fgs, err := s.repo.ListByUserID(ctx, userID, pageReq.Offset(), pageReq.PageSize)
-	if err != nil {
-		return nil, err
-	}
+	list, err := s.finalGradeRepo.ListByUserID(ctx, userID, pageReq.Offset(), pageReq.PageSize)
 
-	list := make([]schema.FinalGradeListItem, 0, len(fgs))
-	for _, fg := range fgs {
-		list = append(list, schema.FinalGradeListItem{
-			UUID:       fg.UUID,
-			Name:       fg.Name,
-			ExamScore:  fg.ExamScore,
-			ExamRatio:  fg.ExamRatio,
-			DailyRatio: fg.DailyRatio,
-			FinalScore: fg.FinalScore,
-			CreatedAt:  fg.CreatedAt.Format("2006-01-02T15:04:05+08:00"),
+	items := make([]schema.FinalGradeListItem, 0, len(list))
+	for _, fg := range list {
+		items = append(items, schema.FinalGradeListItem{
+			UUID:                fg.UUID,
+			Name:                fg.Name,
+			ExamScore:           fg.ExamScore,
+			ExamRatio:           fg.ExamRatio,
+			ClassroomBonusScore: fg.ClassroomBonusScore,
+			ClassroomBonusRatio: fg.ClassroomBonusRatio,
+			AttendanceScore:     fg.AttendanceScore,
+			AttendanceRatio:     fg.AttendanceRatio,
+			QuizRatio:           fg.QuizRatio,
+			HomeworkRatio:       fg.HomeworkRatio,
+			FinalScore:          fg.FinalScore,
+			CreatedAt:           fg.CreatedAt.Format("2006-01-02T15:04:05+08:00"),
 		})
 	}
 
 	return &schema.FinalGradeListResp{
-		List:     list,
+		List:     items,
 		Total:    total,
 		Page:     pageReq.Page,
 		PageSize: pageReq.PageSize,
 	}, nil
 }
 
-// UpdateFinalGrade 更新期末成绩
-func (s *FinalGradeService) UpdateFinalGrade(ctx context.Context, fgUUID string, req *schema.UpdateFinalGradeReq, userUUID string) (*schema.UpdateFinalGradeResp, error) {
-	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
+func (s *FinalGradeService) GetFinalGrade(ctx context.Context, fgUUID string, userUUID string) (*schema.FinalGradeDetailResp, error) {
+	userID, err := s.finalGradeRepo.GetUserIDByUserUUID(ctx, userUUID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get user id failed: %w", err)
 	}
 
-	fg, err := s.repo.GetByUUIDAndUser(ctx, fgUUID, userID)
+	fg, err := s.finalGradeRepo.GetByUUIDAndUser(ctx, fgUUID, userID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get final grade failed: %w", err)
 	}
 	if fg == nil {
-		return nil, apperrors.ErrFinalGradeNotFound
+		return nil, fmt.Errorf("final grade not found")
 	}
 
-	// 更新字段
+	// Get quiz scores
+	quizList, err := s.quizScoreRepo.ListByFinalGradeID(ctx, fg.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get quiz scores failed: %w", err)
+	}
+	quizItems := make([]schema.QuizScoreItem, 0, len(quizList))
+	for _, qs := range quizList {
+		quizItems = append(quizItems, schema.QuizScoreItem{
+			UUID:  qs.UUID,
+			Name:  qs.Name,
+			Score: qs.Score,
+		})
+	}
+
+	// Get homework scores
+	homeworkList, err := s.homeworkScoreRepo.ListByFinalGradeID(ctx, fg.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get homework scores failed: %w", err)
+	}
+	homeworkItems := make([]schema.HomeworkScoreItem, 0, len(homeworkList))
+	for _, hs := range homeworkList {
+		homeworkItems = append(homeworkItems, schema.HomeworkScoreItem{
+			UUID:  hs.UUID,
+			Name:  hs.Name,
+			Score: hs.Score,
+		})
+	}
+
+	return &schema.FinalGradeDetailResp{
+		UUID:                fg.UUID,
+		Name:                fg.Name,
+		ExamScore:           fg.ExamScore,
+		ExamRatio:           fg.ExamRatio,
+		ClassroomBonusScore: fg.ClassroomBonusScore,
+		ClassroomBonusRatio: fg.ClassroomBonusRatio,
+		AttendanceScore:     fg.AttendanceScore,
+		AttendanceRatio:     fg.AttendanceRatio,
+		QuizRatio:           fg.QuizRatio,
+		HomeworkRatio:       fg.HomeworkRatio,
+		FinalScore:          fg.FinalScore,
+		CreatedAt:           fg.CreatedAt.Format("2006-01-02T15:04:05+08:00"),
+		UpdatedAt:           fg.UpdatedAt.Format("2006-01-02T15:04:05+08:00"),
+		QuizScores:          quizItems,
+		HomeworkScores:      homeworkItems,
+	}, nil
+}
+
+func (s *FinalGradeService) UpdateFinalGrade(ctx context.Context, fgUUID string, req *schema.UpdateFinalGradeReq, userUUID string) (*schema.UpdateFinalGradeResp, error) {
+	userID, err := s.finalGradeRepo.GetUserIDByUserUUID(ctx, userUUID)
+	if err != nil {
+		return nil, fmt.Errorf("get user id failed: %w", err)
+	}
+
+	fg, err := s.finalGradeRepo.GetByUUIDAndUser(ctx, fgUUID, userID)
+	if err != nil {
+		return nil, fmt.Errorf("get final grade failed: %w", err)
+	}
+	if fg == nil {
+		return nil, fmt.Errorf("final grade not found")
+	}
+
 	if req.Name != nil {
-		fg.Name = strings.TrimSpace(*req.Name)
+		fg.Name = *req.Name
 	}
 	if req.ExamScore != nil {
 		fg.ExamScore = *req.ExamScore
 	}
-	if req.FinalScore != nil {
-		fg.FinalScore = *req.FinalScore
+	if req.ExamRatio != nil {
+		fg.ExamRatio = *req.ExamRatio
+	}
+	if req.ClassroomBonusScore != nil {
+		fg.ClassroomBonusScore = *req.ClassroomBonusScore
+	}
+	if req.ClassroomBonusRatio != nil {
+		fg.ClassroomBonusRatio = *req.ClassroomBonusRatio
+	}
+	if req.AttendanceScore != nil {
+		fg.AttendanceScore = *req.AttendanceScore
+	}
+	if req.AttendanceRatio != nil {
+		fg.AttendanceRatio = *req.AttendanceRatio
+	}
+	if req.QuizRatio != nil {
+		fg.QuizRatio = *req.QuizRatio
+	}
+	if req.HomeworkRatio != nil {
+		fg.HomeworkRatio = *req.HomeworkRatio
 	}
 
-	// 处理比例更新
-	if req.ExamRatio != nil || req.DailyRatio != nil {
-		examRatio := fg.ExamRatio
-		dailyRatio := fg.DailyRatio
-		if req.ExamRatio != nil {
-			examRatio = *req.ExamRatio
-		}
-		if req.DailyRatio != nil {
-			dailyRatio = *req.DailyRatio
-		}
-		if examRatio+dailyRatio != 100 {
-			return nil, apperrors.New(400, apperrors.CodeBadRequest, "exam_ratio + daily_ratio must equal 100")
-		}
-		fg.ExamRatio = examRatio
-		fg.DailyRatio = dailyRatio
-	}
-
-	fg.UpdatedAt = stime.GetCurrentTime()
-
-	if err := s.repo.Update(ctx, fg); err != nil {
+	if err := s.validateRatios(fg.ExamRatio, fg.ClassroomBonusRatio, fg.AttendanceRatio, fg.QuizRatio, fg.HomeworkRatio); err != nil {
 		return nil, err
 	}
 
+	if err := s.RecalculateFinalScore(ctx, fg); err != nil {
+		return nil, fmt.Errorf("recalculate final score failed: %w", err)
+	}
+
+	if err := s.finalGradeRepo.Update(ctx, fg); err != nil {
+		return nil, fmt.Errorf("update final grade failed: %w", err)
+	}
+
 	return &schema.UpdateFinalGradeResp{
-		UUID:       fg.UUID,
-		Name:       fg.Name,
-		ExamScore:  fg.ExamScore,
-		ExamRatio:  fg.ExamRatio,
-		DailyRatio: fg.DailyRatio,
-		FinalScore: fg.FinalScore,
+		UUID:                fg.UUID,
+		Name:                fg.Name,
+		ExamScore:           fg.ExamScore,
+		ExamRatio:           fg.ExamRatio,
+		ClassroomBonusScore: fg.ClassroomBonusScore,
+		ClassroomBonusRatio: fg.ClassroomBonusRatio,
+		AttendanceScore:     fg.AttendanceScore,
+		AttendanceRatio:     fg.AttendanceRatio,
+		QuizRatio:           fg.QuizRatio,
+		HomeworkRatio:       fg.HomeworkRatio,
+		FinalScore:          fg.FinalScore,
 	}, nil
 }
 
-// DeleteFinalGrade 删除期末成绩
 func (s *FinalGradeService) DeleteFinalGrade(ctx context.Context, fgUUID string, userUUID string) error {
-	userID, err := s.repo.GetUserIDByUserUUID(ctx, strings.TrimSpace(userUUID))
+	userID, err := s.finalGradeRepo.GetUserIDByUserUUID(ctx, userUUID)
 	if err != nil {
-		return err
+		return fmt.Errorf("get user id failed: %w", err)
 	}
 
-	fg, err := s.repo.GetByUUIDAndUser(ctx, fgUUID, userID)
+	fg, err := s.finalGradeRepo.GetByUUIDAndUser(ctx, fgUUID, userID)
 	if err != nil {
-		return err
+		return fmt.Errorf("get final grade failed: %w", err)
 	}
 	if fg == nil {
-		return apperrors.ErrFinalGradeNotFound
+		return fmt.Errorf("final grade not found")
 	}
 
-	// 删除关联的平时成绩
-	if err := s.dailyScoreRepo.DeleteByFinalGradeID(ctx, fg.ID); err != nil {
-		return err
+	// Delete associated quiz scores and homework scores
+	if err := s.quizScoreRepo.DeleteByFinalGradeID(ctx, fg.ID); err != nil {
+		return fmt.Errorf("delete quiz scores failed: %w", err)
+	}
+	if err := s.homeworkScoreRepo.DeleteByFinalGradeID(ctx, fg.ID); err != nil {
+		return fmt.Errorf("delete homework scores failed: %w", err)
 	}
 
-	affected, err := s.repo.Delete(ctx, fgUUID, userID)
+	if _, err := s.finalGradeRepo.Delete(ctx, fgUUID, userID); err != nil {
+		return fmt.Errorf("delete final grade failed: %w", err)
+	}
+
+	return nil
+}
+
+// RecalculateFinalScore 重新计算最终成绩
+func (s *FinalGradeService) RecalculateFinalScore(ctx context.Context, fg *entity.FinalGrade) error {
+	quizAvg, err := s.quizScoreRepo.GetAvgByFinalGradeID(ctx, fg.ID)
 	if err != nil {
-		return err
+		return fmt.Errorf("get quiz average failed: %w", err)
 	}
-	if affected == 0 {
-		return apperrors.ErrFinalGradeNotFound
+	homeworkAvg, err := s.homeworkScoreRepo.GetAvgByFinalGradeID(ctx, fg.ID)
+	if err != nil {
+		return fmt.Errorf("get homework average failed: %w", err)
 	}
 
+	fg.FinalScore = fg.ExamScore*float64(fg.ExamRatio)/100 +
+		fg.ClassroomBonusScore*float64(fg.ClassroomBonusRatio)/100 +
+		fg.AttendanceScore*float64(fg.AttendanceRatio)/100 +
+		quizAvg*float64(fg.QuizRatio)/100 +
+		homeworkAvg*float64(fg.HomeworkRatio)/100
+
+	return nil
+}
+
+func (s *FinalGradeService) validateRatios(exam, classroomBonus, attendance, quiz, homework int) error {
+	total := exam + classroomBonus + attendance + quiz + homework
+	if total != 100 {
+		return fmt.Errorf("ratios must sum to 100, got %d", total)
+	}
 	return nil
 }

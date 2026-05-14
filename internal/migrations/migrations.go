@@ -72,6 +72,7 @@ var migrations = []Migration{
 	NewMigration("0.0.4", "add final_grades and daily_scores tables", addGradeTables),
 	NewMigration("0.0.5", "update DDL remind fields: add subject, remind_24h, remind_2h; remove early_remind_time", updateDDLRemindFields),
 	NewMigration("0.0.6", "add phone column to user table", addPhoneColumn),
+	NewMigration("0.0.7", "restructure grade tables", restructureGradeTables),
 }
 
 func ExpectVersion() int64 {

@@ -33,50 +33,6 @@ definitions:
     - target
     - type
     type: object
-  schema.CreateDailyScoreReq:
-    properties:
-      name:
-        example: 小测1
-        type: string
-      ratio:
-        description: 占平时成绩的比例
-        example: 20
-        type: integer
-      score:
-        example: 90
-        type: number
-      type:
-        description: quiz 或 homework
-        enum:
-        - quiz
-        - homework
-        example: quiz
-        type: string
-    required:
-    - name
-    - type
-    type: object
-  schema.CreateDailyScoreResp:
-    properties:
-      final_grade_id:
-        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
-        type: string
-      name:
-        example: 小测1
-        type: string
-      ratio:
-        example: 20
-        type: integer
-      score:
-        example: 90
-        type: number
-      type:
-        example: quiz
-        type: string
-      uuid:
-        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
-        type: string
-    type: object
   schema.CreateDraftInput:
     properties:
       deadline:
@@ -173,26 +129,41 @@ definitions:
     type: object
   schema.CreateFinalGradeReq:
     properties:
-      daily_ratio:
-        description: 平时成绩占比（默认60）
-        example: 60
+      attendance_ratio:
+        example: 10
+        type: integer
+      classroom_bonus_ratio:
+        example: 10
         type: integer
       exam_ratio:
-        description: 期末考试占比（默认40）
         example: 40
         type: integer
+      homework_ratio:
+        example: 20
+        type: integer
       name:
-        description: 期末成绩名称
         example: 2024春季期末成绩
         type: string
+      quiz_ratio:
+        example: 20
+        type: integer
     required:
     - name
     type: object
   schema.CreateFinalGradeResp:
     properties:
-      daily_ratio:
-        example: 60
+      attendance_ratio:
+        example: 10
         type: integer
+      attendance_score:
+        example: 95
+        type: number
+      classroom_bonus_ratio:
+        example: 10
+        type: integer
+      classroom_bonus_score:
+        example: 90
+        type: number
       exam_ratio:
         example: 40
         type: integer
@@ -202,9 +173,67 @@ definitions:
       final_score:
         example: 87
         type: number
+      homework_ratio:
+        example: 20
+        type: integer
       name:
         example: 2024春季期末成绩
         type: string
+      quiz_ratio:
+        example: 20
+        type: integer
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.CreateHomeworkScoreReq:
+    properties:
+      name:
+        example: 作业1
+        type: string
+      score:
+        example: 90
+        type: number
+    required:
+    - name
+    type: object
+  schema.CreateHomeworkScoreResp:
+    properties:
+      final_grade_id:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+      name:
+        example: 作业1
+        type: string
+      score:
+        example: 90
+        type: number
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.CreateQuizScoreReq:
+    properties:
+      name:
+        example: 小测1
+        type: string
+      score:
+        example: 90
+        type: number
+    required:
+    - name
+    type: object
+  schema.CreateQuizScoreResp:
+    properties:
+      final_grade_id:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+      name:
+        example: 小测1
+        type: string
+      score:
+        example: 90
+        type: number
       uuid:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
@@ -286,60 +315,6 @@ definitions:
       total:
         type: integer
     type: object
-  schema.DailyScoreItem:
-    properties:
-      name:
-        example: 小测1
-        type: string
-      ratio:
-        description: 占平时成绩的比例
-        example: 20
-        type: integer
-      score:
-        example: 90
-        type: number
-      type:
-        description: quiz 或 homework
-        example: quiz
-        type: string
-      uuid:
-        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
-        type: string
-    type: object
-  schema.DailyScoreListItem:
-    properties:
-      created_at:
-        example: "2026-04-20T10:00:00+08:00"
-        type: string
-      name:
-        example: 小测1
-        type: string
-      ratio:
-        example: 20
-        type: integer
-      score:
-        example: 90
-        type: number
-      type:
-        example: quiz
-        type: string
-      uuid:
-        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
-        type: string
-    type: object
-  schema.DailyScoreListResp:
-    properties:
-      list:
-        items:
-          $ref: '#/definitions/schema.DailyScoreListItem'
-        type: array
-      page:
-        type: integer
-      page_size:
-        type: integer
-      total:
-        type: integer
-    type: object
   schema.ExamDetailResp:
     properties:
       created_at:
@@ -410,17 +385,21 @@ definitions:
     type: object
   schema.FinalGradeDetailResp:
     properties:
+      attendance_ratio:
+        example: 10
+        type: integer
+      attendance_score:
+        example: 95
+        type: number
+      classroom_bonus_ratio:
+        example: 10
+        type: integer
+      classroom_bonus_score:
+        example: 90
+        type: number
       created_at:
         example: "2026-04-20T10:00:00+08:00"
         type: string
-      daily_ratio:
-        example: 60
-        type: integer
-      daily_scores:
-        description: 关联的平时成绩列表
-        items:
-          $ref: '#/definitions/schema.DailyScoreItem'
-        type: array
       exam_ratio:
         example: 40
         type: integer
@@ -430,9 +409,23 @@ definitions:
       final_score:
         example: 87
         type: number
+      homework_ratio:
+        example: 20
+        type: integer
+      homework_scores:
+        items:
+          $ref: '#/definitions/schema.HomeworkScoreItem'
+        type: array
       name:
         example: 2024春季期末成绩
         type: string
+      quiz_ratio:
+        example: 20
+        type: integer
+      quiz_scores:
+        items:
+          $ref: '#/definitions/schema.QuizScoreItem'
+        type: array
       updated_at:
         example: "2026-04-20T10:00:00+08:00"
         type: string
@@ -442,12 +435,21 @@ definitions:
     type: object
   schema.FinalGradeListItem:
     properties:
+      attendance_ratio:
+        example: 10
+        type: integer
+      attendance_score:
+        example: 95
+        type: number
+      classroom_bonus_ratio:
+        example: 10
+        type: integer
+      classroom_bonus_score:
+        example: 90
+        type: number
       created_at:
         example: "2026-04-20T10:00:00+08:00"
         type: string
-      daily_ratio:
-        example: 60
-        type: integer
       exam_ratio:
         example: 40
         type: integer
@@ -457,9 +459,15 @@ definitions:
       final_score:
         example: 87
         type: number
+      homework_ratio:
+        example: 20
+        type: integer
       name:
         example: 2024春季期末成绩
         type: string
+      quiz_ratio:
+        example: 20
+        type: integer
       uuid:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
@@ -469,6 +477,46 @@ definitions:
       list:
         items:
           $ref: '#/definitions/schema.FinalGradeListItem'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  schema.HomeworkScoreItem:
+    properties:
+      name:
+        example: 作业1
+        type: string
+      score:
+        example: 90
+        type: number
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.HomeworkScoreListItem:
+    properties:
+      created_at:
+        example: "2026-04-20T10:00:00+08:00"
+        type: string
+      name:
+        example: 作业1
+        type: string
+      score:
+        example: 90
+        type: number
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.HomeworkScoreListResp:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/schema.HomeworkScoreListItem'
         type: array
       page:
         type: integer
@@ -557,6 +605,46 @@ definitions:
       uuid:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
+    type: object
+  schema.QuizScoreItem:
+    properties:
+      name:
+        example: 小测1
+        type: string
+      score:
+        example: 90
+        type: number
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.QuizScoreListItem:
+    properties:
+      created_at:
+        example: "2026-04-20T10:00:00+08:00"
+        type: string
+      name:
+        example: 小测1
+        type: string
+      score:
+        example: 90
+        type: number
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.QuizScoreListResp:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/schema.QuizScoreListItem'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
     type: object
   schema.RefreshTokenReq:
     properties:
@@ -733,39 +821,6 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.UpdateDailyScoreReq:
-    properties:
-      name:
-        example: 小测1
-        type: string
-      ratio:
-        example: 20
-        type: integer
-      score:
-        example: 90
-        type: number
-      type:
-        example: quiz
-        type: string
-    type: object
-  schema.UpdateDailyScoreResp:
-    properties:
-      name:
-        example: 小测1
-        type: string
-      ratio:
-        example: 20
-        type: integer
-      score:
-        example: 90
-        type: number
-      type:
-        example: quiz
-        type: string
-      uuid:
-        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
-        type: string
-    type: object
   schema.UpdateDraftStatusReq:
     properties:
       status:
@@ -828,27 +883,48 @@ definitions:
     type: object
   schema.UpdateFinalGradeReq:
     properties:
-      daily_ratio:
-        example: 60
+      attendance_ratio:
+        example: 10
         type: integer
+      attendance_score:
+        example: 95
+        type: number
+      classroom_bonus_ratio:
+        example: 10
+        type: integer
+      classroom_bonus_score:
+        example: 90
+        type: number
       exam_ratio:
         example: 40
         type: integer
       exam_score:
         example: 85.5
         type: number
-      final_score:
-        example: 87
-        type: number
+      homework_ratio:
+        example: 20
+        type: integer
       name:
         example: 2024春季期末成绩
         type: string
+      quiz_ratio:
+        example: 20
+        type: integer
     type: object
   schema.UpdateFinalGradeResp:
     properties:
-      daily_ratio:
-        example: 60
+      attendance_ratio:
+        example: 10
         type: integer
+      attendance_score:
+        example: 95
+        type: number
+      classroom_bonus_ratio:
+        example: 10
+        type: integer
+      classroom_bonus_score:
+        example: 90
+        type: number
       exam_ratio:
         example: 40
         type: integer
@@ -858,9 +934,57 @@ definitions:
       final_score:
         example: 87
         type: number
+      homework_ratio:
+        example: 20
+        type: integer
       name:
         example: 2024春季期末成绩
         type: string
+      quiz_ratio:
+        example: 20
+        type: integer
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.UpdateHomeworkScoreReq:
+    properties:
+      name:
+        example: 作业1
+        type: string
+      score:
+        example: 90
+        type: number
+    type: object
+  schema.UpdateHomeworkScoreResp:
+    properties:
+      name:
+        example: 作业1
+        type: string
+      score:
+        example: 90
+        type: number
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  schema.UpdateQuizScoreReq:
+    properties:
+      name:
+        example: 小测1
+        type: string
+      score:
+        example: 90
+        type: number
+    type: object
+  schema.UpdateQuizScoreResp:
+    properties:
+      name:
+        example: 小测1
+        type: string
+      score:
+        example: 90
+        type: number
       uuid:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
@@ -899,62 +1023,6 @@ paths:
       summary: 刷新Token
       tags:
       - Auth
-  /api/v1/daily-scores/{uuid}:
-    delete:
-      consumes:
-      - application/json
-      description: 删除平时成绩
-      parameters:
-      - description: Daily Score UUID
-        in: path
-        name: uuid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/handler.Response'
-      security:
-      - BearerAuth: []
-      summary: 删除平时成绩
-      tags:
-      - DailyScore
-    put:
-      consumes:
-      - application/json
-      description: 更新平时成绩的信息
-      parameters:
-      - description: Daily Score UUID
-        in: path
-        name: uuid
-        required: true
-        type: string
-      - description: Update Daily Score Request
-        in: body
-        name: req
-        required: true
-        schema:
-          $ref: '#/definitions/schema.UpdateDailyScoreReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            allOf:
-            - $ref: '#/definitions/handler.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/schema.UpdateDailyScoreResp'
-              type: object
-      security:
-      - BearerAuth: []
-      summary: 更新平时成绩
-      tags:
-      - DailyScore
   /api/v1/ddl/{uuid}:
     delete:
       consumes:
@@ -1439,11 +1507,11 @@ paths:
       summary: 创建期末成绩
       tags:
       - FinalGrade
-  /api/v1/final-grades/{final_grade_uuid}/daily-scores:
+  /api/v1/final-grades/{final_grade_uuid}/homework-scores:
     get:
       consumes:
       - application/json
-      description: 获取指定期末成绩记录下的所有平时成绩
+      description: 获取指定期末成绩记录下的所有作业成绩
       parameters:
       - description: Final Grade UUID
         in: path
@@ -1460,29 +1528,29 @@ paths:
             - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.DailyScoreListResp'
+                  $ref: '#/definitions/schema.HomeworkScoreListResp'
               type: object
       security:
       - BearerAuth: []
-      summary: 获取平时成绩列表
+      summary: 获取作业成绩列表
       tags:
-      - DailyScore
+      - HomeworkScore
     post:
       consumes:
       - application/json
-      description: 为指定期末成绩记录添加平时成绩（小测或作业）
+      description: 为指定期末成绩记录添加作业成绩
       parameters:
       - description: Final Grade UUID
         in: path
         name: final_grade_uuid
         required: true
         type: string
-      - description: Create Daily Score Request
+      - description: Create Homework Score Request
         in: body
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.CreateDailyScoreReq'
+          $ref: '#/definitions/schema.CreateHomeworkScoreReq'
       produces:
       - application/json
       responses:
@@ -1493,18 +1561,79 @@ paths:
             - $ref: '#/definitions/handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.CreateDailyScoreResp'
+                  $ref: '#/definitions/schema.CreateHomeworkScoreResp'
               type: object
       security:
       - BearerAuth: []
-      summary: 创建平时成绩
+      summary: 创建作业成绩
       tags:
-      - DailyScore
+      - HomeworkScore
+  /api/v1/final-grades/{final_grade_uuid}/quiz-scores:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定期末成绩记录下的所有小测成绩
+      parameters:
+      - description: Final Grade UUID
+        in: path
+        name: final_grade_uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.QuizScoreListResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 获取小测成绩列表
+      tags:
+      - QuizScore
+    post:
+      consumes:
+      - application/json
+      description: 为指定期末成绩记录添加小测成绩
+      parameters:
+      - description: Final Grade UUID
+        in: path
+        name: final_grade_uuid
+        required: true
+        type: string
+      - description: Create Quiz Score Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.CreateQuizScoreReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.CreateQuizScoreResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 创建小测成绩
+      tags:
+      - QuizScore
   /api/v1/final-grades/{uuid}:
     delete:
       consumes:
       - application/json
-      description: 删除期末成绩记录及其关联的平时成绩
+      description: 删除期末成绩记录及其关联的小测和作业成绩
       parameters:
       - description: Final Grade UUID
         in: path
@@ -1526,7 +1655,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: 获取单个期末成绩记录的详细信息，包含关联的平时成绩
+      description: 获取单个期末成绩记录的详细信息，包含关联的小测和作业成绩
       parameters:
       - description: Final Grade UUID
         in: path
@@ -1553,7 +1682,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: 更新期末成绩记录的信息
+      description: 更新期末成绩记录的信息，自动重算最终成绩
       parameters:
       - description: Final Grade UUID
         in: path
@@ -1583,6 +1712,118 @@ paths:
       summary: 更新期末成绩
       tags:
       - FinalGrade
+  /api/v1/homework-scores/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除作业成绩，自动重算最终成绩
+      parameters:
+      - description: Homework Score UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/handler.Response'
+      security:
+      - BearerAuth: []
+      summary: 删除作业成绩
+      tags:
+      - HomeworkScore
+    put:
+      consumes:
+      - application/json
+      description: 更新作业成绩的信息，自动重算最终成绩
+      parameters:
+      - description: Homework Score UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update Homework Score Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UpdateHomeworkScoreReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.UpdateHomeworkScoreResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 更新作业成绩
+      tags:
+      - HomeworkScore
+  /api/v1/quiz-scores/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除小测成绩，自动重算最终成绩
+      parameters:
+      - description: Quiz Score UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/handler.Response'
+      security:
+      - BearerAuth: []
+      summary: 删除小测成绩
+      tags:
+      - QuizScore
+    put:
+      consumes:
+      - application/json
+      description: 更新小测成绩的信息，自动重算最终成绩
+      parameters:
+      - description: Quiz Score UUID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update Quiz Score Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UpdateQuizScoreReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.UpdateQuizScoreResp'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 更新小测成绩
+      tags:
+      - QuizScore
   /api/v1/users/email/verification-codes:
     post:
       consumes:

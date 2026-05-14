@@ -13,6 +13,7 @@ type FinalGradeRepo interface {
 	Create(ctx context.Context, fg *entity.FinalGrade) error
 	GetByUUID(ctx context.Context, uuid string) (*entity.FinalGrade, error)
 	GetByUUIDAndUser(ctx context.Context, uuid string, userID int64) (*entity.FinalGrade, error)
+	GetByID(ctx context.Context, id int64) (*entity.FinalGrade, error)
 	ListByUserID(ctx context.Context, userID int64, offset, limit int) ([]*entity.FinalGrade, error)
 	CountByUserID(ctx context.Context, userID int64) (int64, error)
 	Update(ctx context.Context, fg *entity.FinalGrade) error
@@ -63,6 +64,18 @@ func (r *finalGradeRepo) GetByUUIDAndUser(ctx context.Context, uuid string, user
 }
 
 // ListByUserID 分页获取用户的期末成绩列表
+func (r *finalGradeRepo) GetByID(ctx context.Context, id int64) (*entity.FinalGrade, error) {
+	fg := &entity.FinalGrade{}
+	has, err := r.data.DB.Context(ctx).ID(id).Get(fg)
+	if err != nil {
+		return nil, err
+	}
+	if !has {
+		return nil, nil
+	}
+	return fg, nil
+}
+
 func (r *finalGradeRepo) ListByUserID(ctx context.Context, userID int64, offset, limit int) ([]*entity.FinalGrade, error) {
 	var fgs []*entity.FinalGrade
 	err := r.data.DB.Context(ctx).

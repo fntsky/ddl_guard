@@ -26,7 +26,7 @@ func NewFinalGradeController(fgService *final_grade.FinalGradeService) *FinalGra
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param req body schema.CreateFinalGradeReq true "Create Final Grade Request" SchemaExample({"name":"2024春季期末成绩","exam_ratio":40,"daily_ratio":60})
+// @Param req body schema.CreateFinalGradeReq true "Create Final Grade Request" SchemaExample({"name":"2024春季期末成绩","exam_ratio":40,"classroom_bonus_ratio":10,"attendance_ratio":10,"quiz_ratio":20,"homework_ratio":20})
 // @success 200 {object} handler.Response{data=schema.CreateFinalGradeResp} "success"
 // @Router /api/v1/final-grades [post]
 func (c *FinalGradeController) CreateFinalGrade(ctx *gin.Context) {
@@ -67,13 +67,14 @@ func (c *FinalGradeController) ListFinalGrades(ctx *gin.Context) {
 		handler.HandleResponse(ctx, handler.BadRequest("invalid pagination params", err), nil)
 		return
 	}
+	pageReq.Normalize()
 
 	resp, err := c.fgService.ListFinalGrades(ctx, userClaims.UserUUID, &pageReq)
 	handler.HandleResponse(ctx, err, resp)
 }
 
 // @Summary 获取期末成绩详情
-// @Description 获取单个期末成绩记录的详细信息，包含关联的平时成绩
+// @Description 获取单个期末成绩记录的详细信息，包含关联的小测和作业成绩
 // @Tags FinalGrade
 // @Accept json
 // @Produce json
@@ -99,7 +100,7 @@ func (c *FinalGradeController) GetFinalGrade(ctx *gin.Context) {
 }
 
 // @Summary 更新期末成绩
-// @Description 更新期末成绩记录的信息
+// @Description 更新期末成绩记录的信息，自动重算最终成绩
 // @Tags FinalGrade
 // @Accept json
 // @Produce json
@@ -132,7 +133,7 @@ func (c *FinalGradeController) UpdateFinalGrade(ctx *gin.Context) {
 }
 
 // @Summary 删除期末成绩
-// @Description 删除期末成绩记录及其关联的平时成绩
+// @Description 删除期末成绩记录及其关联的小测和作业成绩
 // @Tags FinalGrade
 // @Accept json
 // @Produce json

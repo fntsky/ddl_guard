@@ -14,6 +14,9 @@ import (
 	"github.com/fntsky/ddl_guard/internal/controller"
 	"github.com/fntsky/ddl_guard/internal/repo/ddl"
 	"github.com/fntsky/ddl_guard/internal/repo/exam"
+	"github.com/fntsky/ddl_guard/internal/repo/final_grade"
+	"github.com/fntsky/ddl_guard/internal/repo/homework_score"
+	"github.com/fntsky/ddl_guard/internal/repo/quiz_score"
 	"github.com/fntsky/ddl_guard/internal/repo/session"
 	"github.com/fntsky/ddl_guard/internal/repo/user"
 	"github.com/fntsky/ddl_guard/internal/router"
@@ -21,6 +24,9 @@ import (
 	auth2 "github.com/fntsky/ddl_guard/internal/service/auth"
 	ddl2 "github.com/fntsky/ddl_guard/internal/service/ddl"
 	exam2 "github.com/fntsky/ddl_guard/internal/service/exam"
+	final_grade2 "github.com/fntsky/ddl_guard/internal/service/final_grade"
+	homework_score2 "github.com/fntsky/ddl_guard/internal/service/homework_score"
+	quiz_score2 "github.com/fntsky/ddl_guard/internal/service/quiz_score"
 	user2 "github.com/fntsky/ddl_guard/internal/service/user"
 	"github.com/fntsky/ddl_guard/internal/worker"
 	"github.com/gin-gonic/gin"
@@ -65,7 +71,19 @@ func initApplication(debug bool) (*app, func(), error) {
 	userService := user2.NewUserService(userRepo, otpOTP, authService)
 	userController := controller.NewUserController(userService)
 	userApiRouter := router.NewUserApiRouter(userController)
-	ginEngine := server.NewHttpServer(debug, swaggerRouter, authApiRouter, ddlApiRouter, examApiRouter, userApiRouter)
+	finalGradeRepo := final_grade.NewFinalGradeRepo(dataData)
+	quizScoreRepo := quiz_score.NewQuizScoreRepo(dataData)
+	homeworkScoreRepo := homework_score.NewHomeworkScoreRepo(dataData)
+	finalGradeService := final_grade2.NewFinalGradeService(finalGradeRepo, quizScoreRepo, homeworkScoreRepo)
+	finalGradeController := controller.NewFinalGradeController(finalGradeService)
+	finalGradeApiRouter := router.NewFinalGradeApiRouter(finalGradeController, tokenService)
+	quizScoreService := quiz_score2.NewQuizScoreService(quizScoreRepo, finalGradeRepo, finalGradeService)
+	quizScoreController := controller.NewQuizScoreController(quizScoreService)
+	quizScoreApiRouter := router.NewQuizScoreApiRouter(quizScoreController, tokenService)
+	homeworkScoreService := homework_score2.NewHomeworkScoreService(homeworkScoreRepo, finalGradeRepo, finalGradeService)
+	homeworkScoreController := controller.NewHomeworkScoreController(homeworkScoreService)
+	homeworkScoreApiRouter := router.NewHomeworkScoreApiRouter(homeworkScoreController, tokenService)
+	ginEngine := server.NewHttpServer(debug, swaggerRouter, authApiRouter, ddlApiRouter, examApiRouter, userApiRouter, finalGradeApiRouter, quizScoreApiRouter, homeworkScoreApiRouter)
 	publishWorker := worker.NewPublishWorker(ddlRepo, userRepo, redisClient)
 	expirationWorker := worker.NewExpirationWorker(ddlRepo)
 	ddlcmdApp := newApp(debug, ginEngine, publishWorker, expirationWorker)

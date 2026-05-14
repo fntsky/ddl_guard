@@ -26,7 +26,10 @@ func NewHttpServer(debug bool,
 	authApiRouter *router.AuthApiRouter,
 	ddlApiRouter *router.DDLApiRouter,
 	examApiRouter *router.ExamApiRouter,
-	userApiRouter *router.UserApiRouter) *gin.Engine {
+	userApiRouter *router.UserApiRouter,
+	finalGradeApiRouter *router.FinalGradeApiRouter,
+	quizScoreApiRouter *router.QuizScoreApiRouter,
+	homeworkScoreApiRouter *router.HomeworkScoreApiRouter) *gin.Engine {
 	if debug {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -42,6 +45,9 @@ func NewHttpServer(debug bool,
 	swaggerRouter.Register(rootGroup)
 	authApiRouter.Register(apiGroup)
 	userApiRouter.Register(apiGroup)
+	finalGradeApiRouter.Register(apiGroup)
+	quizScoreApiRouter.Register(apiGroup)
+	homeworkScoreApiRouter.Register(apiGroup)
 	ddlApiRouter.Register(apiGroup)
 	examApiRouter.Register(apiGroup)
 	return r

@@ -8,5 +8,6 @@ var ProviderSetController = wire.NewSet(
 	NewExamController,
 	NewUserController,
 	NewFinalGradeController,
-	NewDailyScoreController,
+	NewQuizScoreController,
+	NewHomeworkScoreController,
 )
