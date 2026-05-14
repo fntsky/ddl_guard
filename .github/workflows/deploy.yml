@@ -43,5 +43,5 @@ jobs:
 
             # Build, upgrade database, and restart
             docker compose build --no-cache app
-            docker compose run --rm app upgrade -d /app/data
+            docker compose run --rm --entrypoint "./ddl_guard" app upgrade -d /app/data
             docker compose up -d
