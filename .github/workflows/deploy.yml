@@ -35,10 +35,13 @@ jobs:
             SMTP_PORT=${{ secrets.SMTP_PORT }}
             SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}
             SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+            WECHAT_APP_ID=${{ secrets.WECHAT_APP_ID }}
+            WECHAT_APP_SECRET=${{ secrets.WECHAT_APP_SECRET }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             PUBLISH_EMAIL_ENABLED=${{ secrets.PUBLISH_EMAIL_ENABLED }}
             EOF
 
-            # Build and restart
+            # Build, upgrade database, and restart
             docker compose build --no-cache app
+            docker compose run --rm app upgrade -d /app/data
             docker compose up -d
