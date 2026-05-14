@@ -68,9 +68,9 @@ func (c *QuizScoreController) ListQuizScores(ctx *gin.Context) {
 		return
 	}
 
-	fgUUID := strings.TrimSpace(ctx.Param("final_grade_uuid"))
+	fgUUID := strings.TrimSpace(ctx.Param("uuid"))
 	if fgUUID == "" {
-		handler.HandleResponse(ctx, handler.BadRequest("final_grade_uuid is required", nil), nil)
+		handler.HandleResponse(ctx, handler.BadRequest("uuid is required", nil), nil)
 		return
 	}
 
