@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.RefreshTokenReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RefreshTokenReq"
                         }
                     }
                 ],
@@ -46,13 +46,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.TokenPairResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.TokenPairResp"
                                         }
                                     }
                                 }
@@ -102,13 +102,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.DDLListResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.DDLListResp"
                                         }
                                     }
                                 }
@@ -158,13 +158,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.DDLListResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.DDLListResp"
                                         }
                                     }
                                 }
@@ -199,7 +199,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.CreateDraftReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq"
                         }
                     }
                 ],
@@ -209,13 +209,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.CreateDraftResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp"
                                         }
                                     }
                                 }
@@ -257,7 +257,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.UpdateDraftStatusReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq"
                         }
                     }
                 ],
@@ -267,13 +267,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.UpdateDraftStatusResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp"
                                         }
                                     }
                                 }
@@ -323,13 +323,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.DDLListResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.DDLListResp"
                                         }
                                     }
                                 }
@@ -372,13 +372,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.DDLDetailResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.DDLDetailResp"
                                         }
                                     }
                                 }
@@ -418,7 +418,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.UpdateDDLReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDDLReq"
                         }
                     }
                 ],
@@ -428,13 +428,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.UpdateDDLResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDDLResp"
                                         }
                                     }
                                 }
@@ -473,7 +473,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -511,7 +511,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.UpdateDDLStatusReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDDLStatusReq"
                         }
                     }
                 ],
@@ -521,13 +521,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.UpdateDDLStatusResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDDLStatusResp"
                                         }
                                     }
                                 }
@@ -577,13 +577,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.ExamListResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.ExamListResp"
                                         }
                                     }
                                 }
@@ -616,7 +616,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.CreateExamReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateExamReq"
                         }
                     }
                 ],
@@ -626,13 +626,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.CreateExamResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateExamResp"
                                         }
                                     }
                                 }
@@ -675,13 +675,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.ExamDetailResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.ExamDetailResp"
                                         }
                                     }
                                 }
@@ -721,7 +721,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.UpdateExamReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateExamReq"
                         }
                     }
                 ],
@@ -731,13 +731,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.UpdateExamResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateExamResp"
                                         }
                                     }
                                 }
@@ -776,7 +776,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -822,13 +822,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.FinalGradeListResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.FinalGradeListResp"
                                         }
                                     }
                                 }
@@ -861,7 +861,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.CreateFinalGradeReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateFinalGradeReq"
                         }
                     }
                 ],
@@ -871,13 +871,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.CreateFinalGradeResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateFinalGradeResp"
                                         }
                                     }
                                 }
@@ -920,13 +920,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.HomeworkScoreListResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreListResp"
                                         }
                                     }
                                 }
@@ -966,7 +966,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.CreateHomeworkScoreReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateHomeworkScoreReq"
                         }
                     }
                 ],
@@ -976,13 +976,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.CreateHomeworkScoreResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateHomeworkScoreResp"
                                         }
                                     }
                                 }
@@ -1025,13 +1025,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.QuizScoreListResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.QuizScoreListResp"
                                         }
                                     }
                                 }
@@ -1071,7 +1071,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.CreateQuizScoreReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateQuizScoreReq"
                         }
                     }
                 ],
@@ -1081,13 +1081,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.CreateQuizScoreResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateQuizScoreResp"
                                         }
                                     }
                                 }
@@ -1130,13 +1130,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.FinalGradeDetailResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.FinalGradeDetailResp"
                                         }
                                     }
                                 }
@@ -1176,7 +1176,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.UpdateFinalGradeReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateFinalGradeReq"
                         }
                     }
                 ],
@@ -1186,13 +1186,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.UpdateFinalGradeResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateFinalGradeResp"
                                         }
                                     }
                                 }
@@ -1231,7 +1231,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1269,7 +1269,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.UpdateHomeworkScoreReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateHomeworkScoreReq"
                         }
                     }
                 ],
@@ -1279,13 +1279,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.UpdateHomeworkScoreResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateHomeworkScoreResp"
                                         }
                                     }
                                 }
@@ -1324,7 +1324,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1362,7 +1362,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.UpdateQuizScoreReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateQuizScoreReq"
                         }
                     }
                 ],
@@ -1372,13 +1372,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.UpdateQuizScoreResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateQuizScoreResp"
                                         }
                                     }
                                 }
@@ -1417,7 +1417,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1443,7 +1443,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.SendEmailVerificationCodeReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendEmailVerificationCodeReq"
                         }
                     }
                 ],
@@ -1451,7 +1451,7 @@ const docTemplate = `{
                     "200": {
                         "description": "success",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1477,7 +1477,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.ChangePasswordReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.ChangePasswordReq"
                         }
                     }
                 ],
@@ -1485,25 +1485,25 @@ const docTemplate = `{
                     "200": {
                         "description": "密码修改成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "400": {
                         "description": "请求参数错误或验证码无效",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "404": {
                         "description": "用户不存在",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "500": {
                         "description": "服务器内部错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1529,7 +1529,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.SendPasswordResetCodeReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendPasswordResetCodeReq"
                         }
                     }
                 ],
@@ -1537,19 +1537,19 @@ const docTemplate = `{
                     "200": {
                         "description": "验证码发送成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "400": {
                         "description": "请求参数错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "500": {
                         "description": "服务器内部错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1575,7 +1575,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.SendPhoneLoginCodeReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendPhoneLoginCodeReq"
                         }
                     }
                 ],
@@ -1583,19 +1583,19 @@ const docTemplate = `{
                     "200": {
                         "description": "验证码发送成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "400": {
                         "description": "请求参数错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "503": {
                         "description": "短信服务未启用",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1621,7 +1621,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.SendPhoneVerificationCodeReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendPhoneVerificationCodeReq"
                         }
                     }
                 ],
@@ -1629,19 +1629,19 @@ const docTemplate = `{
                     "200": {
                         "description": "验证码发送成功",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "400": {
                         "description": "请求参数错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "503": {
                         "description": "短信服务未启用",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1667,7 +1667,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.RegisterUserByEmailReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailReq"
                         }
                     }
                 ],
@@ -1677,13 +1677,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.RegisterUserByEmailResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailResp"
                                         }
                                     }
                                 }
@@ -1713,7 +1713,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.RegisterUserByPhoneReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByPhoneReq"
                         }
                     }
                 ],
@@ -1723,13 +1723,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.RegisterUserByPhoneResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByPhoneResp"
                                         }
                                     }
                                 }
@@ -1739,13 +1739,13 @@ const docTemplate = `{
                     "400": {
                         "description": "请求参数错误或验证码无效",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "503": {
                         "description": "短信服务未启用",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1771,7 +1771,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.LoginByEmailReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByEmailReq"
                         }
                     }
                 ],
@@ -1781,13 +1781,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.LoginByEmailResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByEmailResp"
                                         }
                                     }
                                 }
@@ -1817,7 +1817,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.LoginByPhoneReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneReq"
                         }
                     }
                 ],
@@ -1827,13 +1827,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.LoginByPhoneResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneResp"
                                         }
                                     }
                                 }
@@ -1843,13 +1843,13 @@ const docTemplate = `{
                     "400": {
                         "description": "请求参数错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "401": {
                         "description": "手机号或密码错误",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1875,7 +1875,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.LoginByPhoneCodeReq"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneCodeReq"
                         }
                     }
                 ],
@@ -1885,13 +1885,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.Response"
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/schema.LoginByPhoneCodeResp"
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneCodeResp"
                                         }
                                     }
                                 }
@@ -1901,13 +1901,71 @@ const docTemplate = `{
                     "400": {
                         "description": "请求参数错误或验证码无效",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     },
                     "503": {
                         "description": "短信服务未启用",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/sessions/wechat": {
+            "post": {
+                "description": "使用微信小程序 code 登录，首次自动注册",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "微信登录",
+                "parameters": [
+                    {
+                        "description": "微信登录请求",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByWechatReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "登录成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByWechatResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "微信 code 无效或已过期",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
+                        }
+                    },
+                    "502": {
+                        "description": "微信 API 请求失败",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response"
                         }
                     }
                 }
@@ -1915,7 +1973,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.Response": {
+        "github_com_fntsky_ddl_guard_internal_base_handler.Response": {
             "type": "object",
             "properties": {
                 "code": {
@@ -1930,7 +1988,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.ChangePasswordReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.ChangePasswordReq": {
             "type": "object",
             "required": [
                 "code",
@@ -1962,7 +2020,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateDraftInput": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -1984,7 +2042,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateDraftReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq": {
             "type": "object",
             "properties": {
                 "data_type": {
@@ -1993,7 +2051,7 @@ const docTemplate = `{
                     "example": "default"
                 },
                 "draft": {
-                    "$ref": "#/definitions/schema.CreateDraftInput"
+                    "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput"
                 },
                 "raw_base64": {
                     "type": "string",
@@ -2001,7 +2059,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateDraftResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -2027,7 +2085,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateExamReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateExamReq": {
             "type": "object",
             "required": [
                 "end_time",
@@ -2059,7 +2117,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateExamResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateExamResp": {
             "type": "object",
             "properties": {
                 "end_time": {
@@ -2090,7 +2148,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateFinalGradeReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateFinalGradeReq": {
             "type": "object",
             "required": [
                 "name"
@@ -2122,7 +2180,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateFinalGradeResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateFinalGradeResp": {
             "type": "object",
             "properties": {
                 "attendance_ratio": {
@@ -2171,7 +2229,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateHomeworkScoreReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateHomeworkScoreReq": {
             "type": "object",
             "required": [
                 "name"
@@ -2187,7 +2245,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateHomeworkScoreResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateHomeworkScoreResp": {
             "type": "object",
             "properties": {
                 "final_grade_id": {
@@ -2208,7 +2266,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateQuizScoreReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateQuizScoreReq": {
             "type": "object",
             "required": [
                 "name"
@@ -2224,7 +2282,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.CreateQuizScoreResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.CreateQuizScoreResp": {
             "type": "object",
             "properties": {
                 "final_grade_id": {
@@ -2245,7 +2303,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.DDLDetailResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.DDLDetailResp": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2294,7 +2352,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.DDLListItem": {
+        "github_com_fntsky_ddl_guard_internal_schema.DDLListItem": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2330,13 +2388,13 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.DDLListResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.DDLListResp": {
             "type": "object",
             "properties": {
                 "list": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.DDLListItem"
+                        "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.DDLListItem"
                     }
                 },
                 "page": {
@@ -2350,7 +2408,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.ExamDetailResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.ExamDetailResp": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2391,7 +2449,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.ExamListItem": {
+        "github_com_fntsky_ddl_guard_internal_schema.ExamListItem": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2423,13 +2481,13 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.ExamListResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.ExamListResp": {
             "type": "object",
             "properties": {
                 "list": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.ExamListItem"
+                        "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.ExamListItem"
                     }
                 },
                 "page": {
@@ -2443,7 +2501,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.FinalGradeDetailResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.FinalGradeDetailResp": {
             "type": "object",
             "properties": {
                 "attendance_ratio": {
@@ -2485,7 +2543,7 @@ const docTemplate = `{
                 "homework_scores": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.HomeworkScoreItem"
+                        "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreItem"
                     }
                 },
                 "name": {
@@ -2499,7 +2557,7 @@ const docTemplate = `{
                 "quiz_scores": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.QuizScoreItem"
+                        "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.QuizScoreItem"
                     }
                 },
                 "updated_at": {
@@ -2512,7 +2570,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.FinalGradeListItem": {
+        "github_com_fntsky_ddl_guard_internal_schema.FinalGradeListItem": {
             "type": "object",
             "properties": {
                 "attendance_ratio": {
@@ -2565,13 +2623,13 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.FinalGradeListResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.FinalGradeListResp": {
             "type": "object",
             "properties": {
                 "list": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.FinalGradeListItem"
+                        "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.FinalGradeListItem"
                     }
                 },
                 "page": {
@@ -2585,7 +2643,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.HomeworkScoreItem": {
+        "github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreItem": {
             "type": "object",
             "properties": {
                 "name": {
@@ -2602,7 +2660,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.HomeworkScoreListItem": {
+        "github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreListItem": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2623,13 +2681,13 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.HomeworkScoreListResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreListResp": {
             "type": "object",
             "properties": {
                 "list": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.HomeworkScoreListItem"
+                        "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreListItem"
                     }
                 },
                 "page": {
@@ -2643,7 +2701,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.LoginByEmailReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.LoginByEmailReq": {
             "type": "object",
             "required": [
                 "email",
@@ -2660,7 +2718,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.LoginByEmailResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.LoginByEmailResp": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -2681,7 +2739,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.LoginByPhoneCodeReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneCodeReq": {
             "type": "object",
             "required": [
                 "code",
@@ -2698,7 +2756,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.LoginByPhoneCodeResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneCodeResp": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -2719,7 +2777,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.LoginByPhoneReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneReq": {
             "type": "object",
             "required": [
                 "password",
@@ -2736,7 +2794,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.LoginByPhoneResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneResp": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -2757,7 +2815,40 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.QuizScoreItem": {
+        "github_com_fntsky_ddl_guard_internal_schema.LoginByWechatReq": {
+            "type": "object",
+            "required": [
+                "code"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "0a1B2c3D4e5F6g7H8i9J0k"
+                }
+            }
+        },
+        "github_com_fntsky_ddl_guard_internal_schema.LoginByWechatResp": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "username": {
+                    "type": "string",
+                    "example": "wx_oABC1234"
+                },
+                "uuid": {
+                    "type": "string",
+                    "example": "7a178766-4b8e-4e99-ab4c-843f7dbd95fd"
+                }
+            }
+        },
+        "github_com_fntsky_ddl_guard_internal_schema.QuizScoreItem": {
             "type": "object",
             "properties": {
                 "name": {
@@ -2774,7 +2865,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.QuizScoreListItem": {
+        "github_com_fntsky_ddl_guard_internal_schema.QuizScoreListItem": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -2795,13 +2886,13 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.QuizScoreListResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.QuizScoreListResp": {
             "type": "object",
             "properties": {
                 "list": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/schema.QuizScoreListItem"
+                        "$ref": "#/definitions/github_com_fntsky_ddl_guard_internal_schema.QuizScoreListItem"
                     }
                 },
                 "page": {
@@ -2815,7 +2906,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.RefreshTokenReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.RefreshTokenReq": {
             "type": "object",
             "required": [
                 "refresh_token"
@@ -2826,7 +2917,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.RegisterUserByEmailReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailReq": {
             "type": "object",
             "required": [
                 "code",
@@ -2854,7 +2945,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.RegisterUserByEmailResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailResp": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -2871,7 +2962,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.RegisterUserByPhoneReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.RegisterUserByPhoneReq": {
             "type": "object",
             "required": [
                 "code",
@@ -2899,7 +2990,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.RegisterUserByPhoneResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.RegisterUserByPhoneResp": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -2916,7 +3007,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.SendEmailVerificationCodeReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.SendEmailVerificationCodeReq": {
             "type": "object",
             "required": [
                 "email"
@@ -2928,7 +3019,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.SendPasswordResetCodeReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.SendPasswordResetCodeReq": {
             "type": "object",
             "required": [
                 "target",
@@ -2949,7 +3040,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.SendPhoneLoginCodeReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.SendPhoneLoginCodeReq": {
             "type": "object",
             "required": [
                 "phone"
@@ -2961,7 +3052,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.SendPhoneVerificationCodeReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.SendPhoneVerificationCodeReq": {
             "type": "object",
             "required": [
                 "phone"
@@ -2973,7 +3064,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.TokenPairResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.TokenPairResp": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -2986,7 +3077,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateDDLReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateDDLReq": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -3008,7 +3099,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateDDLResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateDDLResp": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -3034,7 +3125,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateDDLStatusReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateDDLStatusReq": {
             "type": "object",
             "required": [
                 "status"
@@ -3047,7 +3138,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateDDLStatusResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateDDLStatusResp": {
             "type": "object",
             "properties": {
                 "status": {
@@ -3061,7 +3152,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateDraftStatusReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq": {
             "type": "object",
             "required": [
                 "status"
@@ -3073,7 +3164,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateDraftStatusResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp": {
             "type": "object",
             "properties": {
                 "status": {
@@ -3086,7 +3177,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateExamReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateExamReq": {
             "type": "object",
             "properties": {
                 "end_time": {
@@ -3113,7 +3204,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateExamResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateExamResp": {
             "type": "object",
             "properties": {
                 "end_time": {
@@ -3144,7 +3235,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateFinalGradeReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateFinalGradeReq": {
             "type": "object",
             "properties": {
                 "attendance_ratio": {
@@ -3185,7 +3276,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateFinalGradeResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateFinalGradeResp": {
             "type": "object",
             "properties": {
                 "attendance_ratio": {
@@ -3234,7 +3325,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateHomeworkScoreReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateHomeworkScoreReq": {
             "type": "object",
             "properties": {
                 "name": {
@@ -3247,7 +3338,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateHomeworkScoreResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateHomeworkScoreResp": {
             "type": "object",
             "properties": {
                 "name": {
@@ -3264,7 +3355,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateQuizScoreReq": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateQuizScoreReq": {
             "type": "object",
             "properties": {
                 "name": {
@@ -3277,7 +3368,7 @@ const docTemplate = `{
                 }
             }
         },
-        "schema.UpdateQuizScoreResp": {
+        "github_com_fntsky_ddl_guard_internal_schema.UpdateQuizScoreResp": {
             "type": "object",
             "properties": {
                 "name": {

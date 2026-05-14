@@ -1,5 +1,5 @@
 definitions:
-  handler.Response:
+  github_com_fntsky_ddl_guard_internal_base_handler.Response:
     properties:
       code:
         type: string
@@ -9,7 +9,7 @@ definitions:
       request_id:
         type: string
     type: object
-  schema.ChangePasswordReq:
+  github_com_fntsky_ddl_guard_internal_schema.ChangePasswordReq:
     properties:
       code:
         example: "123456"
@@ -33,7 +33,7 @@ definitions:
     - target
     - type
     type: object
-  schema.CreateDraftInput:
+  github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput:
     properties:
       deadline:
         example: "2026-03-24T14:30:00+08:00"
@@ -49,19 +49,19 @@ definitions:
         example: test ddl
         type: string
     type: object
-  schema.CreateDraftReq:
+  github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq:
     properties:
       data_type:
         default: default
         example: default
         type: string
       draft:
-        $ref: '#/definitions/schema.CreateDraftInput'
+        $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftInput'
       raw_base64:
         example: iVBORw0KGgoAAAANSUhEUgAA...
         type: string
     type: object
-  schema.CreateDraftResp:
+  github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp:
     properties:
       deadline:
         example: "2026-03-24T14:30:00+08:00"
@@ -80,7 +80,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.CreateExamReq:
+  github_com_fntsky_ddl_guard_internal_schema.CreateExamReq:
     properties:
       end_time:
         example: "2026-04-26T11:00:00+08:00"
@@ -104,7 +104,7 @@ definitions:
     - name
     - start_time
     type: object
-  schema.CreateExamResp:
+  github_com_fntsky_ddl_guard_internal_schema.CreateExamResp:
     properties:
       end_time:
         example: "2026-04-26T11:00:00+08:00"
@@ -127,7 +127,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.CreateFinalGradeReq:
+  github_com_fntsky_ddl_guard_internal_schema.CreateFinalGradeReq:
     properties:
       attendance_ratio:
         example: 10
@@ -150,7 +150,7 @@ definitions:
     required:
     - name
     type: object
-  schema.CreateFinalGradeResp:
+  github_com_fntsky_ddl_guard_internal_schema.CreateFinalGradeResp:
     properties:
       attendance_ratio:
         example: 10
@@ -186,7 +186,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.CreateHomeworkScoreReq:
+  github_com_fntsky_ddl_guard_internal_schema.CreateHomeworkScoreReq:
     properties:
       name:
         example: 作业1
@@ -197,7 +197,7 @@ definitions:
     required:
     - name
     type: object
-  schema.CreateHomeworkScoreResp:
+  github_com_fntsky_ddl_guard_internal_schema.CreateHomeworkScoreResp:
     properties:
       final_grade_id:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
@@ -212,7 +212,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.CreateQuizScoreReq:
+  github_com_fntsky_ddl_guard_internal_schema.CreateQuizScoreReq:
     properties:
       name:
         example: 小测1
@@ -223,7 +223,7 @@ definitions:
     required:
     - name
     type: object
-  schema.CreateQuizScoreResp:
+  github_com_fntsky_ddl_guard_internal_schema.CreateQuizScoreResp:
     properties:
       final_grade_id:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
@@ -238,7 +238,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.DDLDetailResp:
+  github_com_fntsky_ddl_guard_internal_schema.DDLDetailResp:
     properties:
       created_at:
         example: "2026-03-24T10:00:00+08:00"
@@ -275,7 +275,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.DDLListItem:
+  github_com_fntsky_ddl_guard_internal_schema.DDLListItem:
     properties:
       created_at:
         example: "2026-03-24T10:00:00+08:00"
@@ -302,11 +302,11 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.DDLListResp:
+  github_com_fntsky_ddl_guard_internal_schema.DDLListResp:
     properties:
       list:
         items:
-          $ref: '#/definitions/schema.DDLListItem'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.DDLListItem'
         type: array
       page:
         type: integer
@@ -315,7 +315,7 @@ definitions:
       total:
         type: integer
     type: object
-  schema.ExamDetailResp:
+  github_com_fntsky_ddl_guard_internal_schema.ExamDetailResp:
     properties:
       created_at:
         example: "2026-04-20T10:00:00+08:00"
@@ -346,7 +346,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.ExamListItem:
+  github_com_fntsky_ddl_guard_internal_schema.ExamListItem:
     properties:
       created_at:
         example: "2026-04-20T10:00:00+08:00"
@@ -370,11 +370,11 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.ExamListResp:
+  github_com_fntsky_ddl_guard_internal_schema.ExamListResp:
     properties:
       list:
         items:
-          $ref: '#/definitions/schema.ExamListItem'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.ExamListItem'
         type: array
       page:
         type: integer
@@ -383,7 +383,7 @@ definitions:
       total:
         type: integer
     type: object
-  schema.FinalGradeDetailResp:
+  github_com_fntsky_ddl_guard_internal_schema.FinalGradeDetailResp:
     properties:
       attendance_ratio:
         example: 10
@@ -414,7 +414,7 @@ definitions:
         type: integer
       homework_scores:
         items:
-          $ref: '#/definitions/schema.HomeworkScoreItem'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreItem'
         type: array
       name:
         example: 2024春季期末成绩
@@ -424,7 +424,7 @@ definitions:
         type: integer
       quiz_scores:
         items:
-          $ref: '#/definitions/schema.QuizScoreItem'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.QuizScoreItem'
         type: array
       updated_at:
         example: "2026-04-20T10:00:00+08:00"
@@ -433,7 +433,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.FinalGradeListItem:
+  github_com_fntsky_ddl_guard_internal_schema.FinalGradeListItem:
     properties:
       attendance_ratio:
         example: 10
@@ -472,11 +472,11 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.FinalGradeListResp:
+  github_com_fntsky_ddl_guard_internal_schema.FinalGradeListResp:
     properties:
       list:
         items:
-          $ref: '#/definitions/schema.FinalGradeListItem'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.FinalGradeListItem'
         type: array
       page:
         type: integer
@@ -485,7 +485,7 @@ definitions:
       total:
         type: integer
     type: object
-  schema.HomeworkScoreItem:
+  github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreItem:
     properties:
       name:
         example: 作业1
@@ -497,7 +497,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.HomeworkScoreListItem:
+  github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreListItem:
     properties:
       created_at:
         example: "2026-04-20T10:00:00+08:00"
@@ -512,11 +512,11 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.HomeworkScoreListResp:
+  github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreListResp:
     properties:
       list:
         items:
-          $ref: '#/definitions/schema.HomeworkScoreListItem'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreListItem'
         type: array
       page:
         type: integer
@@ -525,7 +525,7 @@ definitions:
       total:
         type: integer
     type: object
-  schema.LoginByEmailReq:
+  github_com_fntsky_ddl_guard_internal_schema.LoginByEmailReq:
     properties:
       email:
         example: testuser@example.com
@@ -537,7 +537,7 @@ definitions:
     - email
     - password
     type: object
-  schema.LoginByEmailResp:
+  github_com_fntsky_ddl_guard_internal_schema.LoginByEmailResp:
     properties:
       access_token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -552,7 +552,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.LoginByPhoneCodeReq:
+  github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneCodeReq:
     properties:
       code:
         example: "123456"
@@ -564,7 +564,7 @@ definitions:
     - code
     - phone
     type: object
-  schema.LoginByPhoneCodeResp:
+  github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneCodeResp:
     properties:
       access_token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -579,7 +579,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.LoginByPhoneReq:
+  github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneReq:
     properties:
       password:
         example: password123
@@ -591,7 +591,7 @@ definitions:
     - password
     - phone
     type: object
-  schema.LoginByPhoneResp:
+  github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneResp:
     properties:
       access_token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -606,7 +606,30 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.QuizScoreItem:
+  github_com_fntsky_ddl_guard_internal_schema.LoginByWechatReq:
+    properties:
+      code:
+        example: 0a1B2c3D4e5F6g7H8i9J0k
+        type: string
+    required:
+    - code
+    type: object
+  github_com_fntsky_ddl_guard_internal_schema.LoginByWechatResp:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      username:
+        example: wx_oABC1234
+        type: string
+      uuid:
+        example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
+        type: string
+    type: object
+  github_com_fntsky_ddl_guard_internal_schema.QuizScoreItem:
     properties:
       name:
         example: 小测1
@@ -618,7 +641,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.QuizScoreListItem:
+  github_com_fntsky_ddl_guard_internal_schema.QuizScoreListItem:
     properties:
       created_at:
         example: "2026-04-20T10:00:00+08:00"
@@ -633,11 +656,11 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.QuizScoreListResp:
+  github_com_fntsky_ddl_guard_internal_schema.QuizScoreListResp:
     properties:
       list:
         items:
-          $ref: '#/definitions/schema.QuizScoreListItem'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.QuizScoreListItem'
         type: array
       page:
         type: integer
@@ -646,14 +669,14 @@ definitions:
       total:
         type: integer
     type: object
-  schema.RefreshTokenReq:
+  github_com_fntsky_ddl_guard_internal_schema.RefreshTokenReq:
     properties:
       refresh_token:
         type: string
     required:
     - refresh_token
     type: object
-  schema.RegisterUserByEmailReq:
+  github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailReq:
     properties:
       code:
         example: "123456"
@@ -674,7 +697,7 @@ definitions:
     - password
     - username
     type: object
-  schema.RegisterUserByEmailResp:
+  github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailResp:
     properties:
       access_token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -686,7 +709,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.RegisterUserByPhoneReq:
+  github_com_fntsky_ddl_guard_internal_schema.RegisterUserByPhoneReq:
     properties:
       code:
         example: "123456"
@@ -707,7 +730,7 @@ definitions:
     - phone
     - username
     type: object
-  schema.RegisterUserByPhoneResp:
+  github_com_fntsky_ddl_guard_internal_schema.RegisterUserByPhoneResp:
     properties:
       access_token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -719,7 +742,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.SendEmailVerificationCodeReq:
+  github_com_fntsky_ddl_guard_internal_schema.SendEmailVerificationCodeReq:
     properties:
       email:
         example: testuser@example.com
@@ -727,7 +750,7 @@ definitions:
     required:
     - email
     type: object
-  schema.SendPasswordResetCodeReq:
+  github_com_fntsky_ddl_guard_internal_schema.SendPasswordResetCodeReq:
     properties:
       target:
         example: user@example.com
@@ -742,7 +765,7 @@ definitions:
     - target
     - type
     type: object
-  schema.SendPhoneLoginCodeReq:
+  github_com_fntsky_ddl_guard_internal_schema.SendPhoneLoginCodeReq:
     properties:
       phone:
         example: "13800138000"
@@ -750,7 +773,7 @@ definitions:
     required:
     - phone
     type: object
-  schema.SendPhoneVerificationCodeReq:
+  github_com_fntsky_ddl_guard_internal_schema.SendPhoneVerificationCodeReq:
     properties:
       phone:
         example: "13800138000"
@@ -758,7 +781,7 @@ definitions:
     required:
     - phone
     type: object
-  schema.TokenPairResp:
+  github_com_fntsky_ddl_guard_internal_schema.TokenPairResp:
     properties:
       access_token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -767,7 +790,7 @@ definitions:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
     type: object
-  schema.UpdateDDLReq:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateDDLReq:
     properties:
       deadline:
         example: "2026-03-24T14:30:00+08:00"
@@ -783,7 +806,7 @@ definitions:
         example: test ddl
         type: string
     type: object
-  schema.UpdateDDLResp:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateDDLResp:
     properties:
       deadline:
         example: "2026-03-24T14:30:00+08:00"
@@ -802,7 +825,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.UpdateDDLStatusReq:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateDDLStatusReq:
     properties:
       status:
         description: '目标状态: 1-激活, 4-已完成'
@@ -811,7 +834,7 @@ definitions:
     required:
     - status
     type: object
-  schema.UpdateDDLStatusResp:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateDDLStatusResp:
     properties:
       status:
         description: 'DDL状态: 0-草稿, 1-激活, 2-过期, 3-已删除, 4-已完成'
@@ -821,7 +844,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.UpdateDraftStatusReq:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq:
     properties:
       status:
         example: active
@@ -829,7 +852,7 @@ definitions:
     required:
     - status
     type: object
-  schema.UpdateDraftStatusResp:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp:
     properties:
       status:
         example: 1
@@ -838,7 +861,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.UpdateExamReq:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateExamReq:
     properties:
       end_time:
         example: "2026-04-26T11:00:00+08:00"
@@ -858,7 +881,7 @@ definitions:
         format: date-time
         type: string
     type: object
-  schema.UpdateExamResp:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateExamResp:
     properties:
       end_time:
         example: "2026-04-26T11:00:00+08:00"
@@ -881,7 +904,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.UpdateFinalGradeReq:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateFinalGradeReq:
     properties:
       attendance_ratio:
         example: 10
@@ -911,7 +934,7 @@ definitions:
         example: 20
         type: integer
     type: object
-  schema.UpdateFinalGradeResp:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateFinalGradeResp:
     properties:
       attendance_ratio:
         example: 10
@@ -947,7 +970,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.UpdateHomeworkScoreReq:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateHomeworkScoreReq:
     properties:
       name:
         example: 作业1
@@ -956,7 +979,7 @@ definitions:
         example: 90
         type: number
     type: object
-  schema.UpdateHomeworkScoreResp:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateHomeworkScoreResp:
     properties:
       name:
         example: 作业1
@@ -968,7 +991,7 @@ definitions:
         example: 7a178766-4b8e-4e99-ab4c-843f7dbd95fd
         type: string
     type: object
-  schema.UpdateQuizScoreReq:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateQuizScoreReq:
     properties:
       name:
         example: 小测1
@@ -977,7 +1000,7 @@ definitions:
         example: 90
         type: number
     type: object
-  schema.UpdateQuizScoreResp:
+  github_com_fntsky_ddl_guard_internal_schema.UpdateQuizScoreResp:
     properties:
       name:
         example: 小测1
@@ -1007,7 +1030,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.RefreshTokenReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.RefreshTokenReq'
       produces:
       - application/json
       responses:
@@ -1015,10 +1038,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.TokenPairResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.TokenPairResp'
               type: object
       summary: 刷新Token
       tags:
@@ -1040,7 +1063,7 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       security:
       - BearerAuth: []
       summary: 删除DDL
@@ -1063,10 +1086,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.DDLDetailResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.DDLDetailResp'
               type: object
       security:
       - BearerAuth: []
@@ -1088,7 +1111,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.UpdateDDLReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDDLReq'
       produces:
       - application/json
       responses:
@@ -1096,10 +1119,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.UpdateDDLResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDDLResp'
               type: object
       security:
       - BearerAuth: []
@@ -1122,7 +1145,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.UpdateDDLStatusReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDDLStatusReq'
       produces:
       - application/json
       responses:
@@ -1130,10 +1153,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.UpdateDDLStatusResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDDLStatusResp'
               type: object
       security:
       - BearerAuth: []
@@ -1163,10 +1186,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.DDLListResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.DDLListResp'
               type: object
       security:
       - BearerAuth: []
@@ -1196,10 +1219,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.DDLListResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.DDLListResp'
               type: object
       security:
       - BearerAuth: []
@@ -1217,7 +1240,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.CreateDraftReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftReq'
       produces:
       - application/json
       responses:
@@ -1225,10 +1248,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.CreateDraftResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateDraftResp'
               type: object
       security:
       - BearerAuth: []
@@ -1251,7 +1274,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.UpdateDraftStatusReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusReq'
       produces:
       - application/json
       responses:
@@ -1259,10 +1282,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.UpdateDraftStatusResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateDraftStatusResp'
               type: object
       security:
       - BearerAuth: []
@@ -1292,10 +1315,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.DDLListResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.DDLListResp'
               type: object
       security:
       - BearerAuth: []
@@ -1325,10 +1348,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.ExamListResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.ExamListResp'
               type: object
       security:
       - BearerAuth: []
@@ -1345,7 +1368,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.CreateExamReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateExamReq'
       produces:
       - application/json
       responses:
@@ -1353,10 +1376,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.CreateExamResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateExamResp'
               type: object
       security:
       - BearerAuth: []
@@ -1380,7 +1403,7 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       security:
       - BearerAuth: []
       summary: 删除考试
@@ -1403,10 +1426,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.ExamDetailResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.ExamDetailResp'
               type: object
       security:
       - BearerAuth: []
@@ -1428,7 +1451,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.UpdateExamReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateExamReq'
       produces:
       - application/json
       responses:
@@ -1436,10 +1459,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.UpdateExamResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateExamResp'
               type: object
       security:
       - BearerAuth: []
@@ -1469,10 +1492,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.FinalGradeListResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.FinalGradeListResp'
               type: object
       security:
       - BearerAuth: []
@@ -1489,7 +1512,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.CreateFinalGradeReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateFinalGradeReq'
       produces:
       - application/json
       responses:
@@ -1497,10 +1520,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.CreateFinalGradeResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateFinalGradeResp'
               type: object
       security:
       - BearerAuth: []
@@ -1525,10 +1548,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.HomeworkScoreListResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.HomeworkScoreListResp'
               type: object
       security:
       - BearerAuth: []
@@ -1550,7 +1573,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.CreateHomeworkScoreReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateHomeworkScoreReq'
       produces:
       - application/json
       responses:
@@ -1558,10 +1581,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.CreateHomeworkScoreResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateHomeworkScoreResp'
               type: object
       security:
       - BearerAuth: []
@@ -1586,10 +1609,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.QuizScoreListResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.QuizScoreListResp'
               type: object
       security:
       - BearerAuth: []
@@ -1611,7 +1634,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.CreateQuizScoreReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateQuizScoreReq'
       produces:
       - application/json
       responses:
@@ -1619,10 +1642,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.CreateQuizScoreResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.CreateQuizScoreResp'
               type: object
       security:
       - BearerAuth: []
@@ -1646,7 +1669,7 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       security:
       - BearerAuth: []
       summary: 删除期末成绩
@@ -1669,10 +1692,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.FinalGradeDetailResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.FinalGradeDetailResp'
               type: object
       security:
       - BearerAuth: []
@@ -1694,7 +1717,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.UpdateFinalGradeReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateFinalGradeReq'
       produces:
       - application/json
       responses:
@@ -1702,10 +1725,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.UpdateFinalGradeResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateFinalGradeResp'
               type: object
       security:
       - BearerAuth: []
@@ -1729,7 +1752,7 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       security:
       - BearerAuth: []
       summary: 删除作业成绩
@@ -1750,7 +1773,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.UpdateHomeworkScoreReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateHomeworkScoreReq'
       produces:
       - application/json
       responses:
@@ -1758,10 +1781,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.UpdateHomeworkScoreResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateHomeworkScoreResp'
               type: object
       security:
       - BearerAuth: []
@@ -1785,7 +1808,7 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       security:
       - BearerAuth: []
       summary: 删除小测成绩
@@ -1806,7 +1829,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.UpdateQuizScoreReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateQuizScoreReq'
       produces:
       - application/json
       responses:
@@ -1814,10 +1837,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.UpdateQuizScoreResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.UpdateQuizScoreResp'
               type: object
       security:
       - BearerAuth: []
@@ -1835,14 +1858,14 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.SendEmailVerificationCodeReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendEmailVerificationCodeReq'
       produces:
       - application/json
       responses:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       summary: 发送邮箱验证码
       tags:
       - User
@@ -1862,26 +1885,26 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.ChangePasswordReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.ChangePasswordReq'
       produces:
       - application/json
       responses:
         "200":
           description: 密码修改成功
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "400":
           description: 请求参数错误或验证码无效
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "404":
           description: 用户不存在
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "500":
           description: 服务器内部错误
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       summary: 通过验证码修改密码
       tags:
       - User
@@ -1899,22 +1922,22 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.SendPasswordResetCodeReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendPasswordResetCodeReq'
       produces:
       - application/json
       responses:
         "200":
           description: 验证码发送成功
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "400":
           description: 请求参数错误
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "500":
           description: 服务器内部错误
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       summary: 发送密码重置验证码
       tags:
       - User
@@ -1929,22 +1952,22 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.SendPhoneLoginCodeReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendPhoneLoginCodeReq'
       produces:
       - application/json
       responses:
         "200":
           description: 验证码发送成功
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "400":
           description: 请求参数错误
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "503":
           description: 短信服务未启用
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       summary: 发送手机登录验证码
       tags:
       - User
@@ -1959,22 +1982,22 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.SendPhoneVerificationCodeReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.SendPhoneVerificationCodeReq'
       produces:
       - application/json
       responses:
         "200":
           description: 验证码发送成功
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "400":
           description: 请求参数错误
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "503":
           description: 短信服务未启用
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       summary: 发送手机注册验证码
       tags:
       - User
@@ -1989,7 +2012,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.RegisterUserByEmailReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailReq'
       produces:
       - application/json
       responses:
@@ -1997,10 +2020,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.RegisterUserByEmailResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByEmailResp'
               type: object
       summary: 邮箱注册
       tags:
@@ -2016,7 +2039,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.RegisterUserByPhoneReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByPhoneReq'
       produces:
       - application/json
       responses:
@@ -2024,19 +2047,19 @@ paths:
           description: 注册成功
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.RegisterUserByPhoneResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.RegisterUserByPhoneResp'
               type: object
         "400":
           description: 请求参数错误或验证码无效
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "503":
           description: 短信服务未启用
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       summary: 手机号注册
       tags:
       - User
@@ -2051,7 +2074,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.LoginByEmailReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByEmailReq'
       produces:
       - application/json
       responses:
@@ -2059,10 +2082,10 @@ paths:
           description: success
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.LoginByEmailResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByEmailResp'
               type: object
       summary: 邮箱登录
       tags:
@@ -2078,7 +2101,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.LoginByPhoneReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneReq'
       produces:
       - application/json
       responses:
@@ -2086,19 +2109,19 @@ paths:
           description: 登录成功
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.LoginByPhoneResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneResp'
               type: object
         "400":
           description: 请求参数错误
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "401":
           description: 手机号或密码错误
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       summary: 手机号+密码登录
       tags:
       - User
@@ -2113,7 +2136,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/schema.LoginByPhoneCodeReq'
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneCodeReq'
       produces:
       - application/json
       responses:
@@ -2121,20 +2144,55 @@ paths:
           description: 登录成功
           schema:
             allOf:
-            - $ref: '#/definitions/handler.Response'
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/schema.LoginByPhoneCodeResp'
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByPhoneCodeResp'
               type: object
         "400":
           description: 请求参数错误或验证码无效
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
         "503":
           description: 短信服务未启用
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
       summary: 手机号+验证码登录
+      tags:
+      - User
+  /api/v1/users/sessions/wechat:
+    post:
+      consumes:
+      - application/json
+      description: 使用微信小程序 code 登录，首次自动注册
+      parameters:
+      - description: 微信登录请求
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByWechatReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登录成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_schema.LoginByWechatResp'
+              type: object
+        "401":
+          description: 微信 code 无效或已过期
+          schema:
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
+        "502":
+          description: 微信 API 请求失败
+          schema:
+            $ref: '#/definitions/github_com_fntsky_ddl_guard_internal_base_handler.Response'
+      summary: 微信登录
       tags:
       - User
 securityDefinitions:
