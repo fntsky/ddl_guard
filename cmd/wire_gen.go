@@ -19,6 +19,7 @@ import (
 	"github.com/fntsky/ddl_guard/internal/repo/quiz_score"
 	"github.com/fntsky/ddl_guard/internal/repo/session"
 	"github.com/fntsky/ddl_guard/internal/repo/user"
+	"github.com/fntsky/ddl_guard/internal/repo/user_auth"
 	"github.com/fntsky/ddl_guard/internal/router"
 	"github.com/fntsky/ddl_guard/internal/service/ai"
 	auth2 "github.com/fntsky/ddl_guard/internal/service/auth"
@@ -28,6 +29,7 @@ import (
 	homework_score2 "github.com/fntsky/ddl_guard/internal/service/homework_score"
 	quiz_score2 "github.com/fntsky/ddl_guard/internal/service/quiz_score"
 	user2 "github.com/fntsky/ddl_guard/internal/service/user"
+	"github.com/fntsky/ddl_guard/internal/service/wechat"
 	"github.com/fntsky/ddl_guard/internal/worker"
 	"github.com/gin-gonic/gin"
 )
@@ -67,8 +69,10 @@ func initApplication(debug bool) (*app, func(), error) {
 	examController := controller.NewExamController(examService)
 	examApiRouter := router.NewExamApiRouter(examController, tokenService)
 	userRepo := user.NewUserRepo(dataData)
+	userAuthRepo := user_auth.NewUserAuthRepo(dataData)
 	otpOTP := otp.NewSMTPEmailOTP(redisClient)
-	userService := user2.NewUserService(userRepo, otpOTP, authService)
+	wechatService := wechat.NewWechatService()
+	userService := user2.NewUserService(userRepo, userAuthRepo, otpOTP, authService, wechatService)
 	userController := controller.NewUserController(userService)
 	userApiRouter := router.NewUserApiRouter(userController)
 	finalGradeRepo := final_grade.NewFinalGradeRepo(dataData)

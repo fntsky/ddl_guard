@@ -11,6 +11,7 @@ import (
 	homeworkscore "github.com/fntsky/ddl_guard/internal/service/homework_score"
 	quizscore "github.com/fntsky/ddl_guard/internal/service/quiz_score"
 	"github.com/fntsky/ddl_guard/internal/service/user"
+	"github.com/fntsky/ddl_guard/internal/service/wechat"
 	"github.com/google/wire"
 )
 
@@ -22,6 +23,7 @@ var ProviderSetService = wire.NewSet(
 	ddl.NewDDLService,
 	exam.NewExamService,
 	user.NewUserService,
+	wechat.NewWechatService,
 	finalgrade.NewFinalGradeService,
 	quizscore.NewQuizScoreService,
 	homeworkscore.NewHomeworkScoreService,

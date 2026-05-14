@@ -9,6 +9,7 @@ import (
 	"github.com/fntsky/ddl_guard/internal/repo/quiz_score"
 	"github.com/fntsky/ddl_guard/internal/repo/session"
 	"github.com/fntsky/ddl_guard/internal/repo/user"
+	"github.com/fntsky/ddl_guard/internal/repo/user_auth"
 	"github.com/google/wire"
 )
 
@@ -20,6 +21,7 @@ var ProviderSetRepo = wire.NewSet(
 	exam.NewExamRepo,
 	session.NewSessionRepo,
 	user.NewUserRepo,
+	user_auth.NewUserAuthRepo,
 	final_grade.NewFinalGradeRepo,
 	quiz_score.NewQuizScoreRepo,
 	homework_score.NewHomeworkScoreRepo,

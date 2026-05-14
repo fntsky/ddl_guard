@@ -216,3 +216,23 @@ func (uc *UserController) LoginByPhoneCode(ctx *gin.Context) {
 	resp, err := uc.userService.LoginByPhoneCode(ctx, req)
 	handler.HandleResponse(ctx, err, resp)
 }
+
+// LoginByWechat 微信登录
+// @Summary 微信登录
+// @Description 使用微信小程序 code 登录，首次自动注册
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param req body schema.LoginByWechatReq true "微信登录请求"
+// @success 200 {object} handler.Response{data=schema.LoginByWechatResp} "登录成功"
+// @failure 401 {object} handler.Response "微信 code 无效或已过期"
+// @failure 502 {object} handler.Response "微信 API 请求失败"
+// @Router /api/v1/users/sessions/wechat [post]
+func (uc *UserController) LoginByWechat(ctx *gin.Context) {
+	req := &schema.LoginByWechatReq{}
+	if handler.BindAndCheck(ctx, req) {
+		return
+	}
+	resp, err := uc.userService.LoginByWechat(ctx, req)
+	handler.HandleResponse(ctx, err, resp)
+}

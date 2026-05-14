@@ -11,6 +11,7 @@ import (
 	"github.com/fntsky/ddl_guard/internal/entity"
 	"github.com/fntsky/ddl_guard/internal/schema"
 	authsvc "github.com/fntsky/ddl_guard/internal/service/auth"
+	"github.com/fntsky/ddl_guard/internal/service/wechat"
 	"github.com/fntsky/ddl_guard/pkg/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -26,17 +27,26 @@ type UserRepo interface {
 	ExistsByPhone(ctx context.Context, phone string) (bool, error)
 }
 
-type UserService struct {
-	repo        UserRepo
-	emailOTP    otp.OTP
-	authService *authsvc.AuthService
+type UserAuthRepo interface {
+	GetByTypeAndIdentifier(ctx context.Context, authType, identifier string) (*entity.UserAuth, error)
+	Create(ctx context.Context, auth *entity.UserAuth) error
 }
 
-func NewUserService(repo UserRepo, emailOTP otp.OTP, authService *authsvc.AuthService) *UserService {
+type UserService struct {
+	repo         UserRepo
+	userAuthRepo UserAuthRepo
+	emailOTP     otp.OTP
+	authService  *authsvc.AuthService
+	wechatSvc    *wechat.WechatService
+}
+
+func NewUserService(repo UserRepo, userAuthRepo UserAuthRepo, emailOTP otp.OTP, authService *authsvc.AuthService, wechatSvc *wechat.WechatService) *UserService {
 	return &UserService{
-		repo:        repo,
-		emailOTP:    emailOTP,
-		authService: authService,
+		repo:         repo,
+		userAuthRepo: userAuthRepo,
+		emailOTP:     emailOTP,
+		authService:  authService,
+		wechatSvc:    wechatSvc,
 	}
 }
 
@@ -270,4 +280,75 @@ func (s *UserService) LoginByPhone(ctx context.Context, req *schema.LoginByPhone
 func (s *UserService) LoginByPhoneCode(ctx context.Context, req *schema.LoginByPhoneCodeReq) (*schema.LoginByPhoneCodeResp, error) {
 	// TODO: 实现手机号验证码登录
 	return nil, apperrors.ErrSMSServiceDisabled
+}
+
+// LoginByWechat 微信登录（首次自动注册）
+func (s *UserService) LoginByWechat(ctx context.Context, req *schema.LoginByWechatReq) (*schema.LoginByWechatResp, error) {
+	result, err := s.wechatSvc.Code2Session(ctx, req.Code)
+	if err != nil {
+		return nil, err
+	}
+
+	userAuth, err := s.userAuthRepo.GetByTypeAndIdentifier(ctx, entity.UserAuthTypeWechat, result.OpenID)
+	if err != nil {
+		return nil, err
+	}
+
+	var user *entity.User
+
+	if userAuth != nil {
+		user, err = s.repo.GetUserByID(ctx, userAuth.UserID)
+		if err != nil {
+			return nil, err
+		}
+		if user == nil {
+			return nil, apperrors.ErrUserNotFound
+		}
+	} else {
+		now := time.Now()
+		user = &entity.User{
+			UUID:         uuid.GenerateUUID(),
+			Username:     "wx_" + result.OpenID[:min(8, len(result.OpenID))],
+			PasswordHash: string(mustGenerateRandomHash()),
+			CreatedAt:    now,
+			UpdatedAt:    now,
+		}
+		if err = s.repo.CreateUser(ctx, user); err != nil {
+			return nil, err
+		}
+
+		authRecord := &entity.UserAuth{
+			UserID:         user.ID,
+			AuthType:       entity.UserAuthTypeWechat,
+			AuthIdentifier: result.OpenID,
+			AuthMeta:       result.SessionKey,
+		}
+		if err = s.userAuthRepo.Create(ctx, authRecord); err != nil {
+			return nil, err
+		}
+	}
+
+	tokenPair, err := s.authService.IssueTokensForUser(ctx, user.ID, user.UUID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &schema.LoginByWechatResp{
+		UUID:         user.UUID,
+		Username:     user.Username,
+		AccessToken:  tokenPair.AccessToken,
+		RefreshToken: tokenPair.RefreshToken,
+	}, nil
+}
+
+func mustGenerateRandomHash() []byte {
+	pwd, _ := bcrypt.GenerateFromPassword([]byte(uuid.GenerateUUID()), bcrypt.DefaultCost)
+	return pwd
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }

@@ -25,6 +25,8 @@ func (a *UserApiRouter) Register(r *gin.RouterGroup) {
 	userGroup.POST("/registrations/phone", a.userController.RegisterUserByPhone)
 	userGroup.POST("/sessions/phone", a.userController.LoginByPhone)
 	userGroup.POST("/sessions/phone/code", a.userController.LoginByPhoneCode)
+	// 微信相关
+	userGroup.POST("/sessions/wechat", a.userController.LoginByWechat)
 	// 密码相关
 	userGroup.POST("/password/reset-codes", a.userController.SendPasswordResetCode)
 	userGroup.PUT("/password", a.userController.ChangePassword)

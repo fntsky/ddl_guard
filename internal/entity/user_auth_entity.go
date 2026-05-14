@@ -3,7 +3,8 @@ package entity
 import "time"
 
 const (
-	UserAuthTypeEmail = "email"
+	UserAuthTypeEmail  = "email"
+	UserAuthTypeWechat = "wechat"
 )
 
 type UserAuth struct {

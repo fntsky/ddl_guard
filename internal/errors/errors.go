@@ -41,6 +41,10 @@ const (
 	CodeSMSServiceDisabled          ErrorCode = "SMS_SERVICE_DISABLED"
 	CodeUnsupportedVerificationType ErrorCode = "UNSUPPORTED_VERIFICATION_TYPE"
 
+	// WeChat 领域错误
+	CodeWechatCodeInvalid ErrorCode = "WECHAT_CODE_INVALID"
+	CodeWechatAPIFailed   ErrorCode = "WECHAT_API_FAILED"
+
 	// Auth 领域错误
 	CodeTokenMissing        ErrorCode = "TOKEN_MISSING"
 	CodeTokenMalformed      ErrorCode = "TOKEN_MALFORMED"
@@ -216,6 +220,10 @@ var (
 	ErrSMSServiceDisabled          = New(http.StatusServiceUnavailable, CodeSMSServiceDisabled, "sms service is not available")
 	ErrInvalidCredentials          = New(http.StatusUnauthorized, CodeInvalidCredentials, "invalid email or password")
 	ErrUnsupportedVerificationType = New(http.StatusBadRequest, CodeUnsupportedVerificationType, "unsupported verification type")
+
+	// WeChat 相关
+	ErrWechatCodeInvalid = New(http.StatusUnauthorized, CodeWechatCodeInvalid, "invalid wechat code")
+	ErrWechatAPIFailed   = New(http.StatusBadGateway, CodeWechatAPIFailed, "wechat api request failed")
 
 	// Auth 相关
 	ErrInvalidRefreshToken = New(http.StatusUnauthorized, CodeInvalidRefreshToken, "invalid refresh token")

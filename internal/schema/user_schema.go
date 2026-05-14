@@ -167,3 +167,25 @@ type LoginByPhoneCodeResp struct {
 	RefreshToken string `json:"refresh_token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
 	AccessToken  string `json:"access_token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
 }
+
+/*
+微信登录请求参数
+code: wx.login() 获取的临时登录凭证
+*/
+type LoginByWechatReq struct {
+	Code string `json:"code" binding:"required" example:"0a1B2c3D4e5F6g7H8i9J0k"`
+}
+
+/*
+微信登录响应参数
+UUID
+用户名
+refresh_token
+access_token
+*/
+type LoginByWechatResp struct {
+	UUID         string `json:"uuid" example:"7a178766-4b8e-4e99-ab4c-843f7dbd95fd"`
+	Username     string `json:"username" example:"wx_oABC1234"`
+	RefreshToken string `json:"refresh_token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
+	AccessToken  string `json:"access_token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
+}

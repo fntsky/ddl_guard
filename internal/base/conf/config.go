@@ -17,6 +17,7 @@ type Config struct {
 	Redis     RedisConfig    `yaml:"redis"`
 	VISUAL_AI VisualAIConfig `yaml:"VISUAL_AI"`
 	EMAIL_OTP EmailOTPConfig `yaml:"EMAIL_OTP"`
+	WECHAT    WechatConfig   `yaml:"WECHAT"`
 	JWT       JWTConfig      `yaml:"jwt"`
 	Publish   PublishConfig  `yaml:"publish"`
 }
@@ -66,6 +67,11 @@ type JWTConfig struct {
 	Secret           string `yaml:"secret" env:"JWT_SECRET"`
 	AccessTTLMinutes int    `yaml:"access_ttl_minutes" env:"JWT_ACCESS_TTL_MINUTES"`
 	RefreshTTLHours  int    `yaml:"refresh_ttl_hours" env:"JWT_REFRESH_TTL_HOURS"`
+}
+
+type WechatConfig struct {
+	AppID     string `yaml:"app_id" env:"WECHAT_APP_ID"`
+	AppSecret string `yaml:"app_secret" env:"WECHAT_APP_SECRET"`
 }
 
 // PublishConfig 推送配置
