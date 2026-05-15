@@ -1,6 +1,9 @@
 services:
   app:
     build: .
+    dns:
+      - 8.8.8.8
+      - 223.5.5.5
     ports:
       - "8080:8080"
     depends_on:
