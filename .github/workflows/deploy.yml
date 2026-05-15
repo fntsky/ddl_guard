@@ -41,7 +41,6 @@ jobs:
             PUBLISH_EMAIL_ENABLED=${{ secrets.PUBLISH_EMAIL_ENABLED }}
             EOF
 
-            # Build, upgrade database, and restart
+            # Build and restart
             docker compose build --no-cache app
-            docker compose run --rm --entrypoint "./ddl_guard" app upgrade -d /app/data
             docker compose up -d

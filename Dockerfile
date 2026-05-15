@@ -38,6 +38,7 @@ RUN echo '#!/bin/sh' > /app/entrypoint.sh && \
     echo 'while ! nc -z redis 6379; do sleep 1; done' >> /app/entrypoint.sh && \
     echo 'echo "Redis is ready"' >> /app/entrypoint.sh && \
     echo '/app/ddl_guard init -d /app/data' >> /app/entrypoint.sh && \
+    echo '/app/ddl_guard upgrade -d /app/data' >> /app/entrypoint.sh && \
     echo 'exec /app/ddl_guard run -d /app/data' >> /app/entrypoint.sh && \
     chmod +x /app/entrypoint.sh
 
