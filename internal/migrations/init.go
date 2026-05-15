@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/fntsky/ddl_guard/internal/entity"
 	"xorm.io/xorm"
 )
 
@@ -44,9 +45,19 @@ func (m *Mentor) syncTables() {
 	m.err = m.engine.Context(ctx).Sync2(tables...)
 }
 
-func (m *Mentor) insertVersion() {
-	expectedVersion := ExpectVersion()
+func (m *Mentor) hasVersion() bool {
+	exist, err := m.engine.Context(m.ctx).IsTableExist("version")
+	if err != nil || !exist {
+		return false
+	}
+	count, err := m.engine.Context(m.ctx).Count(&entity.Version{})
+	if err != nil || count > 0 {
+		return true
+	}
+	return false
+}
 
+func (m *Mentor) insertVersion() {
 	if _, m.err = m.engine.Context(m.ctx).
 		Exec(`DELETE FROM "version" WHERE "id" > ?`, 1); m.err != nil {
 		return
@@ -55,6 +66,6 @@ func (m *Mentor) insertVersion() {
 	_, m.err = m.engine.Context(m.ctx).Exec(
 		`INSERT INTO "version" ("id", "version_number") VALUES (?, ?) ON CONFLICT ("id") DO UPDATE SET "version_number" = EXCLUDED."version_number"`,
 		1,
-		expectedVersion,
+		0,
 	)
 }
