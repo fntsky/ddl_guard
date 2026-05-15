@@ -91,7 +91,7 @@ func (s *UserService) RegisterByEmail(ctx context.Context, req *schema.RegisterU
 	user := &entity.User{
 		UUID:         uuid.GenerateUUID(),
 		Username:     strings.TrimSpace(req.Username),
-		Email:        email,
+		Email:        entity.StrPtr(email),
 		PasswordHash: string(pwdHash),
 		CreatedAt:    now,
 		UpdatedAt:    now,
