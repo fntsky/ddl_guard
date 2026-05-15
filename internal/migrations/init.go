@@ -22,6 +22,10 @@ func NewMentor(engine *xorm.Engine) *Mentor {
 }
 
 func (m *Mentor) InitDB() error {
+	if m.hasVersion() {
+		fmt.Println("[InitDB] database already initialized, skipping")
+		return nil
+	}
 	m.do("sync tables", m.syncTables)
 	m.do("insert version", m.insertVersion)
 	return m.err
