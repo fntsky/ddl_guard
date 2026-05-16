@@ -293,7 +293,7 @@ func (s *FinalGradeService) RecalculateFinalScore(ctx context.Context, fg *entit
 func (s *FinalGradeService) validateRatios(exam, classroomBonus, attendance, quiz, homework int) error {
 	total := exam + classroomBonus + attendance + quiz + homework
 	if total != 100 {
-		return fmt.Errorf("ratios must sum to 100, got %d", total)
+		return fmt.Errorf("各项比例之和必须为100，当前为%d（考试%d+课堂加分%d+出勤%d+测验%d+作业%d）", total, exam, classroomBonus, attendance, quiz, homework)
 	}
 	return nil
 }
